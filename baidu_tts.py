@@ -26,7 +26,7 @@ def read_aloud(text):
     if "Windows" in platform.uname():
         play_sound.play(mp3_file)
     else:
-        os.system("mpg123 -q" + mp3_file)
+        os.system("mpg123 -q " + mp3_file)
 
 #read_aloud("772距岑村小学还有1站，预计在5分钟后到达")
 #read_aloud("772距岑村小学还有3站，预计在5分钟后到达")
