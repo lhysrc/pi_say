@@ -1,7 +1,30 @@
 ﻿#coding:utf-8
 
+def play_by_mp3play(sound_file):
+    import mp3play,time
+    clip = mp3play.load(sound_file)
+    clip.play()
+    print "\nStart to play %s" % sound_file
+    time.sleep(clip.seconds())
+    clip.stop()
+    print "Stop"
+
+    # #sound_file = "Should It Matter.mp3"
+    # clip = mp3play.load(sound_file)
+    # while 1:
+    #   if time.localtime().tm_min % 30 == 0:
+    #     clip.play()
+    #     print "\nStart to play"
+    #     time.sleep(clip.seconds())
+    #     clip.stop()
+    #     print "Stop"
+    #   print '>',
+    #   time.sleep(30) #暂停30秒（不是30分钟）
+
+
+
 #SOUND_FILE = 'test.mp3'
-def play(sound_file):
+def play_by_pymedia(sound_file):
     file_type = str.split( sound_file, '.' )[ -1 ].lower()
     #1.二进制方法读取前 10000 个字节，保证能读到第一帧音频数据
     f = open( sound_file, 'rb' )
@@ -54,3 +77,8 @@ def play(sound_file):
 
 #play("./tmp/x.mp3")
 #play("./music/xiu_lian_ai_qing.mp3")
+
+
+
+if __name__ == '__main__':
+    play_by_mp3play(u"C:/Users/linho/Music/Downloads/群星/我是歌手第四季 第2期/修炼爱情.mp3")
