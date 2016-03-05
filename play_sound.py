@@ -1,4 +1,10 @@
 ﻿#coding:utf-8
+def play(mp3_file):
+    import platform,os
+    if "Windows" in platform.uname():
+        play_by_mp3play(mp3_file)
+    else:
+        os.system("mpg123 -q " + mp3_file)
 
 def play_by_mp3play(sound_file):
     import mp3play,time

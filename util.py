@@ -13,12 +13,14 @@ def getJson(url,data=None):
     #resp = urllib2.urlopen(url)
     #return json.loads(resp.read())
 
-def getContent(url,data=None):
+def getContent(url,data=None,content_type=None):
     request = urllib2.Request(url)
     request.add_header('Accept-encoding', 'gzip')
     opener = urllib2.build_opener()
     response = opener.open(request,data)
-    return response.read()#.decode('gbk').encode('utf-8')
+    if content_type and response.headers['Content-type'] == content_type:
+        return response.read()#.decode('gbk').encode('utf-8')
+    else:return None
 
 
 
