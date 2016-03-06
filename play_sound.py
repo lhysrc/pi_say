@@ -1,5 +1,5 @@
 ﻿#coding:utf-8
-import platform,os,threading
+import platform,os,threading,time
 con = threading.Condition()
 def play(mp3_file):
     if con.acquire():   # 加锁，一次只一个在放
@@ -9,9 +9,9 @@ def play(mp3_file):
             os.system("mpg123 -q " + mp3_file)
         con.release()
 
-import mp3play,time
-def play_by_mp3play(sound_file):
 
+def play_by_mp3play(sound_file):
+    import mp3play
     clip = mp3play.load(sound_file)
     clip.play()
     print "\nStart to play %s" % sound_file
