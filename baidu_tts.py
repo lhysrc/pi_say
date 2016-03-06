@@ -7,7 +7,7 @@ auth_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credenti
 CUID = "py"
 TOKEN = '24.33e501655ef8a7bd71c019a5c174e800.2592000.1459786598.282335-4814376'
 
-import util, os, urllib, urllib2
+import util, os, urllib, urllib2, time
 import play_sound
 
 
@@ -23,7 +23,7 @@ LOCAL_AUDIOS = {
 }
 
 
-def download_tts_file(text, file_name, read_error=False):
+def download_tts_file(text, file_name):
     url = "http://tsn.baidu.com/text2audio?lan=zh&cuid=%s&ctp=1&tok=%s&tex=%s" % \
           (CUID, TOKEN, text)
     try:
@@ -55,8 +55,12 @@ def get_mp3_file(text):
     return file_name
 
 
-def read_aloud(text):
-    mp3_file = get_mp3_file(text)
+def read_aloud(text,cache=False):
+    if cache:
+        mp3_file = get_mp3_file(text)
+    else:
+        mp3_file = "./tmp/%s.mp3" % time.time()
+        download_tts_file(text, mp3_file)
     retry = 3
     while retry:
         if mp3_file:
@@ -67,6 +71,7 @@ def read_aloud(text):
             retry -= 1
     else:
         play_sound.play(LOCAL_AUDIOS['TTS_ERROR'])
+    if not cache: os.remove(mp3_file)
 
 
 if __name__ == '__main__':

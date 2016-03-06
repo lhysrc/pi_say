@@ -1,13 +1,17 @@
 ﻿#coding:utf-8
+import platform,os,threading
+con = threading.Condition()
 def play(mp3_file):
-    import platform,os
-    if "Windows" in platform.uname():
-        play_by_mp3play(mp3_file)
-    else:
-        os.system("mpg123 -q " + mp3_file)
+    if con.acquire():   # 加锁，一次只一个在放
+        if "Windows" in platform.uname():
+            play_by_mp3play(mp3_file)
+        else:
+            os.system("mpg123 -q " + mp3_file)
+        con.release()
 
+import mp3play,time
 def play_by_mp3play(sound_file):
-    import mp3play,time
+
     clip = mp3play.load(sound_file)
     clip.play()
     print "\nStart to play %s" % sound_file
