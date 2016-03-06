@@ -56,7 +56,8 @@ def bao_zhan():
 
 def alarm_song():
     import play_sound
-    play_sound.play(u"music/不痛.mp3")
+    tell_time()
+    play_sound.play("music/bu_tong.mp3")
 
 if __name__ == '__main__':
     import threading,sched
@@ -77,8 +78,6 @@ if __name__ == '__main__':
         # if t.tm_hour == 21:
         #     threading.Timer(10,alarm_song,()).start()
         #     threading.Timer(5,bao_zhan,()).start()
-
-        # time.sleep(5)
         time.sleep(3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec)
 
     # t1 = threading.Thread(target=_498)
