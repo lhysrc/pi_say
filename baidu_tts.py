@@ -54,12 +54,12 @@ def get_mp3_file(text):
         file_name = download_tts_file(text, file_name)
     return file_name
 
-
+import uuid
 def read_aloud(text,cache=False):
     if cache:
         mp3_file = get_mp3_file(text)
     else:
-        mp3_file = "./tmp/%s.mp3" % time.time()
+        mp3_file = "./tmp/%s.mp3" % uuid.uuid1()
         download_tts_file(text, mp3_file)
     retry = 3
     while retry:

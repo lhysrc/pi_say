@@ -370,8 +370,11 @@ class neteaseMusic(object):
     def play(self, amount_songs, n=None):
         for i in self.song_infos:
             self.display_infos(i)
-            cmd = 'mpv --really-quiet --audio-display no %s' % i['durl']
-            os.system(cmd)
+            #cmd = 'mpv --really-quiet --audio-display no %s' % i['durl']
+            # cmd = 'mpg123 -q %s' % i['durl']
+            # os.system(cmd)
+            import play_sound
+            play_sound.play(i['durl'])
             timeout = 1
             ii, _, _ = select.select([sys.stdin], [], [], timeout)
             if ii:
@@ -435,7 +438,8 @@ def main(url):
     x = neteaseMusic(url)
     x.url_parser()
 
-if __name__ == '__main__':
+def play_random_hot_song():
+    url = 'http://music.163.com/#/discover/toplist?id=3778678'
     p = argparse.ArgumentParser(
         description='downloading any music.163.com')
     p.add_argument('url', help='any url of music.163.com')
@@ -443,5 +447,21 @@ if __name__ == '__main__':
         help='play with mpv')
     p.add_argument('-c', '--undownload', action='store_true', \
         help='no download, using to renew id3 tags')
+    global args
     args = p.parse_args()
+    args.url = url
+    args.play = True
+    args.undownload = True
     main(args.url)
+
+if __name__ == '__main__':
+    play_random_hot_song()
+    # p = argparse.ArgumentParser(
+    #     description='downloading any music.163.com')
+    # p.add_argument('url', help='any url of music.163.com')
+    # p.add_argument('-p', '--play', action='store_true', \
+    #     help='play with mpv')
+    # p.add_argument('-c', '--undownload', action='store_true', \
+    #     help='no download, using to renew id3 tags')
+    # args = p.parse_args()
+    # main(args.url)
