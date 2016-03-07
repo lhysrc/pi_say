@@ -1,8 +1,10 @@
 #coding:utf-8
 import urllib2,zlib,json
-def getJson(url,data=None):
+def getJson(url,data=None,header=None):
     request = urllib2.Request(url)
     request.add_header('Accept-encoding', 'gzip')
+    if header:
+        for k,v in header.items():request.add_header(k,v)
     opener = urllib2.build_opener()
     response = opener.open(request,data)
     html = response.read()#.decode('gbk').encode('utf-8')

@@ -79,7 +79,7 @@ if __name__ == '__main__':
         if t.tm_hour in [7, 8, 20, 21, 22, 23, 0]:
             s = "现在时间是：%s点整" % hour_str(t.tm_hour) \
                 if t.tm_min == 0 else "现在时间是：%s点%s分" % (hour_str(t.tm_hour), t.tm_min)
-            baidu_tts.read_aloud(s)
+            baidu_tts.read_aloud(s, t.tm_min == 0) #缓存整点报时语音
         if t.tm_hour == 7:
             threading.Timer(45*60,bao_zhan,()).start()      # 7:45 报站
             threading.Timer(40*60,alarm_song,()).start()    # 7:40 放歌
