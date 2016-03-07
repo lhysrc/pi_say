@@ -59,6 +59,14 @@ def alarm_song():
     tell_time()
     play_sound.play("music/bu_tong.mp3")
 
+
+
+task_list = {
+    (7,45):(bao_zhan,()),
+    (7,40):(alarm_song,())
+}
+
+
 if __name__ == '__main__':
     import threading,sched
 
