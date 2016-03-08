@@ -1,9 +1,9 @@
 #! /usr/bin/py
 # coding=utf-8
-import os, time, gz_bus, baidu_tts ,weather
+import os, time, gz_bus, baidu_tts ,weather,log
 from tell_time import *
-if not os.path.exists("./tmp"): os.mkdir("./tmp")
-if not os.path.exists("./music"): os.mkdir("./music")
+
+
 
 
 
@@ -45,17 +45,24 @@ def load_weather():
     baidu_tts.read_aloud(weather.tell_today())
 
 task_list = {
-    (7, 45): (bao_zhan, ()),
+    (7, 50): (bao_zhan, ()),
     (7, 40): (alarm_song, ()),
     #(22, 11): (alarm_song, ())
-    (7, 50): (load_weather, ())
+    (7, 45): (load_weather, ())
 }
+
+def check_dirs():
+    dirs = ['tmp','music','log']
+    for d in dirs:
+        if not os.path.exists(d): os.mkdir(d)
 
 if __name__ == '__main__':
     import threading, sched
+    check_dirs()
 
     # bao_shi = threading.Thread(target=tell_time)
     # bao_shi.start()
+    log.INFO("程序开始运行")
     baidu_tts.read_aloud("程序开始运行",True)
     while True:
         t = time.localtime()
@@ -70,7 +77,7 @@ if __name__ == '__main__':
         for task_time,task_func in task_list.items():
             if t.tm_hour == task_time[0] and task_time[1] >= t.tm_min:
                 interval = (task_time[1] - t.tm_min) * 60
-                print("将在%s秒后执行%s" % (interval, task_func[0].__name__))
+                log.INFO("将在%s秒后执行%s" % (interval, task_func[0].__name__))
                 threading.Timer(interval, task_func[0], task_func[1]).start()  # 7:45 报站
 
         # if t.tm_hour == 21:
