@@ -12,7 +12,7 @@ import urllib
 import requests
 import select
 import md5
-from mutagen.id3 import ID3,TRCK,TIT2,TALB,TPE1,APIC,TDRC,COMM,TPOS,USLT
+#from mutagen.id3 import ID3,TRCK,TIT2,TALB,TPE1,APIC,TDRC,COMM,TPOS,USLT
 from HTMLParser import HTMLParser
 
 parser = HTMLParser()
@@ -138,24 +138,24 @@ class neteaseMusic(object):
                     print s % (1, 91, '   \\\n   \\-- Error, get_cover --'), e
                     time.sleep(5)
 
-    def modified_id3(self, file_name, info):
-        id3 = ID3()
-        id3.add(TRCK(encoding=3, text=info['track']))
-        id3.add(TDRC(encoding=3, text=info['year']))
-        id3.add(TIT2(encoding=3, text=info['song_name']))
-        id3.add(TALB(encoding=3, text=info['album_name']))
-        id3.add(TPE1(encoding=3, text=info['artist_name']))
-        id3.add(TPOS(encoding=3, text=info['cd_serial']))
-        #id3.add(USLT(encoding=3, text=self.get_lyric(info['lyric_url'])))
-        #id3.add(TCOM(encoding=3, text=info['composer']))
-        #id3.add(TCON(encoding=3, text=u'genres'))
-        #id3.add(TSST(encoding=3, text=info['sub_title']))
-        #id3.add(TSRC(encoding=3, text=info['disc_code']))
-        id3.add(COMM(encoding=3, desc=u'Comment', \
-            text=info['song_url']))
-        #id3.add(APIC(encoding=3, mime=u'image/jpg', type=3, \
-            #desc=u'Front Cover', data=self.get_cover(info)))
-        id3.save(file_name)
+    # def modified_id3(self, file_name, info):
+    #     id3 = ID3()
+    #     id3.add(TRCK(encoding=3, text=info['track']))
+    #     id3.add(TDRC(encoding=3, text=info['year']))
+    #     id3.add(TIT2(encoding=3, text=info['song_name']))
+    #     id3.add(TALB(encoding=3, text=info['album_name']))
+    #     id3.add(TPE1(encoding=3, text=info['artist_name']))
+    #     id3.add(TPOS(encoding=3, text=info['cd_serial']))
+    #     #id3.add(USLT(encoding=3, text=self.get_lyric(info['lyric_url'])))
+    #     #id3.add(TCOM(encoding=3, text=info['composer']))
+    #     #id3.add(TCON(encoding=3, text=u'genres'))
+    #     #id3.add(TSST(encoding=3, text=info['sub_title']))
+    #     #id3.add(TSRC(encoding=3, text=info['disc_code']))
+    #     id3.add(COMM(encoding=3, desc=u'Comment', \
+    #         text=info['song_url']))
+    #     #id3.add(APIC(encoding=3, mime=u'image/jpg', type=3, \
+    #         #desc=u'Front Cover', data=self.get_cover(info)))
+    #     id3.save(file_name)
 
     def url_parser(self):
         if 'playlist' in self.url:
@@ -422,7 +422,7 @@ class neteaseMusic(object):
             file_name = os.path.join(dir_, t)
             if os.path.exists(file_name):  # if file exists, no get_durl
                 # if args.undownload:
-                self.modified_id3(file_name, i)
+                    # self.modified_id3(file_name, i)
                 ii += 1
                 continue
             #if not args.undownload:
@@ -453,7 +453,7 @@ class neteaseMusic(object):
             else:
                 os.rename('%s.tmp' % file_name, file_name)
 
-            self.modified_id3(file_name, i)
+            #self.modified_id3(file_name, i)
             ii += 1
             time.sleep(0)
 
