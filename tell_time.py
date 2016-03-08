@@ -16,7 +16,7 @@ def hour_str(hour):
         return "%d" % hour
 
 import time,baidu_tts
-def tell_time(t):
+def tell_time(t = None):
     if not t: t = time.localtime()
     #baidu_tts.read_aloud("现在时间是：%s点%s分" % (hour_str(t.tm_hour), t.tm_min))
     s = "现在时间是：%s点整" % hour_str(t.tm_hour) \
