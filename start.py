@@ -25,23 +25,22 @@ def bao_zhan():
         i -= 1
         time.sleep(60)
 
-import play_sound
+import play_sound,ne_music
 @tell_time_first
 def alarm_song():
-    play_sound.play("music/music.mp3")
+    try:
+        ne_music.play_a_random_song()
+    except:
+        play_sound.play("music/music.mp3")
 
-
-@tell_time_first
-def test():
-    print('test tell time')
 
 @tell_time_first
 def load_weather():
     baidu_tts.read_aloud(weather.tell_today())
 
 
-
-def play_song_list():pass
+def play_song_list():
+    ne_music.play_a_list(n=10)
 
 
 if __name__ == '__main__':

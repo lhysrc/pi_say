@@ -400,7 +400,8 @@ class neteaseMusic(object):
             pass
 
     def play_all(self, amount_songs=None, n=None):
-        for i in self.song_infos:
+        infos = self.song_infos[:n] if n else self.song_infos
+        for i in infos:
             self._play(i)
 
     def play_a_random_song(self):
@@ -461,9 +462,28 @@ def main(url):
     x = neteaseMusic(url)
     x.url_parser()
 
-def play_a_random_song(url):
-    x = neteaseMusic(url)
+def play_a_random_song(url=None):
+    if not url:
+        x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
+    else:
+        x = neteaseMusic(url)
+    x.url_parser()
     x.play_a_random_song()
+    #x.play_all()
+
+
+def play_a_list(url=None,n=None):
+    """
+        n:播放前n首
+    """
+    if not url:
+        x = neteaseMusic('http://music.163.com/#/playlist?id=143481105')
+    else:
+        x = neteaseMusic(url)
+    x.url_parser()
+    x.play_all(n=n)
+
+
 
 # def play_random_hot_song():
 #     url = 'http://music.163.com/#/discover/toplist?id=3778678'

@@ -58,7 +58,7 @@ def get_mp3_file(text):
 
 import uuid
 def read_aloud(text,cache=False):
-    log.INFO("开始播报：%s" % text)
+    # log.INFO("开始播报：%s" % text)
     if cache:
         mp3_file = get_mp3_file(text)
     else:
@@ -71,6 +71,7 @@ def read_aloud(text,cache=False):
             break
         else:
             mp3_file = get_mp3_file(text)
+            log.INFO("语音转换重试。")
             retry -= 1
     else:
         play_sound.play(LOCAL_AUDIOS['TTS_ERROR'])
