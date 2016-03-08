@@ -36,7 +36,7 @@ def alarm_song():
 
 @tell_time_first
 def load_weather():
-    baidu_tts.read_aloud(weather.tell_today())
+    baidu_tts.read_aloud(weather.tell_today(),per=3)
 
 
 def play_song_list():
@@ -49,19 +49,20 @@ if __name__ == '__main__':
     workday_task_list = {
         (7, 50): (bao_zhan, ()),
         (7, 40): (alarm_song, ()),
-        # (22, 11): (alarm_song, ())
-        (7, 45): (load_weather, ())
+        # (22, 11): (alarm_song, ()),
+        (7, 45): (load_weather, ()),
     }
 
     holiday_task_list ={
         (8, 45): (load_weather, ()),
-        (9, 00): (play_song_list, ())
+        (9, 00): (play_song_list, ()),
+        (9, 50): (load_weather, ()),
     }
 
     # bao_shi = threading.Thread(target=tell_time)
     # bao_shi.start()
     log.INFO("程序开始运行")
-    baidu_tts.read_aloud("程序开始运行",True)
+    baidu_tts.read_aloud("程序开始运行", True)
     while True:
         t = time.localtime()
         wd = is_workday(t)
