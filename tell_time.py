@@ -48,3 +48,25 @@ def tell_time_first(func):
 
 def print_time():
     print time.strftime('%Y-%m-%d %H:%M:%S')
+
+import config
+def is_workday(time):
+    m,d = time.tm_mon,time.tm_mday
+    if (m,d) in config.Holiday_2016:return False
+    if (m,d) in config.WorkdayInWeekend_2016:return True
+
+    return time.tm_wday < 5
+
+
+
+
+
+
+
+
+
+
+
+if __name__ == '__main__':
+     t = time.localtime(time.mktime((2016,6,12,0,0,0,0,0,-1)))
+     print(t,is_workday(t))

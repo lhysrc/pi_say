@@ -1,12 +1,14 @@
 ﻿#coding:utf-8
-import platform,os,threading,time
+import platform,os,threading,time,log
 con = threading.Condition()
 def play(mp3_file):
     if con.acquire():   # 加锁，一次只一个在放
+        #log.INFO("开始播放："+mp3_file)
         if "Windows" in platform.uname():
             play_by_mp3play(mp3_file)
         else:
             os.system("mpg123 -q " + mp3_file)
+        #log.INFO("结束播放："+mp3_file)
         con.release()
 
 
@@ -14,10 +16,8 @@ def play_by_mp3play(sound_file):
     import mp3play
     clip = mp3play.load(sound_file)
     clip.play()
-    print "\nStart to play %s" % sound_file
     time.sleep(clip.seconds())
     clip.stop()
-    print "Stop"
 
     # #sound_file = "Should It Matter.mp3"
     # clip = mp3play.load(sound_file)
@@ -70,14 +70,14 @@ def play_by_pymedia(sound_file):
     snd = sound.Output( r.sample_rate, r.channels, sound.AFMT_S16_LE )
 
     #6.播放
-    if r: snd.play( r.data )
+    if r: snd.play_all(r.data)
 
     #7.继续读取、解码、播放
     while True:
         data = f.read(512)
         if len(data)>0:
             r = dec.decode( data )
-            if r: snd.play( r.data )
+            if r: snd.play_all(r.data)
         else:
             break
 

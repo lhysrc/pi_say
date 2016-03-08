@@ -3,20 +3,6 @@
 import os, time, gz_bus, baidu_tts ,weather,log
 from tell_time import *
 
-
-
-
-
-# class mytimer:
-#     def __init__(self,func,start_time=(0,0)):
-#         """
-#         Args:
-#             start_time (tuple): 启动任务的时间
-#         """
-#         self.start_time = start_time
-#         self.func = func
-
-
 def bao_zhan():
     i = 40
     while i:
@@ -44,21 +30,29 @@ def test():
 def load_weather():
     baidu_tts.read_aloud(weather.tell_today())
 
-task_list = {
-    (7, 50): (bao_zhan, ()),
-    (7, 40): (alarm_song, ()),
-    #(22, 11): (alarm_song, ())
-    (7, 45): (load_weather, ())
-}
-
 def check_dirs():
-    dirs = ['tmp','music','log']
-    for d in dirs:
+    required_dirs = ['tmp','music','log']
+    for d in required_dirs:
         if not os.path.exists(d): os.mkdir(d)
 
+def play_song_list():pass
+
+
 if __name__ == '__main__':
-    import threading, sched
+    import threading
     check_dirs()
+
+    workday_task_list = {
+        (7, 50): (bao_zhan, ()),
+        (7, 40): (alarm_song, ()),
+        # (22, 11): (alarm_song, ())
+        (7, 45): (load_weather, ())
+    }
+
+    holiday_task_list ={
+        (8, 45): (load_weather, ()),
+        (9, 00): (play_song_list, ())
+    }
 
     # bao_shi = threading.Thread(target=tell_time)
     # bao_shi.start()
@@ -66,23 +60,18 @@ if __name__ == '__main__':
     baidu_tts.read_aloud("程序开始运行",True)
     while True:
         t = time.localtime()
-        if t.tm_wday in range(5) and t.tm_hour in [7, 8, 20, 21, 22, 23, 0]:
+        wd = is_workday(t)
+        # if t.tm_hour in range(1,7) : pass   #凌晨1到6点不报时
+        time_range = [7, 8, 20, 21, 22, 23, 0] if wd else [0] + range(8,24)
+        if t.tm_hour in time_range:
             tell_time(t)
-        if t.tm_wday in [5,6] and t.tm_hour in [0] + range(8,24):
-            tell_time(t)
-        # if t.tm_hour == 7:
-        #     threading.Timer(45 * 60, bao_zhan, ()).start()  # 7:45 报站
-        #     threading.Timer(40 * 60, alarm_song, ()).start()  # 7:40 放歌
-        print_time()
+
+        task_list = workday_task_list if wd else holiday_task_list
         for task_time,task_func in task_list.items():
             if t.tm_hour == task_time[0] and task_time[1] >= t.tm_min:
                 interval = (task_time[1] - t.tm_min) * 60
                 log.INFO("将在%s秒后执行%s" % (interval, task_func[0].__name__))
-                threading.Timer(interval, task_func[0], task_func[1]).start()  # 7:45 报站
-
-        # if t.tm_hour == 21:
-        #     threading.Timer(10,alarm_song,()).start()
-        #     threading.Timer(5,bao_zhan,()).start()
+                threading.Timer(interval, task_func[0], task_func[1]).start()
         time.sleep(3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec)
 
         # t1 = threading.Thread(target=_498)
@@ -93,3 +82,12 @@ if __name__ == '__main__':
         # time.sleep(30)
         # print("start _581")
         # t2.start()
+
+
+
+# if __name__ == '__main__':
+#     import threading
+#     #td = threading.Thread(target=main)
+#     #td.start()
+#     from www import run_app
+#     run_app()

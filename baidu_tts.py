@@ -1,20 +1,21 @@
 # coding=utf-8
-apiKey = "EuWCMZ8mC73R2QimNR5cFkGn"
-secretKey = "Yw2wsHC82pPeRCQM5EWjEB263wjDirCU"
+from config import *
+apiKey = BaiDu_YuYin_API_KEY
+secretKey = BaiDu_YuYin_SECRET_KEY
 
 auth_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=" \
            + apiKey + "&client_secret=" + secretKey
 CUID = "py"
-TOKEN = '24.33e501655ef8a7bd71c019a5c174e800.2592000.1459786598.282335-4814376'
+TOKEN = BaiDu_YuYin_TOKEN
 
 import util, os, urllib, urllib2, time
 import play_sound
-
+import log
 
 def refresh_token():
     global TOKEN
     TOKEN = str(util.getJson(auth_url)['access_token'])
-    print(TOKEN)
+    log.WARN("已刷新百度tts的TOKEN：%s" % TOKEN)
 
 
 LOCAL_AUDIOS = {
@@ -39,6 +40,7 @@ def download_tts_file(text, file_name):
             refresh_token()
             return ''
     except urllib2.URLError:
+        log.ERROR("网络有问题，无法访问：%s" % url)
         return LOCAL_AUDIOS['NET_ERROR']
     with open(file_name, "wb") as f:
         f.write(c)
@@ -49,13 +51,14 @@ def get_mp3_file(text):
     text = text.strip()
     file_name = "./tmp/%s.mp3" % util.getHashCode(text)
     if os.path.isfile(file_name):
-        print "%s已存在，直接播放" % file_name
+        log.INFO("%s已存在，直接播放" % file_name)
     else:
         file_name = download_tts_file(text, file_name)
     return file_name
 
 import uuid
 def read_aloud(text,cache=False):
+    log.INFO("开始播报：%s" % text)
     if cache:
         mp3_file = get_mp3_file(text)
     else:
