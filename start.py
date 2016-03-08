@@ -1,8 +1,17 @@
 #! /usr/bin/py
 # coding=utf-8
-import os, time, gz_bus, baidu_tts ,weather,log
-from tell_time import *
 
+import os
+
+required_dirs = ['tmp','music','log']
+for d in required_dirs:
+    if not os.path.exists(d): os.mkdir(d)
+
+import weather
+import gz_bus
+import log
+
+from tell_time import *
 def bao_zhan():
     i = 40
     while i:
@@ -30,17 +39,13 @@ def test():
 def load_weather():
     baidu_tts.read_aloud(weather.tell_today())
 
-def check_dirs():
-    required_dirs = ['tmp','music','log']
-    for d in required_dirs:
-        if not os.path.exists(d): os.mkdir(d)
+
 
 def play_song_list():pass
 
 
 if __name__ == '__main__':
     import threading
-    check_dirs()
 
     workday_task_list = {
         (7, 50): (bao_zhan, ()),
@@ -62,7 +67,7 @@ if __name__ == '__main__':
         t = time.localtime()
         wd = is_workday(t)
         # if t.tm_hour in range(1,7) : pass   #凌晨1到6点不报时
-        time_range = [7, 8, 20, 21, 22, 23, 0] if wd else [0] + range(8,24)
+        time_range = [7, 8] + range(19, 24) if wd else [0] + range(8, 24)
         if t.tm_hour in time_range:
             tell_time(t)
 

@@ -385,9 +385,9 @@ class neteaseMusic(object):
         # cmd = 'mpv --really-quiet --audio-display no %s' % i['durl']
         # cmd = 'mpg123 -q %s' % i['durl']
         # os.system(cmd)
-        # import play_sound
-        # play_sound.play(song_info['durl'])
-        print("播放:%s"% str(song_info['durl']))
+        print("播放：%s" % str(song_info['durl']))
+        import play_sound
+        play_sound.play(song_info['durl'])
         # import urllib,uuid
         # urllib.urlretrieve(song_info['durl'], "%s.mp3"%uuid.uuid1())
 
@@ -421,40 +421,37 @@ class neteaseMusic(object):
             t = modificate_file_name_for_wget(i['file_name'])
             file_name = os.path.join(dir_, t)
             if os.path.exists(file_name):  # if file exists, no get_durl
-                if args.undownload:
-                    self.modified_id3(file_name, i)
-                    ii += 1
-                    continue
-                else:
-                    ii += 1
-                    continue
-            if not args.undownload:
-                q = {'h': 'High', 'm': 'Middle', 'l': 'Low'}
-                mp3_quality = q[i['mp3_quality']]
-                if n == None:
-                    print(u'\n  ++ 正在下载: #%s/%s# %s\n' \
-                          u'  ++ mp3_quality: %s' \
-                        % (ii, amount_songs, col,
-                           s % (1, 91, mp3_quality)))
-                else:
-                    print(u'\n  ++ 正在下载: #%s/%s# %s\n' \
-                          u'  ++ mp3_quality: %s' \
-                        % (n, amount_songs, col,
-                           s % (1, 91, mp3_quality)))
-                file_name_for_wget = file_name.replace('`', '\`')
-                cmd = 'wget -c -nv -U "%s" -O "%s.tmp" %s' \
-                    % (headers['User-Agent'], file_name_for_wget, i['durl'])
-                cmd = cmd.encode('utf8')
-                status = os.system(cmd)
-                if status != 0:     # other http-errors, such as 302.
-                    wget_exit_status_info = wget_es[status]
-                    print('\n\n ----###   \x1b[1;91mERROR\x1b[0m ==> \x1b[1;91m%d ' \
-                        '(%s)\x1b[0m   ###--- \n\n' \
-                          % (status, wget_exit_status_info))
-                    print s % (1, 91, '  ===> '), cmd
-                    sys.exit(1)
-                else:
-                    os.rename('%s.tmp' % file_name, file_name)
+                # if args.undownload:
+                self.modified_id3(file_name, i)
+                ii += 1
+                continue
+            #if not args.undownload:
+            q = {'h': 'High', 'm': 'Middle', 'l': 'Low'}
+            mp3_quality = q[i['mp3_quality']]
+            if n == None:
+                print(u'\n  ++ 正在下载: #%s/%s# %s\n' \
+                      u'  ++ mp3_quality: %s' \
+                    % (ii, amount_songs, col,
+                       s % (1, 91, mp3_quality)))
+            else:
+                print(u'\n  ++ 正在下载: #%s/%s# %s\n' \
+                      u'  ++ mp3_quality: %s' \
+                    % (n, amount_songs, col,
+                       s % (1, 91, mp3_quality)))
+            file_name_for_wget = file_name.replace('`', '\`')
+            cmd = 'wget -c -nv -U "%s" -O "%s.tmp" %s' \
+                % (headers['User-Agent'], file_name_for_wget, i['durl'])
+            cmd = cmd.encode('utf8')
+            status = os.system(cmd)
+            if status != 0:     # other http-errors, such as 302.
+                wget_exit_status_info = wget_es[status]
+                print('\n\n ----###   \x1b[1;91mERROR\x1b[0m ==> \x1b[1;91m%d ' \
+                    '(%s)\x1b[0m   ###--- \n\n' \
+                      % (status, wget_exit_status_info))
+                print s % (1, 91, '  ===> '), cmd
+                sys.exit(1)
+            else:
+                os.rename('%s.tmp' % file_name, file_name)
 
             self.modified_id3(file_name, i)
             ii += 1
@@ -495,8 +492,13 @@ if __name__ == '__main__':
     # args = p.parse_args()
     # main(args.url)
 
-    x = neteaseMusic('http://music.163.com/#/playlist?id=313076457')
+    argv = sys.argv[1:]
+    if not argv:
+        x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
+    else:
+        x = neteaseMusic(argv[0])
     x.url_parser()
     #x.play_a_random_song()
     x.play_all()
+    #x.download(3)
     #x.download_song()
