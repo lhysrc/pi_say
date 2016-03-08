@@ -112,7 +112,7 @@ class neteaseMusic(object):
         self.cover_data = ''
         self.amount_songs = u'1'
 
-        self.download = self.play if args.play else self.download
+        #self.download = self.play_all if args.play else self.download
 
     def get_durl(self, i):
         for q in ('hMusic', 'mMusic', 'lMusic'):
@@ -162,7 +162,7 @@ class neteaseMusic(object):
             self.playlist_id = re.search(
                 r'playlist.+?(\d+)', self.url).group(1)
             print(s % (2, 92, u'\n  -- 正在分析歌单信息 ...'))
-            self.download_playlist()
+            self.load_playlist()
         elif 'toplist' in self.url:
             t = re.search(r'toplist.+?(\d+)', self.url)
             if t:
@@ -170,12 +170,12 @@ class neteaseMusic(object):
             else:
                 self.playlist_id = '3779629'
             print(s % (2, 92, u'\n  -- 正在分析排行榜信息 ...'))
-            self.download_playlist()
+            self.load_playlist()
         elif 'album' in self.url:
             self.album_id = re.search(
                 r'album.+?(\d+)', self.url).group(1)
             print(s % (2, 92, u'\n  -- 正在分析专辑信息 ...'))
-            self.download_album()
+            self.load_album()
         elif 'artist' in self.url:
             self.artist_id = re.search(
                 r'artist.+?(\d+)', self.url).group(1)
@@ -248,20 +248,28 @@ class neteaseMusic(object):
             song_info = self.get_song_info(i)
             self.song_infos.append(song_info)
 
-    def download_song(self, noprint=False, n=1):
+    def load_song(self, noprint=False, n=1):
         j = ss.get(
             url_song % (
                 self.song_id, urllib.quote('[%s]' % self.song_id)
             )
         ).json()
         songs = j['songs']
-        if not noprint:
-            print(s % (2, 97, u'\n  >> ' + u'1 首歌曲将要下载.')) \
-                if not args.play else ''
+        # if not noprint:
+        #     print(s % (2, 97, u'\n  >> ' + u'1 首歌曲将要下载.')) \
+        #         if not args.play else ''
         self.get_song_infos(songs)
+        #self.download(self.amount_songs, n)
+
+    def download_song(self, noprint=False, n=1):
+        self.load_song(noprint,n)
         self.download(self.amount_songs, n)
 
     def download_album(self):
+        self.load_album()
+        self.download(self.amount_songs)
+
+    def load_album(self):
         j = ss.get(url_album % (self.album_id)).json()
         songs = j['album']['songs']
         d = modificate_text(
@@ -270,13 +278,17 @@ class neteaseMusic(object):
         dir_ = os.path.join(os.getcwd().decode('utf8'), d)
         self.dir_ = modificate_file_name_for_wget(dir_)
         self.amount_songs = unicode(len(songs))
-        print(s % (2, 97, \
-                   u'\n  >> ' + self.amount_songs + u' 首歌曲将要下载.')) \
-            if not args.play else ''
+        # print(s % (2, 97, \
+        #            u'\n  >> ' + self.amount_songs + u' 首歌曲将要下载.')) \
+        #     if not args.play else ''
         self.get_song_infos(songs)
-        self.download(self.amount_songs)
+
 
     def download_playlist(self):
+        self.load_playlist()
+        self.download(self.amount_songs)
+
+    def load_playlist(self):
         j = ss.get(
             url_playlist % (
                 self.playlist_id, urllib.quote('[%s]' % self.playlist_id)
@@ -289,11 +301,11 @@ class neteaseMusic(object):
         dir_ = os.path.join(os.getcwd().decode('utf8'), d)
         self.dir_ = modificate_file_name_for_wget(dir_)
         self.amount_songs = unicode(len(songs))
-        print(s % (2, 97, u'\n  >> ' \
-                   + self.amount_songs + u' 首歌曲将要下载.')) \
-            if not args.play else ''
+        # print(s % (2, 97, u'\n  >> ' \
+        #            + self.amount_songs + u' 首歌曲将要下载.')) \
+        #     if not args.play else ''
         self.get_song_infos(songs)
-        self.download(self.amount_songs)
+
 
     def download_djradio(self):
         html = ss.get(
@@ -319,9 +331,9 @@ class neteaseMusic(object):
         dir_ = os.path.join(os.getcwd().decode('utf8'), d)
         self.dir_ = modificate_file_name_for_wget(dir_)
         self.amount_songs = unicode(len(songs))
-        print(s % (2, 97, u'\n  >> \
-                   ' + self.amount_songs + u' 首歌曲将要下载.')) \
-            if not args.play else None
+        # print(s % (2, 97, u'\n  >> \
+        #            ' + self.amount_songs + u' 首歌曲将要下载.')) \
+        #     if not args.play else None
         self.get_song_infos(songs)
         self.download(self.amount_songs)
 
@@ -346,9 +358,9 @@ class neteaseMusic(object):
         dir_ = os.path.join(os.getcwd().decode('utf8'), d)
         self.dir_ = modificate_file_name_for_wget(dir_)
         self.amount_songs = unicode(len(songids))
-        print(s % (2, 97, u'\n  >> \
-                   ' + self.amount_songs + u' 首歌曲将要下载.')) \
-            if not args.play else ''
+        # print(s % (2, 97, u'\n  >> \
+        #            ' + self.amount_songs + u' 首歌曲将要下载.')) \
+        #     if not args.play else ''
         n = 1
         for sid in songids:
             self.song_id = sid
@@ -367,20 +379,34 @@ class neteaseMusic(object):
             s % (1, 92, q[i['mp3_quality']])
         print ''
 
-    def play(self, amount_songs, n=None):
+
+    def _play(self,song_info):
+        self.display_infos(song_info)
+        # cmd = 'mpv --really-quiet --audio-display no %s' % i['durl']
+        # cmd = 'mpg123 -q %s' % i['durl']
+        # os.system(cmd)
+        # import play_sound
+        # play_sound.play(song_info['durl'])
+        print("播放:%s"% str(song_info['durl']))
+        # import urllib,uuid
+        # urllib.urlretrieve(song_info['durl'], "%s.mp3"%uuid.uuid1())
+
+        if 'win' in sys.platform : return
+        timeout = 1
+        ii, _, _ = select.select([sys.stdin], [], [], timeout)
+        if ii:
+            sys.exit(0)
+        else:
+            pass
+
+    def play_all(self, amount_songs=None, n=None):
         for i in self.song_infos:
-            self.display_infos(i)
-            #cmd = 'mpv --really-quiet --audio-display no %s' % i['durl']
-            # cmd = 'mpg123 -q %s' % i['durl']
-            # os.system(cmd)
-            import play_sound
-            play_sound.play(i['durl'])
-            timeout = 1
-            ii, _, _ = select.select([sys.stdin], [], [], timeout)
-            if ii:
-                sys.exit(0)
-            else:
-                pass
+            self._play(i)
+
+    def play_a_random_song(self):
+        import random
+        i = random.randint(0,len(self.song_infos)-1)
+        self._play(self.song_infos[i])
 
     def download(self, amount_songs, n=None):
         dir_ = modificate_file_name_for_wget(self.dir_)
@@ -438,24 +464,27 @@ def main(url):
     x = neteaseMusic(url)
     x.url_parser()
 
-def play_random_hot_song():
-    url = 'http://music.163.com/#/discover/toplist?id=3778678'
-    p = argparse.ArgumentParser(
-        description='downloading any music.163.com')
-    p.add_argument('url', help='any url of music.163.com')
-    p.add_argument('-p', '--play', action='store_true', \
-        help='play with mpv')
-    p.add_argument('-c', '--undownload', action='store_true', \
-        help='no download, using to renew id3 tags')
-    global args
-    args = p.parse_args()
-    args.url = url
-    args.play = True
-    args.undownload = True
-    main(args.url)
+def play_a_random_song(url):
+    x = neteaseMusic(url)
+    x.play_a_random_song()
+
+# def play_random_hot_song():
+#     url = 'http://music.163.com/#/discover/toplist?id=3778678'
+#     p = argparse.ArgumentParser(
+#         description='downloading any music.163.com')
+#     p.add_argument('url', help='any url of music.163.com')
+#     p.add_argument('-p', '--play', action='store_true', \
+#         help='play with mpv')
+#     p.add_argument('-c', '--undownload', action='store_true', \
+#         help='no download, using to renew id3 tags')
+#     global args
+#     args = p.parse_args()
+#     args.url = url
+#     args.play_all = False
+#     args.undownload = False
+#     main(args.url)
 
 if __name__ == '__main__':
-    play_random_hot_song()
     # p = argparse.ArgumentParser(
     #     description='downloading any music.163.com')
     # p.add_argument('url', help='any url of music.163.com')
@@ -465,3 +494,9 @@ if __name__ == '__main__':
     #     help='no download, using to renew id3 tags')
     # args = p.parse_args()
     # main(args.url)
+
+    x = neteaseMusic('http://music.163.com/#/playlist?id=313076457')
+    x.url_parser()
+    #x.play_a_random_song()
+    x.play_all()
+    #x.download_song()
