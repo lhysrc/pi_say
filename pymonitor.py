@@ -9,10 +9,10 @@ from watchdog.events import FileSystemEventHandler
 def log(s):
     print('[Monitor] %s' % s)
 
-class MyFileSystemEventHander(FileSystemEventHandler):
+class MyFileSystemEventHandler(FileSystemEventHandler):
 
     def __init__(self, fn):
-        super(MyFileSystemEventHander, self).__init__()
+        super(MyFileSystemEventHandler, self).__init__()
         self.restart = fn
 
     def on_any_event(self, event):
@@ -43,7 +43,7 @@ def restart_process():
 
 def start_watch(path, callback):
     observer = Observer()
-    observer.schedule(MyFileSystemEventHander(restart_process), path, recursive=True)
+    observer.schedule(MyFileSystemEventHandler(restart_process), path, recursive=True)
     observer.start()
     log('Watching directory %s...' % path)
     start_process()
@@ -59,8 +59,8 @@ if __name__ == '__main__':
     if not argv:
         print('Usage: ./pymonitor your-script.py')
         exit(0)
-    if argv[0] != 'python3':
-        argv.insert(0, 'python3')
+    if argv[0] != 'python':
+        argv.insert(0, 'python')
     command = argv
     path = os.path.abspath('.')
     start_watch(path, None)

@@ -1,10 +1,11 @@
 # coding=utf-8
 import logging
 import logging.handlers
+
 log = logging.getLogger()
 
 #formatter = logging.Formatter('%(name)-6s %(asctime)s | %(levelname)-4s: %(message)s', '%a,%y-%m-%d %H:%M:%S',)
-formatter = logging.Formatter('%(asctime)s | %(levelname)-4s: %(message)s', '%a,%y-%m-%d %H:%M:%S',)
+formatter = logging.Formatter('%(name)-6s %(asctime)s | %(levelname)-4s: %(message)s', '%a,%y-%m-%d %H:%M:%S',)
 # %(name)s                           Logger的名字
 # %(levelno)s                        数字形式的日志级别
 # %(levelname)s                  文本形式的日志级别
