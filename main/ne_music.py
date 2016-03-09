@@ -102,7 +102,7 @@ class neteaseMusic(object):
     def __init__(self, url):
         self.url = url
         self.song_infos = []
-        self.dir_ = os.getcwd().decode('utf8')
+        self.dir_ = os.getcwd()#.decode('utf8')
 
         self.playlist_id = ''
         self.dj_id = ''

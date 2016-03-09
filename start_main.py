@@ -2,7 +2,7 @@
 # coding=utf-8
 
 import os
-
+import threading
 required_dirs = ['tmp','music','log']
 for d in required_dirs:
     if not os.path.exists(d): os.mkdir(d)
@@ -42,9 +42,9 @@ def load_weather():
 def play_song_list():
     ne_music.play_a_list(n=10)
 
+def start_main():
 
-if __name__ == '__main__':
-    import threading
+
 
     workday_task_list = {
         (7, 50): (bao_zhan, ()),
@@ -90,10 +90,15 @@ if __name__ == '__main__':
         # t2.start()
 
 
-
+import www
 # if __name__ == '__main__':
 #     import threading
 #     #td = threading.Thread(target=main)
 #     #td.start()
 #     from www import run_app
 #     run_app()
+if __name__ == '__main__':
+    start_main()
+    #threading.Thread(target=start_main).start()
+    #alarm_song()
+    #www.run_app()
