@@ -49,9 +49,10 @@ def tell_time_first(func):
 def print_time():
     print time.strftime('%Y-%m-%d %H:%M:%S')
 
+import config
 Holiday = config.get_days('holiday')
 WorkdayInWeekend = config.get_days('workday_in_weekend')
-import config
+
 def is_workday(time):
     m,d = time.tm_mon,time.tm_mday
     if (m,d) in Holiday:return False

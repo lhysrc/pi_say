@@ -518,7 +518,7 @@ if __name__ == '__main__':
     else:
         x = neteaseMusic(argv[0])
     x.url_parser()
-    #x.play_a_random_song()
-    x.play_all()
+    x.play_a_random_song()
+    #x.play_all()
     #x.download(3)
     #x.download_song()
