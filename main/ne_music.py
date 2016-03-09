@@ -102,7 +102,7 @@ class neteaseMusic(object):
     def __init__(self, url):
         self.url = url
         self.song_infos = []
-        self.dir_ = os.getcwd()#.decode('utf8')
+        #self.dir_ = os.getcwd().decode('utf8')
 
         self.playlist_id = ''
         self.dj_id = ''
@@ -299,8 +299,8 @@ class neteaseMusic(object):
         d = modificate_text(
             j['result']['name'] + ' - ' \
             + j['result']['creator']['nickname'])
-        dir_ = os.path.join(os.getcwd().decode('utf8'), d)
-        self.dir_ = modificate_file_name_for_wget(dir_)
+        #dir_ = os.path.join(os.getcwd().decode('utf8'), d)
+        #self.dir_ = modificate_file_name_for_wget(dir_)
         self.amount_songs = unicode(len(songs))
         # print(s % (2, 97, u'\n  >> ' \
         #            + self.amount_songs + u' 首歌曲将要下载.')) \
