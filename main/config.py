@@ -10,7 +10,7 @@
 # 国庆节	10/1-10/7	10月8日、9日上班	7天
 
 import ConfigParser,os,log
-CONFIG_PATH = 'local/cfg.ini'
+CONFIG_PATH = './local/cfg.ini'
 if not os.path.exists(CONFIG_PATH):
     open(CONFIG_PATH,'w+').close()
 

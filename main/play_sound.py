@@ -1,5 +1,5 @@
 ﻿#coding:utf-8
-import platform,os,threading,time,log
+import platform,os,threading,time, log
 con = threading.Condition()
 def play(mp3_file):
     if con.acquire():   # 加锁，一次只一个在放

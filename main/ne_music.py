@@ -1,17 +1,18 @@
 #!/usr/bin/env python2
 # vim: set fileencoding=utf8
 
-import re
-import sys
-import os
-import random
-import time
 import json
-import argparse
-import urllib
-import requests
-import select
 import md5
+import random
+import select
+import sys
+import time
+import urllib
+
+import os
+import re
+import requests
+
 #from mutagen.id3 import ID3,TRCK,TIT2,TALB,TPE1,APIC,TDRC,COMM,TPOS,USLT
 from HTMLParser import HTMLParser
 

@@ -27,7 +27,7 @@ formatter = logging.Formatter('%(name)-6s %(asctime)s | %(levelname)-4s: %(messa
 trfhdlr = logging.handlers.TimedRotatingFileHandler('./log/log','s',1,7)
 trfhdlr.suffix = "%Y%m%d.log"
 trfhdlr.setFormatter(formatter)
-
+trfhdlr.setLevel(logging.WARN)
 
 # fhdlr = logging.FileHandler("./tmp/log.log")
 # fhdlr.setFormatter(formatter)
@@ -35,7 +35,7 @@ trfhdlr.setFormatter(formatter)
 
 shdlr = logging.StreamHandler()
 shdlr.setFormatter(formatter)
-
+shdlr.setLevel(logging.INFO)
 
 log.addHandler(trfhdlr)
 log.addHandler(shdlr)
@@ -47,7 +47,7 @@ def INFO(msg):
 def WARN(msg):
     log.warn(msg)
 def ERROR(msg):
-    log.warn(msg)
+    log.error(msg)
 
 if __name__ == '__main__':
     log.debug("debug message")

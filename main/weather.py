@@ -1,13 +1,13 @@
 # coding=utf-8
-from config import *
 city = 'guangzhou'
 url = 'http://apis.baidu.com/heweather/weather/free?city=%s' % city
 api_key = '6aaa80cda8ee541ad53047b6ce6b8468'
 # 返回结果说明：http://apistore.baidu.com/apiworks/servicedetail/478.html
 
-from util import getJson,byteify
-import log
 import time
+
+import log
+from util import getJson,byteify
 
 header = {'apikey': api_key}
 
@@ -57,7 +57,6 @@ def tell_today():
 
 if __name__ == '__main__':
     print(tell_today())
-    import baidu_tts
     #baidu_tts.read_aloud(tell_today())
 
 # 现在时间是上午7点50分，气温20度；今天白天：晴，夜间：晴，18到27度。舒适度：较舒适，建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。

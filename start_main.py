@@ -7,11 +7,7 @@ required_dirs = ['tmp','music','log']
 for d in required_dirs:
     if not os.path.exists(d): os.mkdir(d)
 
-import weather
-import gz_bus
-import log
-
-from tell_time import *
+from main.tell_time import *
 def bao_zhan():
     i = 40
     while i:
@@ -25,7 +21,10 @@ def bao_zhan():
         i -= 1
         time.sleep(60)
 
-import play_sound,ne_music
+
+from main import ne_music, log, gz_bus, weather, play_sound
+
+
 @tell_time_first
 def alarm_song():
     try:
@@ -37,7 +36,7 @@ def alarm_song():
 
 @tell_time_first
 def load_weather():
-    baidu_tts.read_aloud(weather.tell_today(),per=3)
+    baidu_tts.read_aloud(weather.tell_today(), per=3)
 
 
 def play_song_list():
@@ -52,6 +51,7 @@ if __name__ == '__main__':
         (7, 40): (alarm_song, ()),
         # (22, 11): (alarm_song, ()),
         (7, 45): (load_weather, ()),
+        # (21, 10): (play_song_list, ()),
     }
 
     holiday_task_list ={
@@ -74,8 +74,8 @@ if __name__ == '__main__':
 
         task_list = workday_task_list if wd else holiday_task_list
         for task_time,task_func in task_list.items():
-            if t.tm_hour == task_time[0] and task_time[1] >= t.tm_min:
-                interval = (task_time[1] - t.tm_min) * 60
+            if t.tm_hour == task_time[0] and task_time[1] > t.tm_min:
+                interval = (task_time[1] - t.tm_min) * 60 - t.tm_sec
                 log.INFO("将在%s秒后执行%s" % (interval, task_func[0].__name__))
                 threading.Timer(interval, task_func[0], task_func[1]).start()
         time.sleep(3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec)

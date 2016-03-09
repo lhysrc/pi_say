@@ -7,7 +7,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 def log(s):
-    print('[Monitor] %s' % s)
+    print('[Monitor] %s | %s' % (time.strftime('%a,%y-%m-%d %H:%M:%S'),s))
 
 class MyFileSystemEventHandler(FileSystemEventHandler):
 

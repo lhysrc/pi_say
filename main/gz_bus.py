@@ -1,6 +1,8 @@
 #coding=utf-8
-import urllib2,urllib,json
+import urllib
+
 import baidu_tts
+
 wait_time_url = "http://wxbus.gzyyjt.net/wei-bus-app/waitBus/waitTime"
 
 def count_waittime(bus_no,st_name,search_num,num=2,read=True):
@@ -19,21 +21,21 @@ def count_waittime(bus_no,st_name,search_num,num=2,read=True):
     param = {"rsId":search_num,"num":num}
     data = urllib.urlencode(param)
     import util
-    result = util.getJson(wait_time_url,data)
+    result = util.getJson(wait_time_url, data)
     cnt, tm = result[0]['count'],result[0]['time']
     if read:
         if cnt == -1:
-            baidu_tts.read_aloud("%s尚未发车" % bus_no,True)
+            baidu_tts.read_aloud("%s尚未发车" % bus_no, True)
         elif cnt == tm == 0:
-            baidu_tts.read_aloud("%s已到达%s站" % (bus_no,st_name),True)
+            baidu_tts.read_aloud("%s已到达%s站" % (bus_no, st_name), True)
         else:
-            baidu_tts.read_aloud("%s距%s还有%s站，预计在%s分钟后到达" % (bus_no,st_name,cnt,tm),True)
+            baidu_tts.read_aloud("%s距%s还有%s站，预计在%s分钟后到达" % (bus_no, st_name, cnt, tm), True)
         if(cnt != -1 and len(result) > 1):
             cnt, tm = result[1]['count'], result[1]['time']
             if cnt==-1:
-                baidu_tts.read_aloud("下一班尚未发车",True)
+                baidu_tts.read_aloud("下一班尚未发车", True)
             else:
-                baidu_tts.read_aloud("下一班还有%s站" % cnt,True)
+                baidu_tts.read_aloud("下一班还有%s站" % cnt, True)
     return result
 
 def ccxx_1_772():

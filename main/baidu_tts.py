@@ -8,7 +8,7 @@ auth_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credenti
 CUID = "py"
 TOKEN = get_baidu_tts_token()
 
-import util, os, urllib, urllib2, time, random
+import util, os, urllib2, random
 import play_sound
 import log
 
@@ -115,7 +115,7 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=5, per=0):
             play_sound.play(mp3_file)
             break
         else:
-            log.INFO("语音转换重试。")
+            log.WARN("语音转换重试。")
             mp3_file = get_mp3_file(text)
             retry -= 1
     else:
