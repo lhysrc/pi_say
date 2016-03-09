@@ -49,7 +49,7 @@ def start_main():
     workday_task_list = {
         (7, 50): (bao_zhan, ()),
         (7, 40): (alarm_song, ()),
-        # (22, 11): (alarm_song, ()),
+        (23, 01): (alarm_song, ()),
         (7, 45): (load_weather, ()),
         # (21, 10): (play_song_list, ()),
     }
@@ -90,7 +90,7 @@ def start_main():
         # t2.start()
 
 
-import www
+# import www
 # if __name__ == '__main__':
 #     import threading
 #     #td = threading.Thread(target=main)
