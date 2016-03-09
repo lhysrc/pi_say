@@ -30,7 +30,8 @@ import play_sound,ne_music
 def alarm_song():
     try:
         ne_music.play_a_random_song()
-    except:
+    except Exception as e:
+        log.ERROR(e)
         play_sound.play("music/music.mp3")
 
 

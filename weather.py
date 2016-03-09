@@ -2,7 +2,7 @@
 from config import *
 city = 'guangzhou'
 url = 'http://apis.baidu.com/heweather/weather/free?city=%s' % city
-api_key = BaiDu_API_STORE_API_KEY
+api_key = '6aaa80cda8ee541ad53047b6ce6b8468'
 # 返回结果说明：http://apistore.baidu.com/apiworks/servicedetail/478.html
 
 from util import getJson,byteify
