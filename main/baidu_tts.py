@@ -26,7 +26,7 @@ LOCAL_AUDIOS = {
 }
 
 
-def download_tts_file(text, file_name=None, spd=5, pit=5, vol=5, per=0):
+def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
     """
     tex
     必填
@@ -63,8 +63,8 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=5, per=0):
 
     url = "http://tsn.baidu.com/text2audio?lan=zh&cuid=%s&ctp=1&tok=%s&tex=%s" % \
           (CUID, TOKEN, text)
-    if spd != 5: url += '&spd=%d' % spd
     if vol != 5: url += '&vol=%d' % vol
+    if spd != 5: url += '&spd=%d' % spd
     if pit != 5: url += '&pit=%d' % pit
     if per != 0: url += '&per=%d' % (per if per == 1 else random.randint(0, 1))
     try:
@@ -87,7 +87,7 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=5, per=0):
     return file_name
 
 
-def get_mp3_file(text, spd=5, pit=5, vol=5, per=0):
+def get_mp3_file(text, spd=5, pit=5, vol=9, per=0):
     text = text.strip()
     file_name = "./tmp/%s.mp3" % util.getHashCode(text)
     if os.path.isfile(file_name):
@@ -100,7 +100,7 @@ def get_mp3_file(text, spd=5, pit=5, vol=5, per=0):
 import uuid
 
 
-def read_aloud(text, cache=False, spd=5, pit=5, vol=5, per=0):
+def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=0):
     """
         cache: 缓存语音文件，当然，缓存后，后续参数都失去意义
     """

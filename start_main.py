@@ -98,7 +98,7 @@ def start_main():
 #     from www import run_app
 #     run_app()
 if __name__ == '__main__':
-    threading.Timer(0, alarm_song, ()).start()
+    #threading.Timer(0, alarm_song, ()).start()
     start_main()
     #threading.Thread(target=start_main).start()
     #alarm_song()
