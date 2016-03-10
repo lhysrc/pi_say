@@ -10,5 +10,5 @@ import views
 
 
 def run_app():
-    app.run(port=3080)
+    app.run(port=3080,threaded=True)
 
