@@ -20,7 +20,7 @@ import main.tell_time
 @app.route('/time')
 def tell_time():
     t = main.tell_time.tell_time()
-    return make_response(t)
+    return str(t)
 
 import urllib
 @app.route('/tts/<name>')
