@@ -1,6 +1,7 @@
 # coding=utf-8
 from main import baidu_tts,ne_music
 from www import app
+from flask import make_response
 import threading,time
 
 @app.route('/')
@@ -19,7 +20,7 @@ import main.tell_time
 @app.route('/time')
 def tell_time():
     t = main.tell_time.tell_time()
-    return time.strftime(t)
+    return make_response(t)
 
 import urllib
 @app.route('/tts/<name>')
