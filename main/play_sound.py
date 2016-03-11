@@ -1,16 +1,21 @@
 ﻿#coding:utf-8
 import platform,os,threading,time, log
 con = threading.Condition()
-def play(mp3_file):
-    if con.acquire():   # 加锁，一次只一个在放
-        #log.INFO("开始播放："+mp3_file)
-        if "Windows" in platform.uname():
-            play_by_mp3play(mp3_file)
-        else:
-            os.system("mpg123 -q " + mp3_file)
-        #log.INFO("结束播放："+mp3_file)
-        con.release()
+def play(mp3_file,condition=True):
+    if condition:
+        if con.acquire():   # 加锁，一次只一个在放
+            _play(mp3_file)
+            con.release()
+    else:
+        _play(mp3_file)
 
+def _play(mp3_file):
+    #log.INFO("开始播放："+mp3_file)
+    if "Windows" in platform.uname():
+        play_by_mp3play(mp3_file)
+    else:
+        os.system("mpg123 -q %s" % mp3_file)
+    #log.INFO("结束播放："+mp3_file)
 
 def play_by_mp3play(sound_file):
     import mp3play

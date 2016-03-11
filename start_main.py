@@ -9,13 +9,11 @@ for d in required_dirs:
 
 from main.tell_time import *
 def bao_zhan():
-    i = 40
+    i = 30
     while i:
-        if i < 25:
-            print("498")
+        if i < 20:
             gz_bus.cxld_0_498()
         if i > 15:
-            print("581")
             gz_bus.cxld_0_581()
 
         i -= 1

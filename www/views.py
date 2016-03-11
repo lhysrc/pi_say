@@ -1,7 +1,7 @@
 # coding=utf-8
 from main import baidu_tts,ne_music
 from www import app
-import threading
+import threading,time
 
 @app.route('/')
 def index():
@@ -14,6 +14,12 @@ def index():
 #     if not check_signature(request.args) and not app.debug:
 #         return ""
 #     return echo
+
+import main.tell_time
+@app.route('/time')
+def tell_time():
+    t = main.tell_time.tell_time()
+    return time.strftime(t)
 
 import urllib
 @app.route('/tts/<name>')

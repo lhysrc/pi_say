@@ -386,9 +386,12 @@ class neteaseMusic(object):
         # cmd = 'mpv --really-quiet --audio-display no %s' % i['durl']
         # cmd = 'mpg123 -q %s' % i['durl']
         # os.system(cmd)
-        print("播放：%s" % str(song_info['durl']))
-        import play_sound
-        play_sound.play(song_info['durl'])
+        url = str(song_info['durl'])
+        print("播放：%s" % url)
+        if "Windows" in sys.platform.uname():
+            print("Windows上只测试，不播放：%s" % url)
+        else:
+            os.system("mpg123 -q %s" % url)
         # import urllib,uuid
         # urllib.urlretrieve(song_info['durl'], "%s.mp3"%uuid.uuid1())
 

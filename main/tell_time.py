@@ -26,7 +26,8 @@ def tell_time(t = None):
     #baidu_tts.read_aloud("现在时间是：%s点%s分" % (hour_str(t.tm_hour), t.tm_min))
     s = "现在时间是：%s点整" % hour_str(t.tm_hour) \
         if t.tm_min == 0 else "现在时间是：%s点%s分" % (hour_str(t.tm_hour), t.tm_min)
-    baidu_tts.read_aloud(s, t.tm_min == 0)  # 缓存整点报时语音
+    baidu_tts.read_aloud(s, cache=t.tm_min == 0,per=t.tm_min)  # 缓存整点报时语音
+    return t
     # first_sleep = 3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec
     # print("现在时间：%s点%s分，距离下次报时还有%s秒" % (hour_str(t.tm_hour), t.tm_min, first_sleep))
     # time.sleep(first_sleep)
