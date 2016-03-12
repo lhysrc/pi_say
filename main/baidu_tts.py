@@ -123,6 +123,20 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=0):
     if not cache: os.remove(mp3_file)
 
 
+import functools
+def read_text_first(text,cache=False,per=3):
+    """
+        加上此装饰器则会先播报text再执行该函数
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args,**kw):
+            read_aloud(text,cache=cache,per=per)
+            return func(*args,**kw)
+        return wrapper
+    return decorator
+
+
 if __name__ == '__main__':
     # read_aloud("772距岑村小学还有1站，预计在5分钟后到达")
     import time

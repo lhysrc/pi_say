@@ -55,11 +55,43 @@ def WARN(msg):
 def ERROR(msg):
     log.error(msg)
 
+
+import functools
+def func_log(arg):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            words = arg
+            if not isinstance(words, (str, int, float)):
+                words = 'Called.'
+            INFO('Begin Invoke %s: %s' % (func.__name__,words))
+            result = func(*args, **kw)
+            INFO('End Invoke %s: %s' % (func.__name__,words))
+            return result
+        return wrapper
+    if isinstance(arg, (str, int, float)):
+        return decorator
+    else:
+        return decorator(arg)
+
+
+
+@func_log('in de')
+def test_a():
+    print('a')
+@func_log
+def test_b(a):
+    print('b')
+
 if __name__ == '__main__':
     #print inspect.stack()
     #print(__file__)
-    log.debug("debug message")
-    log.info("info message")
-    log.warn("warn message")
-    log.error("error message")
-    log.critical("critical message")
+    # log.debug("debug message")
+    # log.info("info message")
+    # log.warn("warn message")
+    # log.error("error message")
+    # log.critical("critical message")
+
+    test_a()
+
+    test_b(1)
