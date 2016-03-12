@@ -216,7 +216,7 @@ class neteaseMusic(object):
             self.load_dj()
         else:
             print(s % (2, 91, u'   请正确输入music.163.com网址.'))
-        log.INFO('共有%d首歌：%s' % (len(self.song_infos), self.url))
+        log.INFO(u'共有%d首歌：%s' % (len(self.song_infos), self.url))
 
     def get_song_info(self, i):
         z = z_index(i['album']['size']) \
@@ -500,7 +500,7 @@ def play_a_list(url=None, n=0,rdm=True):
     n = x.song_infos if n<=0 else n
     l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
     for i in l:
-        log.INFO("播放:http://music.163.com/song/%s " % i['song_id'])
+        log.INFO(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
         play_sound.play(i['durl'])
 
 
