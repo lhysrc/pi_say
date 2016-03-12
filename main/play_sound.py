@@ -1,6 +1,6 @@
 ﻿#coding:utf-8
 import platform,os,threading,time
-import mp3play
+
 con = threading.Condition()
 def play(mp3_file,condition=True):
     if condition:
@@ -19,6 +19,7 @@ def _play(mp3_file):
     #log.INFO("结束播放："+mp3_file)
 
 def play_by_mp3play(sound_file):
+    import mp3play
     clip = mp3play.load(sound_file)
     clip.play()
     time.sleep(clip.seconds())
