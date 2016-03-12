@@ -2,7 +2,11 @@
 import platform,os,threading,time
 
 con = threading.Condition()
-def play(mp3_file,condition=True):
+def play(mp3_file,condition):
+    """
+    condition:播放时是否阻塞此方法
+        一般播放歌曲时不阻塞，播报文字时阻塞
+    """
     if condition:
         if con.acquire():   # 加锁，一次只一个在放
             _play(mp3_file)
@@ -17,6 +21,8 @@ def _play(mp3_file):
     else:
         os.system("mpg123 -q %s" % mp3_file)
     #log.INFO("结束播放："+mp3_file)
+
+
 
 def play_by_mp3play(sound_file):
     import mp3play

@@ -112,14 +112,14 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=0):
     retry = 3
     while retry:
         if mp3_file:
-            play_sound.play(mp3_file)
+            play_sound.play(mp3_file,True)
             break
         else:
             log.WARN("语音转换重试。")
             mp3_file = get_mp3_file(text)
             retry -= 1
     else:
-        play_sound.play(LOCAL_AUDIOS['TTS_ERROR'])
+        play_sound.play(LOCAL_AUDIOS['TTS_ERROR'],True)
     if not cache: os.remove(mp3_file)
 
 
