@@ -1,5 +1,6 @@
 ﻿#coding:utf-8
 import platform,os,threading,time
+import mp3play
 con = threading.Condition()
 def play(mp3_file,condition=True):
     if condition:
@@ -18,7 +19,6 @@ def _play(mp3_file):
     #log.INFO("结束播放："+mp3_file)
 
 def play_by_mp3play(sound_file):
-    import mp3play
     clip = mp3play.load(sound_file)
     clip.play()
     time.sleep(clip.seconds())
@@ -92,8 +92,11 @@ def play_by_pymedia(sound_file):
 
 #play("./tmp/x.mp3")
 #play("./music/xiu_lian_ai_qing.mp3")
-
-
+import util
+def play_local_music(n,rdm=True):
+    files = util.GetFileFromThisRootDir('./music','.mp3')
+    for f in files[:n]:
+        play(f,False)
 
 if __name__ == '__main__':
     play_by_mp3play(u"C:/Users/linho/Music/Downloads/群星/我是歌手第四季 第2期/修炼爱情.mp3")

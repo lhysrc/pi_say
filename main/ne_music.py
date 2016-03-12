@@ -216,7 +216,7 @@ class neteaseMusic(object):
             self.load_dj()
         else:
             print(s % (2, 91, u'   请正确输入music.163.com网址.'))
-        print('共有%d首歌：%s' % (len(self.song_infos), self.url))
+        log.INFO('共有%d首歌：%s' % (len(self.song_infos), self.url))
 
     def get_song_info(self, i):
         z = z_index(i['album']['size']) \
@@ -471,31 +471,36 @@ class neteaseMusic(object):
             ii += 1
             time.sleep(0)
 
+#
+# def main(url):
+#     x = neteaseMusic(url)
+#     x.url_parser()
 
-def main(url):
-    x = neteaseMusic(url)
-    x.url_parser()
 
+# def play_a_random_song(url=None):
+#     if not url:
+#         x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
+#     else:
+#         x = neteaseMusic(url)
+#
+#     i = random.randint(0, len(x.song_infos) - 1)
+#     play_sound.play(i['durl'])
 
-def play_a_random_song(url=None):
+import random
+import play_sound,log
+def play_a_list(url=None, n=0,rdm=True):
+    """
+        n:播放n首
+        rdm:是否随机
+    """
     if not url:
         x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
     else:
         x = neteaseMusic(url)
-    x.url_parser()
-    x.play_a_random_song()
-    # x.play_all()
-
-import play_sound
-def play_a_list(url=None, n=None):
-    """
-        n:播放前n首
-    """
-    if not url:
-        x = neteaseMusic('http://music.163.com/#/playlist?id=143481105')
-    else:
-        x = neteaseMusic(url)
-    for i in x.song_infos[:n]:
+    n = x.song_infos if n<=0 else n
+    l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
+    for i in l:
+        log.INFO("播放:http://music.163.com/song/%s " % i['song_id'])
         play_sound.play(i['durl'])
 
 
@@ -526,7 +531,11 @@ if __name__ == '__main__':
     # args = p.parse_args()
     # main(args.url)
 
-    play_a_list(n=10)
+
+    #play_a_list(url='http://music.163.com/#/song/402073804',n=1)
+
+    play_a_list(url = 'http://music.163.com/#/program?id=783581528',n=1)
+    #play_a_list(n=10)
     #
     # argv = sys.argv[1:]
     # if not argv:

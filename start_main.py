@@ -23,14 +23,14 @@ def bao_zhan():
 from main import ne_music, log, gz_bus, weather, play_sound
 
 
+
 @tell_time_first
 def alarm_song():
     try:
-        ne_music.play_a_random_song()
+        ne_music.play_a_list(n=1)
     except Exception as e:
         log.ERROR(e)
-        play_sound.play("music/music.mp3",False)
-
+        play_sound.play_local_music(1)
 
 @tell_time_first
 def load_weather():

@@ -1,5 +1,5 @@
 #coding:utf-8
-import urllib2,zlib,json
+import urllib2,zlib,json,os
 def getJson(url,data=None,header=None):
     request = urllib2.Request(url)
     request.add_header('Accept-encoding', 'gzip')
@@ -50,12 +50,28 @@ def getHashCode(s):
         h = h + ord(c)*31**(n-1-i)
     return convert_n_bytes(h,4)
 
+
+def GetFileFromThisRootDir(dir,ext = None):
+    allfiles = []
+    needExtFilter = (ext != None)
+    for root,dirs,files in os.walk(dir):
+        for filespath in files:
+            filepath = os.path.join(root, filespath)
+            extension = os.path.splitext(filepath)[1][1:]
+            if needExtFilter and extension in ext:
+                allfiles.append(filepath)
+            elif not needExtFilter:
+                allfiles.append(filepath)
+    return allfiles
+
 if __name__ == '__main__':
-    print getHashCode('http://outofmemory.cn/')
-    print getHashCode('http://outofmemory.cn/code-snippet/2311/C-rumenjiaocheng-c-multithreading-process-course')
-    print getHashCode('http://outofmemory.cn/code-snippet/2321/C-rumenjiaocheng-usage-arrow-unsafe-code-block/')
-    print getHashCode('http://outofmemory.cn/code-snippet/2322/mysql-achieve-sql-server-with-lock')
-    print getHashCode('http://outofmemory.cn/')
-    print getHashCode('772距岑村小学还有1站，预计在5分钟后到达')
-    print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
-    print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
+    # print getHashCode('http://outofmemory.cn/')
+    # print getHashCode('http://outofmemory.cn/code-snippet/2311/C-rumenjiaocheng-c-multithreading-process-course')
+    # print getHashCode('http://outofmemory.cn/code-snippet/2321/C-rumenjiaocheng-usage-arrow-unsafe-code-block/')
+    # print getHashCode('http://outofmemory.cn/code-snippet/2322/mysql-achieve-sql-server-with-lock')
+    # print getHashCode('http://outofmemory.cn/')
+    # print getHashCode('772距岑村小学还有1站，预计在5分钟后到达')
+    # print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
+    # print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
+    print(os.getcwd())
+    print(GetFileFromThisRootDir("../music"))
