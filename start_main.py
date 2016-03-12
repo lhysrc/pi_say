@@ -56,6 +56,7 @@ def start_main():
         (8, 45): (load_weather, ()),
         (9, 00): (play_song_list, ()),
         (9, 50): (load_weather, ()),
+        # (10, 18): (play_song_list, ()),
     }
 
     # bao_shi = threading.Thread(target=tell_time)
@@ -72,8 +73,9 @@ def start_main():
 
         task_list = workday_task_list if wd else holiday_task_list
         for task_time,task_func in task_list.items():
-            if t.tm_hour == task_time[0] and task_time[1] > t.tm_min:
+            if t.tm_hour == task_time[0] and task_time[1] >= t.tm_min:
                 interval = (task_time[1] - t.tm_min) * 60 - t.tm_sec
+                interval = max(0, interval)
                 log.INFO("将在%s秒后执行%s" % (interval, task_func[0].__name__))
                 threading.Timer(interval, task_func[0], task_func[1]).start()
         time.sleep(3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec)
