@@ -1,5 +1,5 @@
 ﻿#coding:utf-8
-import platform,os,threading,time, log
+import platform,os,threading,time
 con = threading.Condition()
 def play(mp3_file,condition=True):
     if condition:

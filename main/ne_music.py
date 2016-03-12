@@ -2,10 +2,11 @@
 # vim: set fileencoding=utf8
 
 import json
-import md5
+# import md5
+import hashlib
 import random
 import select
-import sys
+import sys, platform
 import time
 import urllib
 
@@ -13,11 +14,11 @@ import os
 import re
 import requests
 
-#from mutagen.id3 import ID3,TRCK,TIT2,TALB,TPE1,APIC,TDRC,COMM,TPOS,USLT
+# from mutagen.id3 import ID3,TRCK,TIT2,TALB,TPE1,APIC,TDRC,COMM,TPOS,USLT
 from HTMLParser import HTMLParser
 
 parser = HTMLParser()
-s = u'\x1b[%d;%dm%s\x1b[0m'       # terminual color template
+s = u'\x1b[%d;%dm%s\x1b[0m'  # terminual color template
 
 ############################################################
 # music.163.com api
@@ -35,47 +36,49 @@ url_artist_top_50_songs = "http://music.163.com/artist/%s"
 ############################################################
 # wget exit status
 wget_es = {
-    0:"No problems occurred.",
-    2:"User interference.",
-    1<<8:"Generic error code.",
-    2<<8:"Parse error - for instance, when parsing command-line ' \
+    0     : "No problems occurred.",
+    2     : "User interference.",
+    1 << 8: "Generic error code.",
+    2 << 8: "Parse error - for instance, when parsing command-line ' \
         'optio.wgetrc or .netrc...",
-    3<<8:"File I/O error.",
-    4<<8:"Network failure.",
-    5<<8:"SSL verification failure.",
-    6<<8:"Username/password authentication failure.",
-    7<<8:"Protocol errors.",
-    8<<8:"Server issued an error response."
+    3 << 8: "File I/O error.",
+    4 << 8: "Network failure.",
+    5 << 8: "SSL verification failure.",
+    6 << 8: "Username/password authentication failure.",
+    7 << 8: "Protocol errors.",
+    8 << 8: "Server issued an error response."
 }
 ############################################################
 
 headers = {
-    "Accept":"text/html,application/xhtml+xml,application/xml; " \
-        "q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Encoding":"text/html",
-    "Accept-Language":"en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4,zh-TW;q=0.2",
-    "Content-Type":"application/x-www-form-urlencoded",
-    "Referer":"http://music.163.com/",
-    "User-Agent":"Mozilla/5.0 (X11; Linux x86_64) " \
-        "AppleWebKit/537.36 (KHTML, like Gecko) " \
-        "Chrome/40.0.2214.91 Safari/537.36"
+    "Accept"         : "text/html,application/xhtml+xml,application/xml; " \
+                       "q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Encoding": "text/html",
+    "Accept-Language": "en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4,zh-TW;q=0.2",
+    "Content-Type"   : "application/x-www-form-urlencoded",
+    "Referer"        : "http://music.163.com/",
+    "User-Agent"     : "Mozilla/5.0 (X11; Linux x86_64) " \
+                       "AppleWebKit/537.36 (KHTML, like Gecko) " \
+                       "Chrome/40.0.2214.91 Safari/537.36"
 }
 
 ss = requests.session()
 ss.headers.update(headers)
+
 
 def encrypted_id(id):
     byte1 = bytearray('3go8&$8*3*3h0k(2)2')
     byte2 = bytearray(id)
     byte1_len = len(byte1)
     for i in xrange(len(byte2)):
-        byte2[i] = byte2[i]^byte1[i%byte1_len]
-    m = md5.new()
+        byte2[i] = byte2[i] ^ byte1[i % byte1_len]
+    m = hashlib.md5()
     m.update(byte2)
     result = m.digest().encode('base64')[:-1]
     result = result.replace('/', '_')
     result = result.replace('+', '-')
     return result
+
 
 def modificate_text(text):
     text = parser.unescape(text)
@@ -85,6 +88,7 @@ def modificate_text(text):
     text = re.sub(r'\s\s+', ' ', text)
     return text
 
+
 # for FAT file system
 def modificate_file_name_for_wget(file_name):
     file_name = re.sub(r'\s*:\s*', u' - ', file_name)
@@ -92,9 +96,11 @@ def modificate_file_name_for_wget(file_name):
     file_name = file_name.replace('"', '\'')
     return file_name
 
+
 def z_index(size):
     z = len(str(size))
     return z
+
 
 ########################################################
 
@@ -102,7 +108,7 @@ class neteaseMusic(object):
     def __init__(self, url):
         self.url = url
         self.song_infos = []
-        #self.dir_ = os.getcwd().decode('utf8')
+        self.dir_ = os.getcwd().decode('utf8')
 
         self.playlist_id = ''
         self.dj_id = ''
@@ -113,7 +119,7 @@ class neteaseMusic(object):
         self.cover_data = ''
         self.amount_songs = u'1'
 
-        #self.download = self.play_all if args.play else self.download
+        # self.download = self.play_all if args.play else self.download
 
     def get_durl(self, i):
         for q in ('hMusic', 'mMusic', 'lMusic'):
@@ -121,7 +127,7 @@ class neteaseMusic(object):
                 dfsId = str(i[q]['dfsId'])
                 edfsId = encrypted_id(dfsId)
                 durl = u'http://m2.music.126.net/%s/%s.mp3' \
-                    % (edfsId, dfsId)
+                       % (edfsId, dfsId)
                 return durl, q[0]
 
     def get_cover(self, info):
@@ -161,7 +167,7 @@ class neteaseMusic(object):
     def url_parser(self):
         if 'playlist' in self.url:
             self.playlist_id = re.search(
-                r'playlist.+?(\d+)', self.url).group(1)
+                    r'playlist.+?(\d+)', self.url).group(1)
             print(s % (2, 92, u'\n  -- 正在分析歌单信息 ...'))
             self.load_playlist()
         elif 'toplist' in self.url:
@@ -174,39 +180,42 @@ class neteaseMusic(object):
             self.load_playlist()
         elif 'album' in self.url:
             self.album_id = re.search(
-                r'album.+?(\d+)', self.url).group(1)
+                    r'album.+?(\d+)', self.url).group(1)
             print(s % (2, 92, u'\n  -- 正在分析专辑信息 ...'))
             self.load_album()
         elif 'artist' in self.url:
             self.artist_id = re.search(
-                r'artist.+?(\d+)', self.url).group(1)
-            code = raw_input('\n  >> 输入 a 下载该艺术家所有专辑.\n' \
-                '  >> 输入 t 下载该艺术家 Top 50 歌曲.\n  >> ')
-            if code == 'a':
-                print(s % (2, 92, u'\n  -- 正在分析艺术家专辑信息 ...'))
-                self.download_artist_albums()
-            elif code == 't':
-                print(s % (2, 92, u'\n  -- 正在分析艺术家 Top 50 信息 ...'))
-                self.download_artist_top_50_songs()
-            else:
-                print(s % (1, 92, u'  --> Over'))
+                    r'artist.+?(\d+)', self.url).group(1)
+            print(s % (2, 92, u'\n  -- 正在分析艺术家 Top 50 信息 ...'))
+            self.load_artist_top_50_songs()
+            # code = raw_input('\n  >> 输入 a 下载该艺术家所有专辑.\n' \
+            #     '  >> 输入 t 下载该艺术家 Top 50 歌曲.\n  >> ')
+            # if code == 'a':
+            #     print(s % (2, 92, u'\n  -- 正在分析艺术家专辑信息 ...'))
+            #     self.download_artist_albums()
+            # elif code == 't':
+            #     print(s % (2, 92, u'\n  -- 正在分析艺术家 Top 50 信息 ...'))
+            #     self.download_artist_top_50_songs()
+            # else:
+            #     print(s % (1, 92, u'  --> Over'))
         elif 'song' in self.url:
             self.song_id = re.search(
-                r'song.+?(\d+)', self.url).group(1)
+                    r'song.+?(\d+)', self.url).group(1)
             print(s % (2, 92, u'\n  -- 正在分析歌曲信息 ...'))
-            self.download_song()
+            self.load_song()
         elif 'djradio' in self.url:
             self.djradio_id = re.search(
-                r'id=(\d+)', self.url).group(1)
+                    r'id=(\d+)', self.url).group(1)
             print(s % (2, 92, u'\n  -- 正在分析DJ节目信息 ...'))
-            self.download_djradio()
+            self.load_djradio()
         elif 'program' in self.url:
             self.dj_id = re.search(
-                r'id=(\d+)', self.url).group(1)
+                    r'id=(\d+)', self.url).group(1)
             print(s % (2, 92, u'\n  -- 正在分析DJ节目信息 ...'))
-            self.download_dj()
+            self.load_dj()
         else:
             print(s % (2, 91, u'   请正确输入music.163.com网址.'))
+        print('共有%d首歌：%s' % (len(self.song_infos), self.url))
 
     def get_song_info(self, i):
         z = z_index(i['album']['size']) \
@@ -214,32 +223,32 @@ class neteaseMusic(object):
         song_info = {}
         song_info['song_id'] = i['id']
         song_info['song_url'] = u'http://music.163.com/song/%s' \
-            % i['id']
+                                % i['id']
         song_info['track'] = str(i['position'])
         song_info['durl'], song_info['mp3_quality'] = self.get_durl(i)
-        #song_info['album_description'] = album_description
-        #song_info['lyric_url'] = i['lyric']
-        #song_info['sub_title'] = i['sub_title']
-        #song_info['composer'] = i['composer']
-        #song_info['disc_code'] = i['disc_code']
-        #if not song_info['sub_title']: song_info['sub_title'] = u''
-        #if not song_info['composer']: song_info['composer'] = u''
-        #if not song_info['disc_code']: song_info['disc_code'] = u''
-        t = time.gmtime(int(i['album']['publishTime'])*0.001)
-        #song_info['year'] = unicode('-'.join([str(t.tm_year), \
-            #str(t.tm_mon), str(t.tm_mday)]))
+        # song_info['album_description'] = album_description
+        # song_info['lyric_url'] = i['lyric']
+        # song_info['sub_title'] = i['sub_title']
+        # song_info['composer'] = i['composer']
+        # song_info['disc_code'] = i['disc_code']
+        # if not song_info['sub_title']: song_info['sub_title'] = u''
+        # if not song_info['composer']: song_info['composer'] = u''
+        # if not song_info['disc_code']: song_info['disc_code'] = u''
+        t = time.gmtime(int(i['album']['publishTime']) * 0.001)
+        # song_info['year'] = unicode('-'.join([str(t.tm_year), \
+        # str(t.tm_mon), str(t.tm_mday)]))
         song_info['year'] = unicode('-'.join(
-            [str(t.tm_year), str(t.tm_mon), str(t.tm_mday)]
+                [str(t.tm_year), str(t.tm_mon), str(t.tm_mday)]
         ))
         song_info['song_name'] = modificate_text(i['name']).strip()
         song_info['artist_name'] = modificate_text(i['artists'][0]['name'])
         song_info['album_pic_url'] = i['album']['picUrl']
         song_info['cd_serial'] = u'1'
         song_info['album_name'] = modificate_text(i['album']['name'])
-        file_name = song_info[ 'track'].zfill(z) \
-            + '.' + song_info['song_name'] \
-            + ' - ' + song_info['artist_name'] \
-            + '.mp3'
+        file_name = song_info['track'].zfill(z) \
+                    + '.' + song_info['song_name'] \
+                    + ' - ' + song_info['artist_name'] \
+                    + '.mp3'
         song_info['file_name'] = file_name
         # song_info['low_mp3'] = i['mp3Url']
         return song_info
@@ -251,19 +260,19 @@ class neteaseMusic(object):
 
     def load_song(self, noprint=False, n=1):
         j = ss.get(
-            url_song % (
-                self.song_id, urllib.quote('[%s]' % self.song_id)
-            )
+                url_song % (
+                    self.song_id, urllib.quote('[%s]' % self.song_id)
+                )
         ).json()
         songs = j['songs']
         # if not noprint:
         #     print(s % (2, 97, u'\n  >> ' + u'1 首歌曲将要下载.')) \
         #         if not args.play else ''
         self.get_song_infos(songs)
-        #self.download(self.amount_songs, n)
+        # self.download(self.amount_songs, n)
 
     def download_song(self, noprint=False, n=1):
-        self.load_song(noprint,n)
+        self.load_song(noprint, n)
         self.download(self.amount_songs, n)
 
     def download_album(self):
@@ -274,8 +283,8 @@ class neteaseMusic(object):
         j = ss.get(url_album % (self.album_id)).json()
         songs = j['album']['songs']
         d = modificate_text(
-            j['album']['name'] \
-            + ' - ' + j['album']['artist']['name'])
+                j['album']['name'] \
+                + ' - ' + j['album']['artist']['name'])
         dir_ = os.path.join(os.getcwd().decode('utf8'), d)
         self.dir_ = modificate_file_name_for_wget(dir_)
         self.amount_songs = unicode(len(songs))
@@ -284,51 +293,49 @@ class neteaseMusic(object):
         #     if not args.play else ''
         self.get_song_infos(songs)
 
-
     def download_playlist(self):
         self.load_playlist()
         self.download(self.amount_songs)
 
     def load_playlist(self):
         j = ss.get(
-            url_playlist % (
-                self.playlist_id, urllib.quote('[%s]' % self.playlist_id)
-            )
+                url_playlist % (
+                    self.playlist_id, urllib.quote('[%s]' % self.playlist_id)
+                )
         ).json()
         songs = j['result']['tracks']
         d = modificate_text(
-            j['result']['name'] + ' - ' \
-            + j['result']['creator']['nickname'])
-        #dir_ = os.path.join(os.getcwd().decode('utf8'), d)
-        #self.dir_ = modificate_file_name_for_wget(dir_)
+                j['result']['name'] + ' - ' \
+                + j['result']['creator']['nickname'])
+        # dir_ = os.path.join(os.getcwd().decode('utf8'), d)
+        # self.dir_ = modificate_file_name_for_wget(dir_)
         self.amount_songs = unicode(len(songs))
         # print(s % (2, 97, u'\n  >> ' \
         #            + self.amount_songs + u' 首歌曲将要下载.')) \
         #     if not args.play else ''
         self.get_song_infos(songs)
 
-
-    def download_djradio(self):
+    def load_djradio(self):
         html = ss.get(
-            'http://music.163.com/djradio?id=%s' \
-            % self.djradio_id).content
+                'http://music.163.com/djradio?id=%s' \
+                % self.djradio_id).content
         dj_ids = re.findall(r'/program\?id=(\d+)', html)
 
         for dj_id in dj_ids:
             self.dj_id = dj_id
-            self.download_dj()
-            self.song_infos = []
+            self.load_dj()
+            # self.song_infos = []
 
-    def download_dj(self):
+    def load_dj(self):
         j = ss.get(
-            url_dj % (
-                self.dj_id, urllib.quote('[%s]' % self.dj_id)
-            )
+                url_dj % (
+                    self.dj_id, urllib.quote('[%s]' % self.dj_id)
+                )
         ).json()
         songs = j['program']['songs']
         d = modificate_text(
-            j['program']['name'] + ' - ' \
-            + j['program']['dj']['nickname'])
+                j['program']['name'] + ' - ' \
+                + j['program']['dj']['nickname'])
         dir_ = os.path.join(os.getcwd().decode('utf8'), d)
         self.dir_ = modificate_file_name_for_wget(dir_)
         self.amount_songs = unicode(len(songs))
@@ -336,26 +343,27 @@ class neteaseMusic(object):
         #            ' + self.amount_songs + u' 首歌曲将要下载.')) \
         #     if not args.play else None
         self.get_song_infos(songs)
-        self.download(self.amount_songs)
-
+        # self.download(self.amount_songs)
 
     def download_artist_albums(self):
         ss.cookies.update({'appver': '1.5.2'})
         j = ss.get(
-            url_artist_albums % self.artist_id).json()
+                url_artist_albums % self.artist_id).json()
         for albuminfo in j['hotAlbums']:
             self.album_id = albuminfo['id']
             self.download_album()
 
-    def download_artist_top_50_songs(self):
+    def load_artist_top_50_songs(self):
         html = ss.get(
-            url_artist_top_50_songs % self.artist_id).content
+                url_artist_top_50_songs % self.artist_id).content
+        # text = re.search(
+        #     r'g_hotsongs = (.+?);</script>', html).group(1)
         text = re.search(
-            r'g_hotsongs = (.+?);</script>', html).group(1)
+                r'<textarea style="display:none;">(.+?)</textarea>', html).group(1)
         j = json.loads(text)
         songids = [i['id'] for i in j]
         d = modificate_text(
-            j[0]['artists'][0]['name'] + ' - ' + 'Top 50')
+                j[0]['artists'][0]['name'] + ' - ' + 'Top 50')
         dir_ = os.path.join(os.getcwd().decode('utf8'), d)
         self.dir_ = modificate_file_name_for_wget(dir_)
         self.amount_songs = unicode(len(songids))
@@ -365,8 +373,9 @@ class neteaseMusic(object):
         n = 1
         for sid in songids:
             self.song_id = sid
-            self.song_infos = []
-            self.download_song(noprint=True, n=n)
+            # self.song_infos = []
+            self.load_song()
+            # self.download_song(noprint=True, n=n)
             n += 1
 
     def display_infos(self, i):
@@ -380,22 +389,23 @@ class neteaseMusic(object):
             s % (1, 92, q[i['mp3_quality']])
         print ''
 
-
-    def _play(self,song_info):
+    def _play(self, song_info):
         self.display_infos(song_info)
         # cmd = 'mpv --really-quiet --audio-display no %s' % i['durl']
         # cmd = 'mpg123 -q %s' % i['durl']
         # os.system(cmd)
         url = str(song_info['durl'])
         print("播放：%s" % url)
-        if "Windows" in sys.platform.uname():
-            print("Windows上只测试，不播放：%s" % url)
+        if "Windows" in platform.uname():
+            # print("Windows上只测试，不播放：%s" % url)
+            from play_sound import play_by_mp3play
+            play_by_mp3play(url)
         else:
             os.system("mpg123 -q %s" % url)
         # import urllib,uuid
         # urllib.urlretrieve(song_info['durl'], "%s.mp3"%uuid.uuid1())
 
-        if 'win' in sys.platform : return
+        if 'win' in sys.platform: return
         timeout = 1
         ii, _, _ = select.select([sys.stdin], [], [], timeout)
         if ii:
@@ -410,7 +420,7 @@ class neteaseMusic(object):
 
     def play_a_random_song(self):
         import random
-        i = random.randint(0,len(self.song_infos)-1)
+        i = random.randint(0, len(self.song_infos) - 1)
         self._play(self.song_infos[i])
 
     def download(self, amount_songs, n=None):
@@ -427,44 +437,46 @@ class neteaseMusic(object):
             file_name = os.path.join(dir_, t)
             if os.path.exists(file_name):  # if file exists, no get_durl
                 # if args.undownload:
-                    # self.modified_id3(file_name, i)
+                # self.modified_id3(file_name, i)
                 ii += 1
                 continue
-            #if not args.undownload:
+            # if not args.undownload:
             q = {'h': 'High', 'm': 'Middle', 'l': 'Low'}
             mp3_quality = q[i['mp3_quality']]
             if n == None:
                 print(u'\n  ++ 正在下载: #%s/%s# %s\n' \
                       u'  ++ mp3_quality: %s' \
-                    % (ii, amount_songs, col,
-                       s % (1, 91, mp3_quality)))
+                      % (ii, amount_songs, col,
+                         s % (1, 91, mp3_quality)))
             else:
                 print(u'\n  ++ 正在下载: #%s/%s# %s\n' \
                       u'  ++ mp3_quality: %s' \
-                    % (n, amount_songs, col,
-                       s % (1, 91, mp3_quality)))
+                      % (n, amount_songs, col,
+                         s % (1, 91, mp3_quality)))
             file_name_for_wget = file_name.replace('`', '\`')
             cmd = 'wget -c -nv -U "%s" -O "%s.tmp" %s' \
-                % (headers['User-Agent'], file_name_for_wget, i['durl'])
+                  % (headers['User-Agent'], file_name_for_wget, i['durl'])
             cmd = cmd.encode('utf8')
             status = os.system(cmd)
-            if status != 0:     # other http-errors, such as 302.
+            if status != 0:  # other http-errors, such as 302.
                 wget_exit_status_info = wget_es[status]
                 print('\n\n ----###   \x1b[1;91mERROR\x1b[0m ==> \x1b[1;91m%d ' \
-                    '(%s)\x1b[0m   ###--- \n\n' \
+                      '(%s)\x1b[0m   ###--- \n\n' \
                       % (status, wget_exit_status_info))
                 print s % (1, 91, '  ===> '), cmd
                 sys.exit(1)
             else:
                 os.rename('%s.tmp' % file_name, file_name)
 
-            #self.modified_id3(file_name, i)
+            # self.modified_id3(file_name, i)
             ii += 1
             time.sleep(0)
+
 
 def main(url):
     x = neteaseMusic(url)
     x.url_parser()
+
 
 def play_a_random_song(url=None):
     if not url:
@@ -473,10 +485,10 @@ def play_a_random_song(url=None):
         x = neteaseMusic(url)
     x.url_parser()
     x.play_a_random_song()
-    #x.play_all()
+    # x.play_all()
 
 
-def play_a_list(url=None,n=None):
+def play_a_list(url=None, n=None):
     """
         n:播放前n首
     """
@@ -486,7 +498,6 @@ def play_a_list(url=None,n=None):
         x = neteaseMusic(url)
     x.url_parser()
     x.play_all(n=n)
-
 
 
 # def play_random_hot_song():
@@ -518,11 +529,15 @@ if __name__ == '__main__':
 
     argv = sys.argv[1:]
     if not argv:
-        x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
+
+        url = 'http://music.163.com/#/discover/toplist?id=3778678'
+        url = 'http://music.163.com/#/program?id=783581528'
+        url = 'http://music.163.com/#/artist?id=7220'
+        x = neteaseMusic(url)
     else:
         x = neteaseMusic(argv[0])
     x.url_parser()
-    x.play_a_random_song()
-    #x.play_all()
-    #x.download(3)
-    #x.download_song()
+    # x.play_a_random_song()
+    x.play_all()
+    # x.download(3)
+    # x.download_song()
