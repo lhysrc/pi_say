@@ -1,3 +1,3 @@
-from www import run_app
+import www
 
-run_app()
+www.run_app()
