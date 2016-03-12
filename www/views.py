@@ -26,7 +26,6 @@ import urllib
 @app.route('/tts/<name>')
 def tts_page(name):
     text = urllib.quote_plus(name.encode('utf8'))
-    baidu_tts.read_aloud(text,per=3)
     threading.Thread(target=baidu_tts.read_aloud,args=(text,False,5,5,9,3)).start()
     return name
 
