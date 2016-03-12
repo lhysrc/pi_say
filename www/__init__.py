@@ -1,9 +1,9 @@
 #coding:utf-8
 from flask import Flask
-try:
-    import signal
-    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-except: pass
+# try:
+#     import signal
+#     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+# except: pass
 app = Flask(__name__)
 app.debug = True
 

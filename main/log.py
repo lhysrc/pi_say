@@ -27,18 +27,18 @@ formatter = logging.Formatter('%(name)-6s %(asctime)s | %(levelname)-4s: %(messa
 trfhdlr = logging.handlers.TimedRotatingFileHandler('./log/log','s',1,7)
 trfhdlr.suffix = "%Y%m%d.log"
 trfhdlr.setFormatter(formatter)
-trfhdlr.setLevel(logging.WARN)
+trfhdlr.setLevel(logging.NOTSET)
 
 # fhdlr = logging.FileHandler("./tmp/log.log")
 # fhdlr.setFormatter(formatter)
 # fhdlr.setLevel(logging.WARN)
 
-shdlr = logging.StreamHandler()
-shdlr.setFormatter(formatter)
-shdlr.setLevel(logging.INFO)
+# shdlr = logging.StreamHandler()
+# shdlr.setFormatter(formatter)
+# shdlr.setLevel(logging.INFO)
 
 log.addHandler(trfhdlr)
-log.addHandler(shdlr)
+# log.addHandler(shdlr)
 log.setLevel(logging.NOTSET)
 
 
