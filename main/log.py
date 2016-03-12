@@ -33,12 +33,12 @@ trfhdlr.setLevel(logging.NOTSET)
 # fhdlr.setFormatter(formatter)
 # fhdlr.setLevel(logging.WARN)
 
-# shdlr = logging.StreamHandler()
-# shdlr.setFormatter(formatter)
-# shdlr.setLevel(logging.INFO)
+shdlr = logging.StreamHandler()
+shdlr.setFormatter(formatter)
+shdlr.setLevel(logging.INFO)
 
 log.addHandler(trfhdlr)
-# log.addHandler(shdlr)
+log.addHandler(shdlr)
 log.setLevel(logging.NOTSET)
 
 

@@ -119,6 +119,7 @@ class neteaseMusic(object):
         self.cover_data = ''
         self.amount_songs = u'1'
 
+        self.url_parser()
         # self.download = self.play_all if args.play else self.download
 
     def get_durl(self, i):
@@ -390,18 +391,16 @@ class neteaseMusic(object):
         print ''
 
     def _play(self, song_info):
-        self.display_infos(song_info)
+        #self.display_infos(song_info)
         # cmd = 'mpv --really-quiet --audio-display no %s' % i['durl']
         # cmd = 'mpg123 -q %s' % i['durl']
         # os.system(cmd)
         url = str(song_info['durl'])
-        print("播放：%s" % url)
-        if "Windows" in platform.uname():
-            # print("Windows上只测试，不播放：%s" % url)
-            from play_sound import play_by_mp3play
-            play_by_mp3play(url)
-        else:
-            os.system("mpg123 -q %s" % url)
+
+        print(url)
+        # from play_sound import play
+        # play(url, False)
+
         # import urllib,uuid
         # urllib.urlretrieve(song_info['durl'], "%s.mp3"%uuid.uuid1())
 
@@ -487,7 +486,7 @@ def play_a_random_song(url=None):
     x.play_a_random_song()
     # x.play_all()
 
-
+import play_sound
 def play_a_list(url=None, n=None):
     """
         n:播放前n首
@@ -496,8 +495,8 @@ def play_a_list(url=None, n=None):
         x = neteaseMusic('http://music.163.com/#/playlist?id=143481105')
     else:
         x = neteaseMusic(url)
-    x.url_parser()
-    x.play_all(n=n)
+    for i in x.song_infos[:n]:
+        play_sound.play(i['durl'])
 
 
 # def play_random_hot_song():
@@ -527,17 +526,19 @@ if __name__ == '__main__':
     # args = p.parse_args()
     # main(args.url)
 
-    argv = sys.argv[1:]
-    if not argv:
-
-        url = 'http://music.163.com/#/discover/toplist?id=3778678'
-        url = 'http://music.163.com/#/program?id=783581528'
-        url = 'http://music.163.com/#/artist?id=7220'
-        x = neteaseMusic(url)
-    else:
-        x = neteaseMusic(argv[0])
-    x.url_parser()
-    # x.play_a_random_song()
-    x.play_all()
+    play_a_list(n=10)
+    #
+    # argv = sys.argv[1:]
+    # if not argv:
+    #
+    #     url = 'http://music.163.com/#/discover/toplist?id=3778678'
+    #     #url = 'http://music.163.com/#/program?id=783581528'
+    #     #url = 'http://music.163.com/#/artist?id=7220'
+    #     x = neteaseMusic(url)
+    # else:
+    #     x = neteaseMusic(argv[0])
+    # x.url_parser()
+    # # x.play_a_random_song()
+    # x.play_all()
     # x.download(3)
     # x.download_song()

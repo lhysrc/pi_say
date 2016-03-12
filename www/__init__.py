@@ -5,7 +5,7 @@ from flask import Flask
 #     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 # except: pass
 app = Flask(__name__)
-app.debug = True
+#app.debug = True
 
 app.logger_name = 'Flask'
 app.debug_log_format = ('%(name)-6s:%(asctime)s | %(levelname)-4s: %(message)s', '%a,%y-%m-%d %H:%M:%S')

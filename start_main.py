@@ -29,7 +29,7 @@ def alarm_song():
         ne_music.play_a_random_song()
     except Exception as e:
         log.ERROR(e)
-        play_sound.play("music/music.mp3")
+        play_sound.play("music/music.mp3",False)
 
 
 @tell_time_first
@@ -90,16 +90,16 @@ def start_main():
         # t2.start()
 
 
-# import www
-# if __name__ == '__main__':
-#     import threading
-#     #td = threading.Thread(target=main)
-#     #td.start()
-#     from www import run_app
-#     run_app()
+from www import app
 if __name__ == '__main__':
-    #threading.Timer(0, alarm_song, ()).start()
-    start_main()
-    #threading.Thread(target=start_main).start()
-    #alarm_song()
-    #www.run_app()
+    import threading
+    td = threading.Thread(target=start_main)
+    if not app.debug: td.start()
+
+    app.run(port=3080,threaded=True)
+# if __name__ == '__main__':
+#     #threading.Timer(0, alarm_song, ()).start()
+#     start_main()
+#     #threading.Thread(target=start_main).start()
+#     #alarm_song()
+#     #www.run_app()
