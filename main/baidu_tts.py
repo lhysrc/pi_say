@@ -25,7 +25,7 @@ LOCAL_AUDIOS = {
     'TTS_ERROR': 'local/tts_error.mp3'
 }
 
-
+import json
 def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
     """
     tex
@@ -71,13 +71,19 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
         request = urllib2.Request(url)
         opener = urllib2.build_opener()
         response = opener.open(request)
-        if response.headers['Content-type'] == 'audio/mp3':
+
+        if 'mp3' in response.headers['Content-type']:
             #     refresh_token()
             #     return LOCAL_AUDIOS['TTS_ERROR'] if read_error else download_tts_file(text,file_name,True)
             # else:
             c = response.read()
+        elif 'json' in response.headers['Content-type']:
+            j = json.load(response)
+            log.ERROR('语音转换出错：%s'%j)
+            if j['err_no'] == 502:
+                refresh_token()
+            return ''
         else:
-            refresh_token()
             return ''
     except urllib2.URLError:
         log.ERROR("网络有问题，无法访问：%s" % url)
@@ -100,7 +106,7 @@ def get_mp3_file(text, spd=5, pit=5, vol=9, per=0):
 import uuid
 
 
-def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=0):
+def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3):
     """
         cache: 缓存语音文件，当然，缓存后，后续参数都失去意义
     """
@@ -120,7 +126,8 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=0):
             retry -= 1
     else:
         play_sound.play(LOCAL_AUDIOS['TTS_ERROR'],True)
-    if not cache: os.remove(mp3_file)
+    if not cache and os.path.exists(mp3_file):
+        os.remove(mp3_file)
 
 
 import functools
