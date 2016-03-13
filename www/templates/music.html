@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block head %}
+{{  super() }}
+
+
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1 class="center-block">音乐页面</h1>
+
+
+
+
+
+    </div>
+    <div class="input-append">
+
+        <input type="text" placeholder="输入 网易云音乐 链接"/>
+        <button class="btn" type="button" id="play">播放</button>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $('#play').click(function () {
+        $.get('../tts/a',function(data,status){
+            alert("Data: " + data + "\nStatus: " + status);
+        })
+    });
+
+});
+</script>
+{% endblock %}
