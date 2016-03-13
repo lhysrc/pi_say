@@ -56,7 +56,7 @@ import main.weather
 @app.route('/weather')
 def tell_weather():
     w = main.weather.tell_today()
-    baidu_tts.read_aloud(main.baidu_tts.read_aloud(w))
+    main.baidu_tts.read_aloud(w)
     return w
 
 import urllib
