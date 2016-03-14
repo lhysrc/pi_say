@@ -77,7 +77,11 @@
 $(document).ready(function() {
     $('#localMusic').click(function(){
         var cnt = $('#cnt').val();
-        $.get('../lcsong/'+cnt,undefined)
+        $.post('../lcsong/'+cnt,function(data,status){
+            if(data){
+                alert(data);
+            }
+        });
     });
     $('#play').click(function () {
         var url = $('#url').val();
@@ -88,7 +92,9 @@ $(document).ready(function() {
         }
         var d = {url:url,cnt:cnt};
         $.post('../play_url',d,function(data,status){
-{#            alert("Data: " + data + "\nStatus: " + status);#}
+            if(data){
+                alert(data);
+            }
         });
         return false;
     });
