@@ -25,17 +25,18 @@ def count_waittime(bus_no,st_name,search_num,num=2,read=True):
     cnt, tm = result[0]['count'],result[0]['time']
     if read:
         if cnt == -1:
-            baidu_tts.read_aloud("%s尚未发车" % bus_no, True)
+            baidu_tts.read_aloud("%s尚未发车" % bus_no, True,per=0)
         elif cnt == tm == 0:
-            baidu_tts.read_aloud("%s已到达%s站" % (bus_no, st_name), True)
+            baidu_tts.read_aloud("%s已到达%s站" % (bus_no, st_name), True,per=0)
         else:
-            baidu_tts.read_aloud("%s距%s还有%s站，预计在%s分钟后到达" % (bus_no, st_name, cnt, tm), True)
+            baidu_tts.read_aloud("%s距%s还有%s站，预计在%s分钟后到达" %
+                                 (bus_no, st_name, cnt, tm), True,per=0)
         if(cnt != -1 and len(result) > 1):
             cnt, tm = result[1]['count'], result[1]['time']
             if cnt==-1:
-                baidu_tts.read_aloud("下一班尚未发车", True)
+                baidu_tts.read_aloud("下一班尚未发车", True,per=0)
             else:
-                baidu_tts.read_aloud("下一班还有%s站" % cnt, True)
+                baidu_tts.read_aloud("下一班还有%s站" % cnt, True,per=0)
     return result
 
 def ccxx_1_772():

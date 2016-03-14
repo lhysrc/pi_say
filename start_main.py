@@ -11,9 +11,9 @@ from main.tell_time import *
 def bao_zhan():
     i = 30
     while i:
-        if i < 20:
+        if i < 22:
             gz_bus.cxld_0_498()
-        if i > 15:
+        if i > 18:
             gz_bus.cxld_0_581()
 
         i -= 1

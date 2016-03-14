@@ -43,7 +43,7 @@ def tell_today():
 
     comf = w['suggestion']['comf']['brf']  # 舒适度
     drsg = w['suggestion']['drsg']['txt']  # 穿衣建议
-
+    drsg = drsg.replace('着','穿')       #播报时无法区分多音字
     # # todo 根据降水概率提醒降水时间
     # rain = filter(lambda f: int(f['pop']) > 50, w['hourly_forecast'])
     # if rain:
