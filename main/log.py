@@ -29,7 +29,7 @@ formatter = logging.Formatter('%(name)-6s %(asctime)s | %(levelname)-4s: %(messa
 
 
 
-trfhdlr = logging.handlers.RotatingFileHandler('./log/log',maxBytes=1024*1024, backupCount=10)
+trfhdlr = logging.handlers.RotatingFileHandler('./log/log',maxBytes=10*1024, backupCount=10)
 trfhdlr.suffix = ".%Y%m%d"
 trfhdlr.setFormatter(formatter)
 trfhdlr.setLevel(logging.NOTSET)

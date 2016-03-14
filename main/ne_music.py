@@ -497,7 +497,7 @@ def play_a_list(url=None, n=0,rdm=True):
         x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
     else:
         x = neteaseMusic(url)
-    n = x.song_infos if n<=0 else n
+    n = len(x.song_infos) if n<=0 or n>len(x.song_infos) else n
     l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
     for i in l:
         log.INFO(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
