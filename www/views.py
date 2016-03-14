@@ -69,12 +69,16 @@ def tts_page(name):
 
 @app.route('/lcsong/<int:n>')
 def play_local_song(n):
+    if play_sound.is_playing_music():
+        return '当前正在播放音乐'
     baidu_tts.read_aloud("准备播放本地音乐",True)
     threading.Thread(target=play_sound.play_local_music,args=(1,)).start()
     return '开始播放%d首本地歌曲' % n
 
 @app.route('/rdsong/<id>')
 def play_rd_song(id):
+    if play_sound.is_playing_music():
+        return '当前正在播放音乐'
     baidu_tts.read_aloud("准备随机播放音乐",True)
     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
     threading.Thread(target=ne_music.play_a_list,args=(url,1)).start()
@@ -82,10 +86,23 @@ def play_rd_song(id):
 
 @app.route('/ltsong/<id>')
 def play_a_list(id,n=10):
+    if play_sound.is_playing_music():
+        return '当前正在播放音乐'
     baidu_tts.read_aloud("准备播放%d首音乐"%n,True)
     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
     threading.Thread(target=ne_music.play_a_list,args=(url,n)).start()
     return 'ok'
+
+@app.route('/play_url',methods=['post'])
+def play_url():
+    if play_sound.is_playing_music():
+        return '当前正在播放音乐',299
+    json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
+    url = json_data['url']
+    n = int(json_data['cnt'])
+    threading.Thread(target=ne_music.play_a_list,args=(url,n)).start()
+    return 'ok'
+
 
 # @app.route('/tts',methods='post')
 # def tts():
