@@ -1,21 +1,28 @@
 ﻿#coding:utf-8
-import platform,os,threading,time
+import platform,os,threading,time,log
 
 con = threading.Condition()
-def play(mp3_file,condition):
-    """
-    condition:播放时是否阻塞此方法
-        一般播放歌曲时不阻塞，播报文字时阻塞
-    """
-    if condition:
-        if con.acquire():   # 加锁，一次只一个在放
-            _play(mp3_file)
-            con.release()
-    else:
+def play(mp3_file):
+    if con.acquire():   # 加锁，一次只一个在放
         _play(mp3_file)
+        con.release()
+
+# 播放音乐和播报分别使用两个锁
+music_event = threading.Event()
+def play_music(mp3_file):
+    music_event.set()   # 加锁，一次只一个在放
+    try:
+        _play(mp3_file)
+    except Exception as e:
+        log.ERROR("play music error:%s" % e)
+    music_event.clear()
+
+def is_playing_music():
+    return music_event.is_set()
 
 def _play(mp3_file):
     #log.INFO("开始播放："+mp3_file)
+
     if "Windows" in platform.uname():
         play_by_mp3play(mp3_file)
     else:
@@ -104,7 +111,7 @@ def play_local_music(n,rdm=True):
     files = util.GetFileFromThisRootDir('./music','.mp3')
     play_files = random.sample(files,n) if rdm else files[:n]
     for f in play_files:
-        play(f,False)
+        play_music(f)
 
 if __name__ == '__main__':
     play_by_mp3play(u"C:/Users/linho/Music/Downloads/群星/我是歌手第四季 第2期/修炼爱情.mp3")

@@ -501,7 +501,7 @@ def play_a_list(url=None, n=0,rdm=True):
     l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
     for i in l:
         log.INFO(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
-        play_sound.play(i['durl'],False)
+        play_sound.play_music(i['durl'])
 
 
 # def play_random_hot_song():
