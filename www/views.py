@@ -72,7 +72,7 @@ def play_local_song(n):
     if play_sound.is_playing_music():
         return '当前正在播放音乐',299
     baidu_tts.read_aloud("准备播放本地音乐",True)
-    threading.Thread(target=play_sound.play_local_music,args=(1,)).start()
+    threading.Thread(target=play_sound.play_local_music,args=(n,)).start()
     return '',200
 
 @app.route('/rdsong/<id>')
@@ -95,7 +95,7 @@ def play_a_list(id,n=10):
 
 @app.route('/play_url',methods=['post'])
 def play_url():
-    if play_sound.is_playing_music():
+    if play_sound.is_playing_music():   # todo 解析网页需要时间，这期间需要防止再次点击
         return '当前正在播放音乐',299
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     url = json_data['url']
