@@ -167,6 +167,7 @@ class neteaseMusic(object):
     #     id3.save(file_name)
 
     def url_parser(self):
+        log.info(u'开始分析url信息：%s' % self.url)
         if 'playlist' in self.url:
             self.playlist_id = re.search(
                     r'playlist.+?(\d+)', self.url).group(1)
@@ -177,7 +178,7 @@ class neteaseMusic(object):
             if t:
                 self.playlist_id = t.group(1)
             else:
-                self.playlist_id = '3779629'
+                self.playlist_id = '3778678' # 热歌榜
             print(s % (2, 92, u'\n  -- 正在分析排行榜信息 ...'))
             self.load_playlist()
         elif 'album' in self.url:
