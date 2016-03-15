@@ -3,22 +3,22 @@ import platform,os,threading,time,log
 
 con = threading.Condition()
 def play(mp3_file):
-    if con.acquire():   # 加锁，一次只一个在放
+    with con:   # 加锁，一次只一个在放
         _play(mp3_file)
-        con.release()
 
 # 播放音乐和播报分别使用两个锁
-music_event = threading.Event()
+music_lock = threading.Lock()
 def play_music(mp3_file):
-    music_event.set()   # 加锁，一次只一个在放
+    music_lock.acquire()
     try:
         _play(mp3_file)
     except Exception as e:
         log.ERROR("play music error:%s" % e)
-    music_event.clear()
+    music_lock.release()
+
 
 def is_playing_music():
-    return music_event.is_set()
+    return music_lock.locked()
 
 def _play(mp3_file):
     #log.INFO("开始播放："+mp3_file)
