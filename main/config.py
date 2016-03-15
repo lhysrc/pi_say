@@ -9,7 +9,9 @@
 # 中秋节	9/15-9/17	9月18日上班	3天
 # 国庆节	10/1-10/7	10月8日、9日上班	7天
 
-import ConfigParser,os,log
+import ConfigParser,os
+import logging
+log = logging.getLogger(__name__)
 CONFIG_PATH = './local/cfg.ini'
 if not os.path.exists(CONFIG_PATH):
     open(CONFIG_PATH,'w+').close()
@@ -43,7 +45,7 @@ def set(section,option,value=None):
 def save():
     with open(CONFIG_PATH,'wb') as f:
         config.write(f)
-    log.INFO("配置文件保存成功。")
+    log.info("配置文件保存成功。")
 
 def get_baidu_tts_token():
     return get('baidu_tts','token')

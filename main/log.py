@@ -1,6 +1,9 @@
 # coding=utf-8
 import logging,platform
 import logging.handlers
+
+import sys
+
 log = logging.getLogger()
 filename = './log/log.log'
 if __name__ == '__main__':
@@ -10,7 +13,10 @@ if __name__ == '__main__':
 #                     filename=filename)
 #
 #formatter = logging.Formatter('%(name)-6s %(asctime)s | %(levelname)-4s: %(message)s', '%a,%y-%m-%d %H:%M:%S',)
-formatter = logging.Formatter('%(name)-6s %(asctime)s | %(levelname)-4s: %(message)s', '%a,%y-%m-%d %H:%M:%S',)
+
+
+
+formatter = logging.Formatter('%(asctime)s | %(name)s:\n%(levelname)-6s: %(message)s\n', '%a,%y-%m-%d %H:%M:%S',)
 # %(name)s                           Logger的名字
 # %(levelno)s                        数字形式的日志级别
 # %(levelname)s                  文本形式的日志级别
@@ -29,28 +35,37 @@ formatter = logging.Formatter('%(name)-6s %(asctime)s | %(levelname)-4s: %(messa
 
 
 
-trfhdlr = logging.handlers.RotatingFileHandler('./log/log',maxBytes=10*1024, backupCount=10)
-trfhdlr.suffix = ".%Y%m%d"
+trfhdlr = logging.handlers.RotatingFileHandler(filename, maxBytes=10*1024, backupCount=10)
+# trfhdlr.suffix = ".%Y%m%d"
 trfhdlr.setFormatter(formatter)
 trfhdlr.setLevel(logging.NOTSET)
 log.addHandler(trfhdlr)
 # fhdlr = logging.FileHandler("./tmp/log.log")
 # fhdlr.setFormatter(formatter)
 # fhdlr.setLevel(logging.WARN)
+stdout_handler = logging.StreamHandler(sys.__stdout__)
+stdout_handler.level = logging.DEBUG
+stdout_handler.formatter = formatter
+log.addHandler(stdout_handler)
 
-shdlr = logging.StreamHandler()
-shdlr.setFormatter(formatter)
-shdlr.setLevel(logging.INFO)
-if 'Windows' in platform.uname():
-    log.addHandler(shdlr)
+stderr_handler = logging.StreamHandler(sys.__stderr__)
+stderr_handler.level = logging.WARNING
+stderr_handler.formatter = formatter
+log.addHandler(stderr_handler)
+
+# shdlr = logging.StreamHandler()
+# shdlr.setFormatter(formatter)
+# shdlr.setLevel(logging.INFO)
+# if 'Windows' in platform.uname():
+#     log.addHandler(shdlr)
 log.setLevel(logging.NOTSET)
 
 
-def INFO(msg):
+def info(msg):
     log.info(msg)
-def WARN(msg):
+def warn(msg):
     log.warn(msg)
-def ERROR(msg):
+def error(msg):
     log.error(msg)
 
 
@@ -62,9 +77,9 @@ def func_log(arg):
             words = arg
             if not isinstance(words, (str, int, float)):
                 words = 'Called.'
-            INFO('Begin Invoke %s: %s' % (func.__name__,words))
+            log.info('Begin Invoke %s: %s' % (func.__name__, words))
             result = func(*args, **kw)
-            INFO('End Invoke %s: %s' % (func.__name__,words))
+            log.info('End Invoke %s: %s' % (func.__name__, words))
             return result
         return wrapper
     if isinstance(arg, (str, int, float)):
@@ -84,11 +99,11 @@ def test_b(a):
 if __name__ == '__main__':
     #print inspect.stack()
     #print(__file__)
-    # log.debug("debug message")
-    # log.info("info message")
-    # log.warn("warn message")
-    # log.error("error message")
-    # log.critical("critical message")
+    log.debug("debug message")
+    log.info("info message")
+    log.warn("warn message")
+    log.error("error message")
+    log.critical("critical message")
 
     test_a()
 

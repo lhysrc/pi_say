@@ -3,11 +3,14 @@
 
 import os
 import threading
+import time
 required_dirs = ['tmp','music','log']
 for d in required_dirs:
     if not os.path.exists(d): os.mkdir(d)
 
-from main.tell_time import *
+from main import baidu_tts,tell_time
+from main import ne_music, gz_bus, weather, play_sound,log
+
 def bao_zhan():
     i = 30
     while i:
@@ -20,19 +23,19 @@ def bao_zhan():
         time.sleep(60)
 
 
-from main import ne_music, log, gz_bus, weather, play_sound
 
 
 
-@tell_time_first
+
+@tell_time.tell_time_first
 def alarm_song():
     try:
         ne_music.play_a_list(n=1)
-    except Exception as e:
-        log.ERROR(e)
+    except:
+        log.exception("播放闹钟音乐出错。")
         play_sound.play_local_music(1)
 
-@tell_time_first
+@tell_time.tell_time_first
 def load_weather():
     baidu_tts.read_aloud(weather.tell_today(), per=3)
 
@@ -61,15 +64,15 @@ def start_main():
 
     # bao_shi = threading.Thread(target=tell_time)
     # bao_shi.start()
-    log.INFO("程序开始运行")
+    log.info("程序开始运行")
     baidu_tts.read_aloud("程序开始运行", True)
     while True:
         t = time.localtime()
-        wd = is_workday(t)
+        wd = tell_time.is_workday(t)
         # if t.tm_hour in range(1,7) : pass   #凌晨1到6点不报时
         time_range = [7, 8] + range(19, 24) if wd else [0] + range(8, 24)
         if t.tm_hour in time_range:
-            tell_time(t)
+            tell_time.tell_time(t)
 
         task_list = workday_task_list if wd else holiday_task_list
         for task_time,task_func in task_list.items():
@@ -92,7 +95,8 @@ def start_main():
 
 from www import app
 if __name__ == '__main__':
-    import threading
+    log.info('-'*50)
+
     td = threading.Thread(target=start_main)
     if not app.debug: td.start()
 

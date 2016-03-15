@@ -1,5 +1,7 @@
 # coding=utf-8
-from config import *
+from config import get_baidu_tts_token,set_baidu_tts_token
+import logging
+log = logging.getLogger(__name__)
 apiKey = "EuWCMZ8mC73R2QimNR5cFkGn"
 secretKey = "Yw2wsHC82pPeRCQM5EWjEB263wjDirCU"
 
@@ -10,14 +12,12 @@ TOKEN = get_baidu_tts_token()
 
 import util, os, urllib2, random
 import play_sound
-import log
-
 
 def refresh_token():
     global TOKEN
     TOKEN = str(util.getJson(auth_url)['access_token'])
     set_baidu_tts_token(TOKEN)
-    log.WARN("已刷新百度tts的TOKEN：%s" % TOKEN)
+    log.warn("已刷新百度tts的TOKEN：%s" % TOKEN)
 
 
 LOCAL_AUDIOS = {
@@ -79,14 +79,14 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
             c = response.read()
         elif 'json' in response.headers['Content-type']:
             j = json.load(response)
-            log.ERROR('语音转换出错：%s'%j)
+            log.error('语音转换出错：%s' % j)
             if j['err_no'] == 502:
                 refresh_token()
             return ''
         else:
             return ''
     except urllib2.URLError:
-        log.ERROR("网络有问题，无法访问：%s" % url)
+        log.error("网络有问题，无法访问：%s" % url)
         return LOCAL_AUDIOS['NET_ERROR']
     with open(file_name, "wb") as f:
         f.write(c)
@@ -97,7 +97,7 @@ def get_mp3_file(text, spd=5, pit=5, vol=9, per=0):
     text = text.strip()
     file_name = "./tmp/%s.mp3" % util.getHashCode(text)
     if os.path.isfile(file_name):
-        log.INFO("'%s'的语音文件已存在，直接播放" % text)
+        log.info("'%s'的语音文件已存在，直接播放" % text)
     else:
         file_name = download_tts_file(text, file_name, spd, pit, vol, per)
     return file_name
@@ -121,7 +121,7 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3):
             play_sound.play(mp3_file)
             break
         else:
-            log.WARN("语音转换重试。")
+            log.warn("语音转换重试。")
             mp3_file = get_mp3_file(text)
             retry -= 1
     else:

@@ -97,7 +97,7 @@ def play_a_list(id,n=10):
 def play_url():
     if ne_music.loading_url():
         return '当前正在加载音乐信息，已准备播放',299
-    if play_sound.is_playing_music():   # todo 解析网页需要时间，这期间需要防止再次点击
+    if play_sound.is_playing_music():
         return '当前正在播放音乐',299
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     url = json_data['url']

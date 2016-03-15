@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # vim: set fileencoding=utf8
 import play_sound,logging
-log = logging.getLogger('NEMusic')
+log = logging.getLogger(__name__)
 import json
 # import md5
 import hashlib

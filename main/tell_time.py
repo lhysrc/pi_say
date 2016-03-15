@@ -19,7 +19,8 @@ def hour_str(hour):
 import time
 
 import baidu_tts
-
+import logging
+log = logging.getLogger(__name__)
 
 def tell_time(t = None):
     if not t: t = time.localtime()

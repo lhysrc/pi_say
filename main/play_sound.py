@@ -1,6 +1,7 @@
 ﻿#coding:utf-8
-import platform,os,threading,time,log
-
+import platform,os,threading,time
+import logging
+log = logging.getLogger(__name__)
 con = threading.Condition()
 def play(mp3_file):
     with con:   # 加锁，一次只一个在放
@@ -12,8 +13,8 @@ def play_music(mp3_file):
     music_lock.acquire()
     try:
         _play(mp3_file)
-    except Exception as e:
-        log.log.exception("play music error:%s" % e)
+    except:
+        log.exception("play music error.")
     music_lock.release()
 
 

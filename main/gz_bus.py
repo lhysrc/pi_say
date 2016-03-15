@@ -2,7 +2,8 @@
 import urllib
 
 import baidu_tts
-
+import logging
+log = logging.getLogger(__name__)
 wait_time_url = "http://wxbus.gzyyjt.net/wei-bus-app/waitBus/waitTime"
 
 def count_waittime(bus_no,st_name,search_num,num=2,read=True):
