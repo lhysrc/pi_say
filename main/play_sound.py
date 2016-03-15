@@ -13,7 +13,7 @@ def play_music(mp3_file):
     try:
         _play(mp3_file)
     except Exception as e:
-        log.ERROR("play music error:%s" % e)
+        log.log.exception("play music error:%s" % e)
     music_lock.release()
 
 
@@ -109,6 +109,7 @@ def play_by_pymedia(sound_file):
 import util,random
 def play_local_music(n,rdm=True):
     files = util.GetFileFromThisRootDir('./music','.mp3')
+    n = len(files) if n<=0 or n>len(files) else n
     play_files = random.sample(files,n) if rdm else files[:n]
     for f in play_files:
         play_music(f)

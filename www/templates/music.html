@@ -84,6 +84,7 @@ $(document).ready(function() {
         });
     });
     $('#play').click(function () {
+        $('#play').addClass('disabled');
         var url = $('#url').val();
         var cnt = $('#cnt').val();
         if (!url || !cnt) {
@@ -95,6 +96,7 @@ $(document).ready(function() {
             if(data){
                 alert(data);
             }
+            $('#play').removeClass('disabled');
         });
         return false;
     });

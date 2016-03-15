@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 # vim: set fileencoding=utf8
-
+import play_sound,logging
+log = logging.getLogger('NEMusic')
 import json
 # import md5
 import hashlib
@@ -216,7 +217,7 @@ class neteaseMusic(object):
             self.load_dj()
         else:
             print(s % (2, 91, u'   请正确输入music.163.com网址.'))
-        log.INFO(u'共有%d首歌：%s' % (len(self.song_infos), self.url))
+        log.info(u'共有%d首歌：%s' % (len(self.song_infos), self.url))
 
     def get_song_info(self, i):
         z = z_index(i['album']['size']) \
@@ -486,23 +487,27 @@ class neteaseMusic(object):
 #     i = random.randint(0, len(x.song_infos) - 1)
 #     play_sound.play(i['durl'])
 
-import random
-import play_sound,log
+import random,threading
+
+net_lock = threading.Lock()
 def play_a_list(url=None, n=0,rdm=True):
     """
         n:播放n首
         rdm:是否随机
     """
-    if not url:
-        x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
-    else:
-        x = neteaseMusic(url)
+    with net_lock:
+        if not url:
+            x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
+        else:
+            x = neteaseMusic(url)
     n = len(x.song_infos) if n<=0 or n>len(x.song_infos) else n
     l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
     for i in l:
-        log.INFO(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
+        log.info(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
         play_sound.play_music(i['durl'])
 
+def loading_url():
+    return net_lock.locked()
 
 # def play_random_hot_song():
 #     url = 'http://music.163.com/#/discover/toplist?id=3778678'
