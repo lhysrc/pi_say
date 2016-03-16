@@ -5,9 +5,9 @@ import logging.handlers
 import sys
 
 log = logging.getLogger()
-filename = './log/log.log'
+filename = './log/log'
 if __name__ == '__main__':
-    filename = '../log/log.log'
+    filename = '../log/log'
 # logging.basicConfig(level=logging.INFO,format='%(name)-6s %(asctime)s | %(levelname)-4s: %(message)s',
 #                     datefmt='%a,%y-%m-%d %H:%M:%S',
 #                     filename=filename)
@@ -43,15 +43,16 @@ log.addHandler(trfhdlr)
 # fhdlr = logging.FileHandler("./tmp/log.log")
 # fhdlr.setFormatter(formatter)
 # fhdlr.setLevel(logging.WARN)
-stdout_handler = logging.StreamHandler(sys.__stdout__)
-stdout_handler.level = logging.DEBUG
-stdout_handler.formatter = formatter
-log.addHandler(stdout_handler)
+if 'Windows' in platform.uname():
+    stdout_handler = logging.StreamHandler(sys.__stdout__)
+    stdout_handler.level = logging.DEBUG
+    stdout_handler.formatter = formatter
+    log.addHandler(stdout_handler)
 
-stderr_handler = logging.StreamHandler(sys.__stderr__)
-stderr_handler.level = logging.WARNING
-stderr_handler.formatter = formatter
-log.addHandler(stderr_handler)
+    stderr_handler = logging.StreamHandler(sys.__stderr__)
+    stderr_handler.level = logging.WARNING
+    stderr_handler.formatter = formatter
+    log.addHandler(stderr_handler)
 
 # shdlr = logging.StreamHandler()
 # shdlr.setFormatter(formatter)
