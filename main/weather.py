@@ -41,10 +41,15 @@ def tell_today():
 
     min_tmp = today_forecast['tmp']['min']
     max_tmp = today_forecast['tmp']['max']
-
-    comf = w['suggestion']['comf']['brf']  # 舒适度
-    drsg = w['suggestion']['drsg']['txt']  # 穿衣建议
-    drsg = drsg.replace('着','穿')       #播报时无法区分多音字
+    if w['suggestion']['comf']:
+        comf = '舒适度：%s。' % w['suggestion']['comf']['brf']  # 舒适度
+    else:
+        comf = ''
+    if w['suggestion']['drsg']:
+        drsg = w['suggestion']['drsg']['txt']  # 穿衣建议
+        drsg = drsg.replace('着','穿')       #播报时无法区分多音字
+    else:
+        drsg = ''
     # # todo 根据降水概率提醒降水时间
     # rain = filter(lambda f: int(f['pop']) > 50, w['hourly_forecast'])
     # if rain:
@@ -52,7 +57,7 @@ def tell_today():
     #     for i in rain: print(i['date'],i['pop'])
 
     log.info("获取%s天气。更新日期：%s" % (today_forecast['date'], w['basic']['update']['loc']))
-    return "现在气温%s度；今天白天：%s，夜间：%s，%s到%s度。舒适度：%s，%s" % \
+    return "现在气温%s度；今天白天：%s，夜间：%s，%s到%s度。%s%s" % \
            (now_tmp, d_cond, n_cond, min_tmp, max_tmp, comf, drsg)
 
 

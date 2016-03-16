@@ -9,7 +9,8 @@ for d in required_dirs:
     if not os.path.exists(d): os.mkdir(d)
 
 from main import baidu_tts,tell_time
-from main import ne_music, gz_bus, weather, play_sound,log
+from main import ne_music, gz_bus, weather, play_sound
+from main.log import log
 
 def bao_zhan():
     i = 30
@@ -48,10 +49,10 @@ def start_main():
 
 
     workday_task_list = {
-        (7, 50): (bao_zhan, ()),
-        (7, 40): (alarm_song, ()),
-        #(23, 01): (alarm_song, ()),
-        (7, 45): (load_weather, ()),
+        (7, 47): (bao_zhan, ()),
+        (7, 35): (alarm_song, ()),
+        (9, 39): (alarm_song, ()),
+        (7, 43): (load_weather, ()),
         # (21, 10): (play_song_list, ()),
     }
 
@@ -79,7 +80,7 @@ def start_main():
             if t.tm_hour == task_time[0] and task_time[1] >= t.tm_min:
                 interval = (task_time[1] - t.tm_min) * 60 - t.tm_sec
                 interval = max(0, interval)
-                log.INFO("将在%s秒后执行%s" % (interval, task_func[0].__name__))
+                log.info("将在%s秒后执行%s" % (interval, task_func[0].__name__))
                 threading.Timer(interval, task_func[0], task_func[1]).start()
         time.sleep(3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec)
 
