@@ -228,7 +228,7 @@ class neteaseMusic(object):
         song_info['song_url'] = u'http://music.163.com/song/%s' \
                                 % i['id']
         song_info['track'] = str(i['position'])
-        song_info['durl'], song_info['mp3_quality'] = self.get_durl(i)
+
         # song_info['album_description'] = album_description
         # song_info['lyric_url'] = i['lyric']
         # song_info['sub_title'] = i['sub_title']
@@ -254,6 +254,13 @@ class neteaseMusic(object):
                     + '.mp3'
         song_info['file_name'] = file_name
         # song_info['low_mp3'] = i['mp3Url']
+
+        durl_q = self.get_durl(i)
+        if durl_q:
+            song_info['durl'], song_info['mp3_quality'] = durl_q
+        else:
+            log.info(u"无法获取 %s - %s:%s 的歌曲链接。" %
+                     (song_info['artist_name'],song_info['song_name'],song_info['song_url']))
         return song_info
 
     def get_song_infos(self, songs):
@@ -504,6 +511,7 @@ def play_a_list(url=None, n=0,rdm=True):
     n = len(x.song_infos) if n<=0 or n>len(x.song_infos) else n
     l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
     for i in l:
+        if 'durl' not in i:continue
         log.info(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
         play_sound.play_music(i['durl'])
 
@@ -539,8 +547,9 @@ if __name__ == '__main__':
 
 
     #play_a_list(url='http://music.163.com/#/song/402073804',n=1)
-
-    play_a_list(url = 'http://music.163.com/#/program?id=783581528',n=1)
+    #play_a_list(url = 'http://music.163.com/#/song?id=27483420',n=1)
+    play_a_list(url = 'http://music.163.com/#/song?id=33206214',n=1)
+    #play_a_list(url = 'http://music.163.com/#/song?id=27646199',n=1)
     #play_a_list(n=10)
     #
     # argv = sys.argv[1:]
