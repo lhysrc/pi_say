@@ -20,6 +20,11 @@ def index():
 def page_read():
     return render_template('read.html',read='read')
 
+'''
+/read isn't multithreading
+/tts is multithreading to tts
+'''
+
 @app.route('/read',methods=['post'])
 def tts():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
@@ -60,12 +65,21 @@ def tell_weather():
     return w
 
 import urllib
-@app.route('/tts/<name>')
-def tts_page(name):
+@app.route('/tts/<name>',methods=['get'])
+def tts_page_1(name):
     text = urllib.quote_plus(name.encode('utf8'))
     threading.Thread(target=baidu_tts.read_aloud,args=(text,False,5,5,9,3)).start()
     return name
 
+
+@app.route('/tts',methods=['post'])
+def tts_page_2():
+    json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
+    print(json_data)
+    name = json_data['text']
+    text = urllib.quote_plus(name.encode('utf8'))
+    threading.Thread(target=baidu_tts.read_aloud,args=(text,False,5,5,9,3)).start()
+    return text
 
 @app.route('/lcsong/<int:n>',methods=['get','post'])
 def play_local_song(n):
