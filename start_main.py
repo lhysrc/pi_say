@@ -51,7 +51,7 @@ def start_main():
     workday_task_list = {
         (7, 47): (bao_zhan, ()),
         (7, 35): (alarm_song, ()),
-        (9, 39): (alarm_song, ()),
+        # (9, 39): (alarm_song, ()),
         (7, 43): (load_weather, ()),
         # (21, 10): (play_song_list, ()),
     }
@@ -59,7 +59,7 @@ def start_main():
     holiday_task_list ={
         (8, 45): (load_weather, ()),
         (9, 00): (play_song_list, ()),
-        (9, 50): (load_weather, ()),
+        (9, 50): (load_weather, ('',True)),
         # (10, 18): (play_song_list, ()),
     }
 
