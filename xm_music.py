@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 EMAIL = 'xiao4h@foxmail.com'
 PASSWORD = 'hongyuan456123'
+cookie_file = './local/.Xiami.cookies'
+
+
+
+
 import re
 import sys
 from getpass import getpass
@@ -50,7 +55,7 @@ wget_es = {
 parser = HTMLParser()
 s = '\x1b[%d;%dm%s\x1b[0m'       # terminual color template
 
-cookie_file = os.path.join(os.path.expanduser('~'), '.Xiami.cookies')
+
 
 headers = {
     "Accept":"text/html,application/xhtml+xml,application/xml; " \
@@ -130,7 +135,7 @@ class xiami(object):
         self.html = ''
         self.disc_description_archives = {}
 
-        self.download = self.play if args.play else self.download
+        # self.download = self.play if args.play else self.download
 
     def init(self):
         if os.path.exists(cookie_file):
@@ -139,14 +144,14 @@ class xiami(object):
                 ss.cookies.update(cookies.get('cookies', cookies))
                 if not self.check_login():
                     print s % (1, 91, '  !! cookie is invalid, please login\n')
-                    sys.exit(1)
+                    # sys.exit(1)
             except:
                 open(cookie_file, 'w').close()
                 print s % (1, 97, '  please login')
-                sys.exit(1)
+                # sys.exit(1)
         else:
             print s % (1, 91, '  !! cookie_file is missing, please login')
-            sys.exit(1)
+            # sys.exit(1)
 
     def check_login(self):
         #print s % (1, 97, '\n  -- check_login')
@@ -306,10 +311,10 @@ class xiami(object):
             cookies = { 'cookies': { 'member_auth': member_auth } }
             json.dump(cookies, g)
 
-    def get_durl(self, id_):
+    def get_durl(self, id_ ,low=False):
         while True:
             try:
-                if not args.low:
+                if not low:
                     url = 'http://www.xiami.com/song/gethqsong/sid/%s'
                     j = ss.get(url % id_).json()
                     t = j['location']
@@ -427,7 +432,7 @@ class xiami(object):
             elif '/album/' in url:
                 self.album_id = re.search(r'/album/(\d+)', url).group(1)
                 #print(s % (2, 92, u'\n  -- 正在分析专辑信息 ...'))
-                self.download_album()
+                self.load_album()
 
             elif '/artist/' in url or 'i.xiami.com' in url:
                 def get_artist_id(url):
@@ -521,6 +526,25 @@ class xiami(object):
 
             else:
                 print(s % (2, 91, u'   请正确输入虾米网址.'))
+
+    def check_in(self):
+        html = ss.get('http://www.xiami.com/web').text
+        day = re.findall(ur'已连续签到(\d+)天',html)[0]
+        if day:
+            print(u'今天已签到，连续签到%s天' % day)
+        else:
+            checkin_id = re.findall(ur'<a class="check_in" href="/web/checkin/id/(\d+)">每日签到</a>',html)[0]
+            if checkin_id:
+                checkin_url = 'http://www.xiami.com/web/checkin/id/' + checkin_id
+                rehtml = ss.get(checkin_url).text
+                day = re.findall(ur'已连续签到(\d+)天',rehtml)[0]
+                if day:
+                    print(u'已自动签到，连续签到%s天' % day)
+                else:
+                    print(u'签到失败:%s'%rehtml)
+            else:
+                print(u'加载签到页面失败:%s' % html)
+
 
     def get_songs(self, album_id, song_id=None):
         html = ss.get(url_album % album_id).text
@@ -655,7 +679,7 @@ class xiami(object):
             self.download(songs)
 
 
-    def download_album(self):
+    def load_album(self):
         songs = self.get_songs(self.album_id)
         song = songs[0]
 
@@ -664,10 +688,11 @@ class xiami(object):
         self.dir_ = modificate_file_name_for_wget(dir_)
 
         amount_songs = unicode(len(songs))
-        songs = songs[args.from_ - 1:]
-        print(s % (2, 97, u'\n  >> ' + amount_songs + u' 首歌曲将要下载.')) \
-            if not args.play else ''
-        self.download(songs, amount_songs, args.from_)
+        #songs = songs[args.from_ - 1:]
+        # print(s % (2, 97, u'\n  >> ' + amount_songs + u' 首歌曲将要下载.')) \
+        #     if not args.play else ''
+        self.play(songs)
+        #self.download(songs, amount_songs, args.from_)
 
     def download_collect(self):
         html = ss.get(url_collect % self.collect_id).text
@@ -913,7 +938,7 @@ class xiami(object):
             print s % (1, 97, 'MP3-Quality:'), s % (1, 92, 'High')
         else:
             print s % (1, 97, 'MP3-Quality:'), s % (1, 91, 'Low')
-        print '—' * int(os.popen('tput cols').read())
+        #print '—' * int(os.popen('tput cols').read())
 
     def get_mp3_quality(self, durl):
         if 'm3.file.xiami.com' in durl or 'm6.file.xiami.com' in durl:
@@ -922,8 +947,8 @@ class xiami(object):
             return 'l'
 
     def play(self, songs, nn=u'1', n=1):
-        if args.play == 2:
-            songs = sorted(songs, key=lambda k: k['song_played'], reverse=True)
+        # if args.play == 2:
+        #     songs = sorted(songs, key=lambda k: k['song_played'], reverse=True)
         for i in songs:
             self.record(i['song_id'])
             durl = self.get_durl(i['song_id'])
@@ -935,20 +960,23 @@ class xiami(object):
             i['durl_is_H'] = mp3_quality
             self.display_infos(i, nn, n)
             n = int(n) + 1
-            cmd = 'mpv --really-quiet ' \
-                '--cache 8146 ' \
-                '--user-agent "%s" ' \
-                '--http-header-fields="Referer:http://img.xiami.com' \
-                '/static/swf/seiya/1.4/player.swf?v=%s" ' \
-                '"%s"' \
-                % (headers['User-Agent'], int(time.time()*1000), durl)
-            os.system(cmd)
-            timeout = 1
-            ii, _, _ = select.select([sys.stdin], [], [], timeout)
-            if ii:
-                sys.exit(0)
-            else:
-                pass
+            print(u'播放%s'%durl)
+            import main.play_sound
+            main.play_sound._play(durl.decode())
+            # cmd = 'mpv --really-quiet ' \
+            #     '--cache 8146 ' \
+            #     '--user-agent "%s" ' \
+            #     '--http-header-fields="Referer:http://img.xiami.com' \
+            #     '/static/swf/seiya/1.4/player.swf?v=%s" ' \
+            #     '"%s"' \
+            #     % (headers['User-Agent'], int(time.time()*1000), durl)
+            # os.system(cmd)
+            # timeout = 1
+            # ii, _, _ = select.select([sys.stdin], [], [], timeout)
+            # if ii:
+            #     sys.exit(0)
+            # else:
+            #     pass
 
     def download(self, songs, amount_songs=u'1', n=1):
         dir_ = modificate_file_name_for_wget(self.dir_)
@@ -1166,5 +1194,14 @@ def main(argv):
         print s % (2, 91, u'  !! 命令错误\n')
 
 if __name__ == '__main__':
-    argv = sys.argv
-    main(argv)
+    # argv = sys.argv
+    # main(argv)
+    x = xiami()
+    x.init()
+    #x.url_parser(['http://www.xiami.com/album/2100294190'])
+    x.check_in()
+
+
+    # url = 'http://m3.file.xiami.com/h/gzycHoYe6TpghKWTSY0JciAa6eXdGjaAxLRSj7cUqAQnLJEPZ4vmkJORQglB3CGaqEceE7qZ2jxGHuxbRNypwa%2BJGUHfCBxdB6pf'
+    # from main import play_sound
+    # play_sound._play(url)
