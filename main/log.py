@@ -17,6 +17,7 @@ if __name__ == '__main__':
 
 
 formatter = logging.Formatter('%(asctime)s | %(name)s:\n%(levelname)-6s: %(message)s\n', '%a,%y-%m-%d %H:%M:%S',)
+"""
 # %(name)s                           Logger的名字
 # %(levelno)s                        数字形式的日志级别
 # %(levelname)s                  文本形式的日志级别
@@ -32,18 +33,18 @@ formatter = logging.Formatter('%(asctime)s | %(name)s:\n%(levelname)-6s: %(messa
 # %(threadName)s               线程名。可能没有
 # %(process)d                       进程ID。可能没有
 # %(message)s                    用户输出的消息
+"""
 
+def handle_logger(logger,filepath = filename):
+    trfhdlr = logging.handlers.RotatingFileHandler(filename, maxBytes=10*1024, backupCount=10)
+    # trfhdlr.suffix = ".%Y%m%d"
+    trfhdlr.setFormatter(formatter)
+    trfhdlr.setLevel(logging.NOTSET)
+    log.addHandler(trfhdlr)
+    # fhdlr = logging.FileHandler("./tmp/log.log")
+    # fhdlr.setFormatter(formatter)
+    # fhdlr.setLevel(logging.WARN)
 
-
-trfhdlr = logging.handlers.RotatingFileHandler(filename, maxBytes=10*1024, backupCount=10)
-# trfhdlr.suffix = ".%Y%m%d"
-trfhdlr.setFormatter(formatter)
-trfhdlr.setLevel(logging.NOTSET)
-log.addHandler(trfhdlr)
-# fhdlr = logging.FileHandler("./tmp/log.log")
-# fhdlr.setFormatter(formatter)
-# fhdlr.setLevel(logging.WARN)
-if 'Windows' in platform.uname():
     stdout_handler = logging.StreamHandler(sys.__stdout__)
     stdout_handler.level = logging.DEBUG
     stdout_handler.formatter = formatter
@@ -54,13 +55,14 @@ if 'Windows' in platform.uname():
     stderr_handler.formatter = formatter
     log.addHandler(stderr_handler)
 
-# shdlr = logging.StreamHandler()
-# shdlr.setFormatter(formatter)
-# shdlr.setLevel(logging.INFO)
-# if 'Windows' in platform.uname():
-#     log.addHandler(shdlr)
-log.setLevel(logging.NOTSET)
+    # shdlr = logging.StreamHandler()
+    # shdlr.setFormatter(formatter)
+    # shdlr.setLevel(logging.INFO)
+    # if 'Windows' in platform.uname():
+    #     log.addHandler(shdlr)
+    log.setLevel(logging.NOTSET)
 
+handle_logger(log)
 
 def info(msg):
     log.info(msg)
