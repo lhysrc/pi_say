@@ -30,7 +30,7 @@ def tts():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     # text = json_data['text']
     # print(json_data)
-    app.logger.info(u"获得准备播报的数据：%s" % json_data['text'])
+    app.logger.info(u"获得播报信息：%s" % json_data)
     json_data['text'] = urllib.quote_plus(json_data['text'].encode('utf8'))
     baidu_tts.read_aloud(**json_data)
     #threading.Thread(target=baidu_tts.read_aloud, args=(json_data)).start()
@@ -75,7 +75,7 @@ def tts_page_1(name):
 @app.route('/tts',methods=['post'])
 def tts_page_2():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
-    print(json_data)
+    app.logger.info(u"获得播报信息：%s" % json_data)
     name = json_data['text']
     text = urllib.quote_plus(name.encode('utf8'))
     threading.Thread(target=baidu_tts.read_aloud,args=(text,False,5,5,9,3)).start()
