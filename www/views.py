@@ -16,6 +16,13 @@ def internal_server_error(e):
 def index():
     return render_template('index.html',index='index')
 
+@app.route('/log',methods=['get'])
+def page_log():
+    with open("./log/log",'r+') as f:
+        log_text = f.read()
+    return render_template('log.html',log='log',log_text= unicode(log_text,'utf-8'))
+
+
 @app.route('/read',methods=['get'])
 def page_read():
     return render_template('read.html',read='read')
