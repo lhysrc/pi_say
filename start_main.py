@@ -54,6 +54,7 @@ def start_main():
         # (9, 39): (alarm_song, ()),
         (7, 43): (load_weather, ()),
         # (21, 10): (play_song_list, ()),
+        (22, 30): (ne_music.play_a_list, ('http://music.163.com/#/playlist?id=306638605',5,True)),
     }
 
     holiday_task_list ={
@@ -61,6 +62,7 @@ def start_main():
         (9, 00): (play_song_list, ()),
         (9, 50): (load_weather, ('',True)),
         # (10, 18): (play_song_list, ()),
+        (22, 45): (ne_music.play_a_list, ('http://music.163.com/#/playlist?id=306638605',5,True)),
     }
 
     # bao_shi = threading.Thread(target=tell_time)

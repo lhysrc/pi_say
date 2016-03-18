@@ -20,12 +20,17 @@ def index():
 def page_read():
     return render_template('read.html',read='read')
 
+'''
+/read isn't multithreading
+/tts is multithreading to tts
+'''
+
 @app.route('/read',methods=['post'])
 def tts():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     # text = json_data['text']
     # print(json_data)
-    app.logger.info(u"获得准备播报的数据：%s" % json_data['text'])
+    app.logger.info(u"获得播报信息：%s" % json_data['text'])
     json_data['text'] = urllib.quote_plus(json_data['text'].encode('utf8'))
     baidu_tts.read_aloud(**json_data)
     #threading.Thread(target=baidu_tts.read_aloud, args=(json_data)).start()
@@ -60,12 +65,21 @@ def tell_weather():
     return w
 
 import urllib
-@app.route('/tts/<name>')
-def tts_page(name):
+@app.route('/tts/<name>',methods=['get'])
+def tts_page_1(name):
     text = urllib.quote_plus(name.encode('utf8'))
     threading.Thread(target=baidu_tts.read_aloud,args=(text,False,5,5,9,3)).start()
     return name
 
+from main import util
+@app.route('/tts',methods=['post'])
+def tts_page_2():
+    json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
+    app.logger.info(u"获得播报信息：%s" % json_data['text'])
+    name = json_data['text']
+    text = urllib.quote_plus(name.encode('utf8'))
+    threading.Thread(target=baidu_tts.read_aloud,args=(text,False,5,5,9,3)).start()
+    return text
 
 @app.route('/lcsong/<int:n>',methods=['get','post'])
 def play_local_song(n):
