@@ -529,9 +529,9 @@ class xiami(object):
 
     def check_in(self):
         html = ss.get('http://www.xiami.com/web').text
-        day = re.findall(ur'已连续签到(\d+)天',html)[0]
+        day = re.findall(ur'已连续签到(\d+)天',html)
         if day:
-            print(u'今天已签到，连续签到%s天' % day)
+            print(u'今天已签到，连续签到%s天' % day[0])
         else:
             checkin_id = re.findall(ur'<a class="check_in" href="/web/checkin/id/(\d+)">每日签到</a>',html)[0]
             if checkin_id:
