@@ -103,7 +103,7 @@ if __name__ == '__main__':
     td = threading.Thread(target=start_main)
     if not app.debug: td.start()
 
-    app.run(port=3080,threaded=True)
+    app.run(host='0.0.0.0',port=3080,threaded=True)
 # if __name__ == '__main__':
 #     #threading.Timer(0, alarm_song, ()).start()
 #     start_main()

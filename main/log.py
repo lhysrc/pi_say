@@ -44,11 +44,11 @@ def handle_logger(logger,filepath = filename):
     # fhdlr = logging.FileHandler("./tmp/log.log")
     # fhdlr.setFormatter(formatter)
     # fhdlr.setLevel(logging.WARN)
-
-    stdout_handler = logging.StreamHandler(sys.__stdout__)
-    stdout_handler.level = logging.DEBUG
-    stdout_handler.formatter = formatter
-    log.addHandler(stdout_handler)
+    if 'Windows' in platform.uname():
+        stdout_handler = logging.StreamHandler(sys.__stdout__)
+        stdout_handler.level = logging.DEBUG
+        stdout_handler.formatter = formatter
+        log.addHandler(stdout_handler)
 
     stderr_handler = logging.StreamHandler(sys.__stderr__)
     stderr_handler.level = logging.WARNING
@@ -60,7 +60,7 @@ def handle_logger(logger,filepath = filename):
     # shdlr.setLevel(logging.INFO)
     # if 'Windows' in platform.uname():
     #     log.addHandler(shdlr)
-    log.setLevel(logging.NOTSET)
+    #log.setLevel(logging.NOTSET)
 
 handle_logger(log)
 
