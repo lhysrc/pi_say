@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <div class="container">
+{% block main_content %}
+
         <div class="page-header">
             <h1>播报页面</h1>
         </div>
         <div class="input-append">
             <form>
                 <div class="row">
-                    <label for="tellTime" class="col-md-3">
-                        <input type="button" class="btn btn-default" id="tellTime" value="现在时间">
+                    <label for="tellTime" class="col-md-1">
+                        <button type="button" class="btn btn-default" id="tellTime">现在时间</button>
                     </label>
-                    <label for="tellWeather" class="col-md-3">
-                        <input type="button" class="btn btn-default" id="tellWeather" value="今日天气">
+                    <label for="tellWeather" class="col-md-1">
+                        <button type="button" class="btn btn-default" id="tellWeather">今日天气</button>
                     </label>
                 </div>
                 <p ></p>
@@ -30,7 +30,7 @@
                        id="play" value="播　报">
             </form>
         </div>
-    </div>
+
 {% endblock %}
 {% block scripts %}{{ super() }}
     <script>

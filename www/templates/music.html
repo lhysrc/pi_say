@@ -4,8 +4,8 @@
 
 
 {% endblock %}
-{% block content %}
-<div class="container">
+{% block main_content %}
+
     <div class="page-header">
         <h1 class="center-block">音乐页面</h1>
 
@@ -63,7 +63,7 @@
 
                         <div class="checkbox">
                             <label>
-                                <input id="chk-rdm" type="checkbox">随机播放
+                                <input id="chk-rdm" type="checkbox" checked>随机播放
                             </label>
                         </div>
             <input type="submit" formmethod="post" class="btn btn-default btn-primary"
@@ -97,7 +97,8 @@
     20: ['台湾Hito排行榜', '/discover/toplist?id=112463'],
     21: ['Beatport全球电子舞曲榜', '/discover/toplist?id=3812895']
 </pre>
-</div>
+
+
 {% endblock %}
 {% block scripts %}
 {{ super() }}
@@ -116,20 +117,22 @@ $(document).ready(function() {
         });
     });
     $('#play').click(function () {
-        $('#play').addClass('disabled');
+        if($(this).hasClass('disabled')) return false;
+        $(this).addClass('disabled');
         var url = $('#url').val();
         var cnt = $('#cnt').val();
         var rdm = $('#chk-rdm').prop('checked');
         if (!url || !cnt) {
             alert("请输入要播放的页面链接和播放几首。");
+            $(this).removeClass('disabled');
             return false;
         }
-        var d = {url:url,cnt:cnt};
+        var d = {url:url,cnt:cnt,rdm:rdm};
         $.post('../play_url',d,function(data,status){
             if(data){
                 alert(data);
             }
-            $('#play').removeClass('disabled');
+            $(this).removeClass('disabled');
         });
         return false;
     });

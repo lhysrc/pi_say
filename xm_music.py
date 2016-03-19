@@ -1197,8 +1197,9 @@ if __name__ == '__main__':
     # argv = sys.argv
     # main(argv)
     x = xiami()
+    # x.login()
     x.init()
-    #x.url_parser(['http://www.xiami.com/album/2100294190'])
+    # x.url_parser(['http://www.xiami.com/album/2100294190'])
     x.check_in()
 
 

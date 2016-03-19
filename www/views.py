@@ -123,7 +123,8 @@ def play_url():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     url = json_data['url']
     n = int(json_data['cnt'])
-    threading.Thread(target=ne_music.play_a_list,args=(url,n)).start()
+    rdm = bool(json_data['rdm'])
+    threading.Thread(target=ne_music.play_a_list,args=(url,n,rdm)).start()
     return '',200
 
 
