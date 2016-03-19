@@ -60,7 +60,7 @@ def handle_logger(logger,filepath = filename):
     # shdlr.setLevel(logging.INFO)
     # if 'Windows' in platform.uname():
     #     log.addHandler(shdlr)
-    #log.setLevel(logging.NOTSET)
+    log.setLevel(logging.NOTSET)
 
 handle_logger(log)
 

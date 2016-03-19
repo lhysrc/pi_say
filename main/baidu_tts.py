@@ -126,7 +126,9 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3):
             retry -= 1
     else:
         play_sound.play(LOCAL_AUDIOS['TTS_ERROR'])
-    if not cache and os.path.exists(mp3_file):
+    if (not cache) \
+            and (mp3_file not in LOCAL_AUDIOS.values()) \
+            and os.path.exists(mp3_file):
         os.remove(mp3_file)
 
 

@@ -38,6 +38,10 @@ def alarm_song():
 
 @tell_time.tell_time_first
 def load_weather(d=1,t=''):
+    """
+        d:穿衣建议
+        t:出行建议
+    """
     baidu_tts.read_aloud(weather.tell_today(d,t), per=3)
 
 
