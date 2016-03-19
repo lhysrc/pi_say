@@ -1,67 +1,198 @@
 {% extends "base.html" %}
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/bootstrap-slider.min.css') }}" rel="stylesheet">
+    <style>
+        .btn-group {
+            margin: 10px 0
+        }
 
+        #sexRadios {
+            margin: 10px 0 0 0
+        }
+
+        .slider {
+            margin: 10px 0
+        }
+    </style>
+{% endblock %}
 {% block main_content %}
 
-        <div class="page-header">
-            <h1>播报页面</h1>
-        </div>
-        <div class="input-append">
-            <form>
-                <div class="row">
-                    <label for="tellTime" class="col-md-1">
-                        <button type="button" class="btn btn-default" id="tellTime">现在时间</button>
-                    </label>
-                    <label for="tellWeather" class="col-md-1">
-                        <button type="button" class="btn btn-default" id="tellWeather">今日天气</button>
-                    </label>
-                </div>
-                <p ></p>
-                <div class="form-group">
-                    <label for="textToRead">要播报的内容：</label>
-                    <textarea class="form-control" id="textToRead" ></textarea>
-                </div>
-                {##}
-                {#            <div class="checkbox">#}
-                {#                <label>#}
-                {#                    <input type="checkbox"> Check me out#}
-                {#                </label>#}
-                {#            </div>#}
-                <input type="submit" formmethod="post" class="btn btn-default"
-                       id="play" value="播　报">
-            </form>
+    <div class="page-header">
+        <h1>播报页面</h1>
+    </div>
+    <div>
+
+        <div id="div-setting">
+            <label class="large">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                播报设置：</label>
+            <div class="row">
+                <label class="col-md-6">
+                    音量　<input class="slider" id="vol" data-slider-min="1" data-slider-value="10">
+                </label>
+                <label class="col-md-6">
+                    音调　<input class="slider" id="pit" data-slider-min="1" data-slider-value="6">
+                </label>
+            </div>
+            <div class="row">
+                <label class="col-md-6">
+                    速度　<input class="slider" id="spd" data-slider-min="1" data-slider-value="6">
+                </label>
+                <label class="col-md-6" id="sexRadios">
+                    性别　
+                    <div class="radio-inline">
+                        <label>
+                            <input type="radio" name="sexRadios" class="sex" value="2" checked>
+                            随机　
+                        </label>
+                    </div>
+                    <div class="radio-inline">
+                        <label>
+                            <input type="radio" name="sexRadios" class="sex" value="1">
+                            男　</label>
+                    </div>
+                    <div class="radio-inline">
+                        <label>
+                            <input type="radio" name="sexRadios" class="sex" value="0">
+                            女　
+                        </label>
+                    </div>
+
+                </label>
+
+            </div>
+            <hr/>
+
         </div>
 
+
+        <div class="btn-group btn-group-justified" role="group">
+            <a class="btn btn-default" role="button" id="tellTime">
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                现在时间</a>
+            <a class="btn btn-info" role="button" id="tellWeather">
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                今日天气</a>
+            {#                <div class="btn-group" role="group">#}
+            {#                    <button type="button" class="btn btn-default"  id="tellTime">#}
+            {#                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>#}
+            {#                        现在时间#}
+            {#                    </button>#}
+            {#                </div>#}
+            {#                <div class="btn-group" role="group">#}
+            {#                    <button type="button" class="btn btn-default" id="tellWeather">#}
+            {#                        <span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span>#}
+            {#                        今日天气#}
+            {#                    </button>#}
+        </div>
+        {#                    <div class="btn-group" role="group">#}
+        {#                        <button type="button" class="btn btn-default">Right</button>#}
+        {#                    </div>#}
+        {#            </div>#}
+        {#                        <button type="button" class="btn btn-default" id="tellTime">现在时间</button>#}
+        {##}
+        {##}
+        {#                        <button type="button" class="btn btn-default" id="tellWeather">今日天气</button>#}
+
+
+        <div class="form-group">
+            <label for="textToRead">要播报的内容：</label>
+            <textarea class="form-control" id="textToRead"></textarea>
+        </div>
+        {##}
+        {#            <div class="checkbox">#}
+        {#                <label>#}
+        {#                    <input type="checkbox"> Check me out#}
+        {#                </label>#}
+        {#            </div>#}
+        <button type="button" class="btn btn-primary" id="play">
+
+            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> 播报
+        </button>
+
+
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="modal_msg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">提示</h4>
+                </div>
+                <div class="modal-body" id="msg_body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
-{% block scripts %}{{ super() }}
+{% block script %}
+
+    <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
     <script>
         $(document).ready(function () {
-            $('#tellTime').click(function(){
-                $.get('../time',undefined)
+            // Instantiate a slider
+            var mySlider = $("input.slider").slider();
+            {#            for(var i in mySlider){#}
+            {#                mySlider[i].attr('data-slider-min',1);#}
+            {#            }#}
+            //$('#vol').slider('setValue',9);
+            {##}
+            {#            // Call a method on the slider#}
+            {#            var value = mySlider.slider('getValue');#}
+            {##}
+            {#            // For non-getter methods, you can chain together commands#}
+            {#            mySlider#}
+            {#                    .slider('setValue', 5)#}
+            {#                    .slider('setValue', 7);#}
+
+
+            $('#tellTime').click(function () {
+                var d = getSetting();
+                $.post('../time', d);
             });
-            $('#tellWeather').click(function(){
-                $.get('../weather',undefined)
+            $('#tellWeather').click(function () {
+                var d = getSetting();
+                $.post('../weather', d);
             });
+            function getSetting() {
+                var vol = $('#vol').slider('getValue') - 1;
+                var pit = $('#pit').slider('getValue') - 1;
+                var spd = $('#spd').slider('getValue') - 1;
+                var per = $('.sex:checked').val();
+                return {per: per, vol: vol, pit: pit, spd: spd};
+            }
+
             $('#play').click(function () {
                 var txt = $('#textToRead').val();
                 if (!txt) {
-                    alert("请输入要播报的文字。");
-                    return false
+                    $('#msg_body').text('请输入要播报的文字。');
+                    $('#modal_msg').modal('show');
+{#                    alert("请输入要播报的文字。");#}
+                    return false;
                 }
-                var d = {text:txt,per:3};
-                $.post('../read',d,function (x,y) {
+                var d = getSetting();
+                d['text'] = txt;
+                $.post('../read', d, function (x, y) {
 
-{#                        $('#contact_form').html("<div id='message'></div>");#}
-{#                        $('#message').html("<h2>Contact Form Submitted!</h2>")#}
-{#                                .append("<p>We will be in touch soon.</p>")#}
-{#                                .hide()#}
-{#                                .fadeIn(1500, function () {#}
-{#                                    $('#message').append("<img id='checkmark' src='images/check.png' />");#}
-{#                                });#}
+                    {#                        $('#contact_form').html("<div id='message'></div>");#}
+                    {#                        $('#message').html("<h2>Contact Form Submitted!</h2>")#}
+                    {#                                .append("<p>We will be in touch soon.</p>")#}
+                    {#                                .hide()#}
+                    {#                                .fadeIn(1500, function () {#}
+                    {#                                    $('#message').append("<img id='checkmark' src='images/check.png' />");#}
+                    {#                                });#}
 
                 });
-{#                $.ajax('../read', function (data, status) {#}
-{#                    alert("Data: " + data + "\nStatus: " + status);#}
-{#                });#}
+                {#                $.ajax('../read', function (data, status) {#}
+                {#                    alert("Data: " + data + "\nStatus: " + status);#}
+                {#                });#}
                 return false
             });
 

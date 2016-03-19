@@ -63,10 +63,10 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
 
     url = "http://tsn.baidu.com/text2audio?lan=zh&cuid=%s&ctp=1&tok=%s&tex=%s" % \
           (CUID, TOKEN, text)
-    if vol != 5: url += '&vol=%d' % vol
-    if spd != 5: url += '&spd=%d' % spd
-    if pit != 5: url += '&pit=%d' % pit
-    if per != 0: url += '&per=%d' % (per if per == 1 else random.randint(0, 1))
+    if vol != 5: url += '&vol=%s' % vol
+    if spd != 5: url += '&spd=%s' % spd
+    if pit != 5: url += '&pit=%s' % pit
+    if int(per) != 0: url += '&per=%s' % (per if int(per) == 1 else random.randint(0, 1))
     try:
         request = urllib2.Request(url)
         opener = urllib2.build_opener()

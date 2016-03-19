@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% block head %}
-{{  super() }}
-
-
+{% block style %}
+    {{ super() }}
+    <style>
+        #set-url-div {
+            margin: 15px 0
+        }
+    </style>
 {% endblock %}
 {% block main_content %}
 
     <div class="page-header">
         <h1 class="center-block">音乐页面</h1>
-
-
-
 
 
     </div>
@@ -21,36 +21,122 @@
                     <input type="button" class="btn btn-default" id="localMusic" value="播放本地音乐">
                 </label>
             </div>
-            <hr />
-            <div class="form-group">
-            <div class="center-block small " id="set-url-div">
-                <label >
-                        <input type="button" class="set-url btn btn-default btn-info "
-                               value="排行" alt="http://music.163.com/#/discover/toplist?id=">
-                    </label>
-                <label>
-                    <input type="button" class="set-url btn  btn-info" value="歌单"
-                           alt="http://music.163.com/#/playlist?id=">
-                </label>
-                <label>
-                    <input type="button" class="set-url btn  btn-info btn-sm" value="歌曲"
-                           alt="http://music.163.com/#/song?id=">
-                </label>
-                <label>
-                    <input type="button" class="set-url btn  btn-info" value="歌手"
-                        alt = 'http://music.163.com/#/artist?id='>
-                </label>
-                <label>
-                    <input type="button" class="set-url btn btn-default " value="DJ"
-                        alt = 'http://music.163.com/#/djradio?id='>
-                </label>
+                        <hr/>
 
-</div>
+
+            <div class="btn-group btn-group-justified" role="group" id="set-url-div">
+
+                <div class="btn-group" role="group">
+                    <a type="button" class="btn btn-info dropdown-toggle"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        排行榜
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="ul-toplist">
+                        <li><a class="btn-default" content='3779629'>云音乐新歌榜</a></li>
+                        <li><a class="btn-default" content='3778678'>云音乐热歌榜</a></li>
+                        <li><a class="btn-default" content='2884035'>网易原创歌曲榜</a></li>
+                        <li><a class="btn-default" content='19723756'>云音乐飙升榜</a></li>
+                        <li><a class="btn-default" content='10520166'>云音乐电音榜</a></li>
+                        <li><a class="btn-default" content='180106'>UK排行榜周榜</a></li>
+                        <li><a class="btn-default" content='60198'>美国Billboard周榜</a></li>
+                        <li><a class="btn-default" content='21845217'>KTV嗨榜</a></li>
+                        <li><a class="btn-default" content='11641012'>iTunes榜</a></li>
+                        <li><a class="btn-default" content='120001'>Hit FM Top榜</a></li>
+                        <li><a class="btn-default" content='60131'>日本Oricon周榜</a></li>
+                        <li><a class="btn-default" content='3733003'>韩国Melon排行榜周榜</a></li>
+                        <li><a class="btn-default" content='60255'>韩国Mnet排行榜周榜</a></li>
+                        <li><a class="btn-default" content='46772709'>韩国Melon原声周榜</a></li>
+                        <li><a class="btn-default" content='112504'>中国TOP排行榜(港台榜)</a></li>
+                        <li><a class="btn-default" content='64016'>中国TOP排行榜(内地榜)</a></li>
+                        <li><a class="btn-default" content='10169002'>香港电台中文歌曲龙虎榜</a></li>
+                        <li><a class="btn-default" content='4395559'>华语金曲榜</a></li>
+                        <li><a class="btn-default" content='1899724'>中国嘻哈榜</a></li>
+                        <li><a class="btn-default" content='27135204'>法国 NRJ EuroHot 30周榜</a></li>
+                        <li><a class="btn-default" content='112463'>台湾Hito排行榜</a></li>
+                        <li><a class="btn-default" content='3812895'>Beatport全球电子舞曲榜</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group" role="group">
+                    <a type="button" class="btn btn-success dropdown-toggle"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        歌单
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="ul-playlist">
+                        <li><a class="btn-default" content='559441'>我喜欢的</a></li>
+                        <li><a class="btn-default" content='30259752'>呆逼歌单</a></li>
+                        <li><a class="btn-default" content='306638605'>宝宝的歌单</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a class="btn-default" content="">自定义</a></li>
+                    </ul>
+                </div>
+                {#                <a type="button" class="set-url btn btn-default" content="http://music.163.com/#/playlist?id=">#}
+                {#                    歌单#}
+                {#                </a>#}
+                {#                <a type="button" class="set-url btn btn-default" content="http://music.163.com/#/artist?id=">歌手</a>#}
+                <div class="btn-group" role="group">
+                    <a type="button" class="btn btn-info dropdown-toggle" content="http://music.163.com/#/song?id="
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        歌手
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="ul-artist">
+                        <li><a class="btn-default" content="">自定义</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a class="btn-default" content='6452'>周杰伦</a></li>
+                        <li><a class="btn-default" content='2116'>陈奕迅</a></li>
+                        <li><a class="btn-default" content='5781'>薛之谦</a></li>
+                        <li><a class="btn-default" content='9940'>徐佳莹</a></li>
+                        <li><a class="btn-default" content='3684'>林俊杰</a></li>
+                        <li><a class="btn-default" content='9621'>王菲</a></li>
+                        <li><a class="btn-default" content='6460'>张学友</a></li>
+                        <li><a class="btn-default" content='6066'>杨宗纬</a></li>
+                        <li><a class="btn-default" content='5770'>许巍</a></li>
+                        <li><a class="btn-default" content='6731'>赵雷</a></li>
+                        <li><a class="btn-default" content='5073'>宋冬野</a></li>
+                        <li><a class="btn-default" content='4721'>朴树</a></li>
+                        <li><a class="btn-default" content='3695'>李健</a></li>
+                        <li><a class="btn-default" content='9548'>田馥甄</a></li>
+                        <li><a class="btn-default" content='5771'>许嵩</a></li>
+                        <li><a class="btn-default" content='7217'>陈绮贞</a></li>
+                        <li><a class="btn-default" content='3691'>刘德华</a></li>
+
+                    </ul>
+                </div>
+                <a type="button" class="set-url btn btn-default" content="http://music.163.com/#/song?id=">歌曲</a>
+                <a type="button" class="set-url btn btn-default" content="http://music.163.com/#/djradio?id=">DJ</a>
+
+            </div>
+            <div class="form-group">
+                {#                <div class="center-block">#}
+                {#                    <label>#}
+                {#                        <input type="button" class="set-url btn btn-default btn-info "#}
+                {#                               value="排行" alt="http://music.163.com/#/discover/toplist?id=">#}
+                {#                    </label>#}
+                {#                    <label>#}
+                {#                        <input type="button" class="set-url btn  btn-info" value="歌单"#}
+                {#                               alt="http://music.163.com/#/playlist?id=">#}
+                {#                    </label>#}
+                {#                    <label>#}
+                {#                        <input type="button" class="set-url btn  btn-info btn-sm" value="歌曲"#}
+                {#                               alt="http://music.163.com/#/song?id=">#}
+                {#                    </label>#}
+                {#                    <label>#}
+                {#                        <input type="button" class="set-url btn  btn-info" value="歌手"#}
+                {#                               alt='http://music.163.com/#/artist?id='>#}
+                {#                    </label>#}
+                {#                    <label>#}
+                {#                        <input type="button" class="set-url btn btn-default " value="DJ"#}
+                {#                               alt='http://music.163.com/#/djradio?id='>#}
+                {#                    </label>#}
+                {##}
+                {#                </div>#}
                 <label for="url">要播放的网易云音乐页面链接：</label>
                 <input class="form-control" type="text" id="url" value=""
                        placeholder="输入 网易云音乐 页面链接，除上面指定，亦可输入专辑，主播电台等"
-                       />
-{#                <textarea class="form-control" id="textToRead" ></textarea>#}
+                />
+                {#                <textarea class="form-control" id="textToRead" ></textarea>#}
             </div>
             <label class="form-group">
                 <div class="input-group">
@@ -58,85 +144,119 @@
                     <input class=" form-control" type="text" id="cnt" value="3"/>
                 </div>
 
-{#                <textarea class="form-control" id="textToRead" ></textarea>#}
+                {#                <textarea class="form-control" id="textToRead" ></textarea>#}
             </label>
 
-                        <div class="checkbox">
-                            <label>
-                                <input id="chk-rdm" type="checkbox" checked>随机播放
-                            </label>
-                        </div>
+            <div class="checkbox">
+                <label>
+                    <input id="chk-rdm" type="checkbox" checked>随机播放
+                </label>
+            </div>
             <input type="submit" formmethod="post" class="btn btn-default btn-primary"
                    id="play" value="播放">
         </form>
-{#        <input type="text" placeholder="输入 网易云音乐 页面链接" id="url"/>#}
-{#        <input type="text" placeholder="" id="cnt" value="3"/>#}
+        {#        <input type="text" placeholder="输入 网易云音乐 页面链接" id="url"/>#}
+        {#        <input type="text" placeholder="" id="cnt" value="3"/>#}
 
     </div>
-<pre>
-    0: ['云音乐新歌榜', '/discover/toplist?id=3779629'],
-    1: ['云音乐热歌榜', '/discover/toplist?id=3778678'],
-    2: ['网易原创歌曲榜', '/discover/toplist?id=2884035'],
-    3: ['云音乐飙升榜', '/discover/toplist?id=19723756'],
-    4: ['云音乐电音榜', '/discover/toplist?id=10520166'],
-    5: ['UK排行榜周榜', '/discover/toplist?id=180106'],
-    6: ['美国Billboard周榜', '/discover/toplist?id=60198'],
-    7: ['KTV嗨榜', '/discover/toplist?id=21845217'],
-    8: ['iTunes榜', '/discover/toplist?id=11641012'],
-    9: ['Hit FM Top榜', '/discover/toplist?id=120001'],
-    10: ['日本Oricon周榜', '/discover/toplist?id=60131'],
-    11: ['韩国Melon排行榜周榜', '/discover/toplist?id=3733003'],
-    12: ['韩国Mnet排行榜周榜', '/discover/toplist?id=60255'],
-    13: ['韩国Melon原声周榜', '/discover/toplist?id=46772709'],
-    14: ['中国TOP排行榜(港台榜)', '/discover/toplist?id=112504'],
-    15: ['中国TOP排行榜(内地榜)', '/discover/toplist?id=64016'],
-    16: ['香港电台中文歌曲龙虎榜', '/discover/toplist?id=10169002'],
-    17: ['华语金曲榜', '/discover/toplist?id=4395559'],
-    18: ['中国嘻哈榜', '/discover/toplist?id=1899724'],
-    19: ['法国 NRJ EuroHot 30周榜', '/discover/toplist?id=27135204'],
-    20: ['台湾Hito排行榜', '/discover/toplist?id=112463'],
-    21: ['Beatport全球电子舞曲榜', '/discover/toplist?id=3812895']
-</pre>
+    {#    <pre>#}
+    {#    0: ['云音乐新歌榜', '/discover/toplist?id=3779629'],#}
+    {#    1: ['云音乐热歌榜', '/discover/toplist?id=3778678'],#}
+    {#    2: ['网易原创歌曲榜', '/discover/toplist?id=2884035'],#}
+    {#    3: ['云音乐飙升榜', '/discover/toplist?id=19723756'],#}
+    {#    4: ['云音乐电音榜', '/discover/toplist?id=10520166'],#}
+    {#    5: ['UK排行榜周榜', '/discover/toplist?id=180106'],#}
+    {#    6: ['美国Billboard周榜', '/discover/toplist?id=60198'],#}
+    {#    7: ['KTV嗨榜', '/discover/toplist?id=21845217'],#}
+    {#    8: ['iTunes榜', '/discover/toplist?id=11641012'],#}
+    {#    9: ['Hit FM Top榜', '/discover/toplist?id=120001'],#}
+    {#    10: ['日本Oricon周榜', '/discover/toplist?id=60131'],#}
+    {#    11: ['韩国Melon排行榜周榜', '/discover/toplist?id=3733003'],#}
+    {#    12: ['韩国Mnet排行榜周榜', '/discover/toplist?id=60255'],#}
+    {#    13: ['韩国Melon原声周榜', '/discover/toplist?id=46772709'],#}
+    {#    14: ['中国TOP排行榜(港台榜)', '/discover/toplist?id=112504'],#}
+    {#    15: ['中国TOP排行榜(内地榜)', '/discover/toplist?id=64016'],#}
+    {#    16: ['香港电台中文歌曲龙虎榜', '/discover/toplist?id=10169002'],#}
+    {#    17: ['华语金曲榜', '/discover/toplist?id=4395559'],#}
+    {#    18: ['中国嘻哈榜', '/discover/toplist?id=1899724'],#}
+    {#    19: ['法国 NRJ EuroHot 30周榜', '/discover/toplist?id=27135204'],#}
+    {#    20: ['台湾Hito排行榜', '/discover/toplist?id=112463'],#}
+    {#    21: ['Beatport全球电子舞曲榜', '/discover/toplist?id=3812895']#}
+    {#</pre>#}
 
-
+    <!-- Modal -->
+    <div class="modal fade" id="modal_msg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">提示</h4>
+                </div>
+                <div class="modal-body" id="msg_body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block scripts %}
-{{ super() }}
-<script>
-$(document).ready(function() {
-    $("#set-url-div .btn").addClass('btn-sm');
-    $('.set-url').click(function(){
-        $('#url').val(this.alt)
-    });
-    $('#localMusic').click(function(){
-        var cnt = $('#cnt').val();
-        $.post('../lcsong/'+cnt,function(data,status){
-            if(data){
-                alert(data);
-            }
-        });
-    });
-    $('#play').click(function () {
-        if($(this).hasClass('disabled')) return false;
-        $(this).addClass('disabled');
-        var url = $('#url').val();
-        var cnt = $('#cnt').val();
-        var rdm = $('#chk-rdm').prop('checked');
-        if (!url || !cnt) {
-            alert("请输入要播放的页面链接和播放几首。");
-            $(this).removeClass('disabled');
-            return false;
-        }
-        var d = {url:url,cnt:cnt,rdm:rdm};
-        $.post('../play_url',d,function(data,status){
-            if(data){
-                alert(data);
-            }
-            $(this).removeClass('disabled');
-        });
-        return false;
-    });
+    {{ super() }}
+    <script>
+        $(document).ready(function () {
+            $('#ul-toplist a').click(function () {
+                var tp_url = 'http://music.163.com/discover/toplist?id=' + $(this).attr('content');
+                $('#url').val(tp_url);
+            });
+            $('#ul-playlist a').click(function () {
+                var pl_url = 'http://music.163.com/#/playlist?id=' + $(this).attr('content');
+                $('#url').val(pl_url);
+            });
+            $('#ul-artist a').click(function () {
+                var at_url = 'http://music.163.com/#/artist?id=' + $(this).attr('content');
+                $('#url').val(at_url);
+            });
+            $("#set-url-div .btn").addClass('btn-sm');
+            $('.set-url').click(function () {
+                $('#url').val($(this).attr('content'))
+            });
+            $('#localMusic').click(function () {
+                var cnt = $('#cnt').val();
+                $.post('../lcsong/' + cnt, function (data, status) {
+                    if (data) {
+                        $('#msg_body').text(data);
+                        $('#modal_msg').modal('show');
+                    }
+                });
+            });
+            $('#play').click(function () {
+                if ($(this).hasClass('disabled')) return false;
+                $(this).addClass('disabled');
+                var url = $('#url').val();
+                var cnt = $('#cnt').val();
+                var rdm = $('#chk-rdm').prop('checked');
+                if (!url || !cnt) {
+                    {#                    alert("请输入要播放的页面链接和播放几首。");#}
+                    $('#msg_body').text('请输入要播放的页面链接和播放几首。');
+                    $('#modal_msg').modal('show');
+                    $('#play').removeClass('disabled');
+                    return false;
+                }
+                var d = {url: url, cnt: cnt, rdm: rdm};
+                $.post('../play_url', d, function (data, status) {
+                    if (data) {
+                        $('#msg_body').text(data);
+                        $('#modal_msg').modal('show');
+                        //alert(data);
+                    }
+                    $('#play').removeClass('disabled');
+                });
+                return false;
+            });
 
-});
-</script>
+        });
+    </script>
 {% endblock %}

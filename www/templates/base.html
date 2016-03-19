@@ -9,11 +9,16 @@
         <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
         <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon">
         <link rel="icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon">
-        <style>
-            body {
-                padding-top: 50px;
-            }
-        </style>
+
+
+        {% block style %}
+            <style>
+                body {
+                    padding-top: 50px;
+                }
+            </style>
+        {% endblock %}
+
     {% endblock %}
 </head>
 {% block navbar %}
@@ -80,6 +85,7 @@
     {% block scripts %}
         <script src="{{ url_for('static',filename = 'jquery.js') }}"></script>
         <script src="{{ url_for('static',filename = 'js/bootstrap.js') }}"></script>
-    {%- endblock scripts %}
+        {% block script %}{% endblock %}
+    {%- endblock %}
 {% endblock %}
 </html>

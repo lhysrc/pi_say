@@ -16,6 +16,7 @@ def internal_server_error(e):
 def index():
     return render_template('index.html',index='index')
 
+import cgi
 @app.route('/log',methods=['get'])
 def page_log():
     with open("./log/log",'r+') as f:
@@ -59,17 +60,28 @@ def test():
 #     return echo
 
 import main.tell_time
-@app.route('/time')
-def tell_time():
+@app.route('/time',methods=['get'])
+def tell_time1():
     t = main.tell_time.tell_time()
     return str(t)
 
+import main.tell_time
+@app.route('/time',methods=['post'])
+def tell_time2():
+    json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
+    json_data['text'] = main.tell_time.get_strtime()
+    json_data['text'] = urllib.quote_plus(json_data['text'])
+    baidu_tts.read_aloud(**json_data)
+    return json_data['text']
+
 import main.weather
-@app.route('/weather')
+@app.route('/weather',methods=['get','post'])
 def tell_weather():
-    w = main.weather.tell_today()
-    main.baidu_tts.read_aloud(w)
-    return w
+    json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
+    json_data['text'] = main.weather.tell_today()
+    json_data['text'] = urllib.quote_plus(json_data['text'])
+    baidu_tts.read_aloud(**json_data)
+    return json_data['text']
 
 import urllib
 @app.route('/tts/<name>',methods=['get'])
@@ -123,8 +135,8 @@ def play_url():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     url = json_data['url']
     n = int(json_data['cnt'])
-    rdm = bool(json_data['rdm'])
-    threading.Thread(target=ne_music.play_a_list,args=(url,n,rdm)).start()
+    rdm = json_data['rdm']
+    threading.Thread(target=ne_music.play_a_list,args=(url,n,rdm=='true')).start()
     return '',200
 
 
