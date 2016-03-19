@@ -37,8 +37,8 @@ def alarm_song():
         play_sound.play_local_music(1)
 
 @tell_time.tell_time_first
-def load_weather():
-    baidu_tts.read_aloud(weather.tell_today(), per=3)
+def load_weather(d=1,t=''):
+    baidu_tts.read_aloud(weather.tell_today(d,t), per=3)
 
 
 def play_song_list():
@@ -60,7 +60,7 @@ def start_main():
     holiday_task_list ={
         (8, 45): (load_weather, ()),
         (9, 00): (play_song_list, ()),
-        (9, 50): (load_weather, ('',True)),
+        (10, 0): (load_weather, ('',True)),
         # (10, 18): (play_song_list, ()),
         (22, 45): (ne_music.play_a_list, ('http://music.163.com/#/playlist?id=306638605',5,True)),
     }
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     td = threading.Thread(target=start_main)
     if not app.debug: td.start()
 
-    app.run(port=3080,threaded=True)
+    app.run(host='0.0.0.0',port=3080,threaded=True)
 # if __name__ == '__main__':
 #     #threading.Timer(0, alarm_song, ()).start()
 #     start_main()
