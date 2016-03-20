@@ -40,7 +40,9 @@ def tell_time(t = None):
     #     print("现在时间：%s点%s分，距离下次报时还有%s秒" % (hour_str(t.tm_hour), t.tm_min, first_sleep))
     #     time.sleep(3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec)
 
-def get_strtime(t):
+def get_strtime(t = None):
+    if not t:
+        t = time.localtime()
     s = "现在时间是：%s点整" % hour_str(t.tm_hour) \
         if t.tm_min == 0 else "现在时间是：%s点%s分" % (hour_str(t.tm_hour), t.tm_min)
     return s
