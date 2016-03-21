@@ -1,6 +1,10 @@
 ﻿#coding:utf-8
-import platform,os,threading,time
 import logging
+import os
+import platform
+import threading
+import time
+
 log = logging.getLogger(__name__)
 con = threading.Condition()
 def play(mp3_file):
@@ -107,9 +111,12 @@ def play_by_pymedia(sound_file):
 
 #play("./tmp/x.mp3")
 #play("./music/xiu_lian_ai_qing.mp3")
-import util,random
+import random
+from common import util
+
+
 def play_local_music(n,rdm=True):
-    files = util.GetFileFromThisRootDir('./music','.mp3')
+    files = util.GetFileFromThisRootDir('./music', '.mp3')
     n = len(files) if n<=0 or n>len(files) else n
     play_files = random.sample(files,n) if rdm else files[:n]
     for f in play_files:

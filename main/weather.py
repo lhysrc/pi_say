@@ -1,14 +1,14 @@
 # coding=utf-8
 city = 'guangzhou'
 url = 'http://apis.baidu.com/heweather/weather/free?city=%s' % city
-api_key = '6aaa80cda8ee541ad53047b6ce6b8468'
+from common.secret_const import baidu_apistore_api_key as api_key
 # 返回结果说明：http://apistore.baidu.com/apiworks/servicedetail/478.html
 import logging
 log = logging.getLogger(__name__)
 import time
 
 
-from util import getJson,byteify
+from common.util import getJson,byteify
 
 header = {'apikey': api_key}
 

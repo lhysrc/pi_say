@@ -1,7 +1,8 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-EMAIL = 'xiao4h@foxmail.com'
-PASSWORD = 'hongyuan456123'
+from common.secret_const import xiami_password,xiami_username
+EMAIL = xiami_username
+PASSWORD = xiami_password
 cookie_file = './local/.Xiami.cookies'
 
 

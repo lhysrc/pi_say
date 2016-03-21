@@ -1,16 +1,19 @@
 # coding=utf-8
-from config import get_baidu_tts_token,set_baidu_tts_token
 import logging
+
+from config import get_baidu_tts_token,set_baidu_tts_token
+
 log = logging.getLogger(__name__)
-apiKey = "EuWCMZ8mC73R2QimNR5cFkGn"
-secretKey = "Yw2wsHC82pPeRCQM5EWjEB263wjDirCU"
+from common.secret_const import baidu_tts_apiKey as apiKey
+from common.secret_const import baidu_tts_secretKey as secretKey
 
 auth_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=" \
            + apiKey + "&client_secret=" + secretKey
 CUID = "py"
 TOKEN = get_baidu_tts_token()
 
-import util, os, urllib2, random
+import os, urllib2, random
+from common import util
 import play_sound
 
 def refresh_token():

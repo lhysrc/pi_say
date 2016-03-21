@@ -1,8 +1,11 @@
 # coding=utf-8
+import threading
+
+from flask import render_template,make_response,request
+
 from main import baidu_tts,ne_music,play_sound
 from www import app
-from flask import render_template,make_response,request,jsonify
-import threading,time
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -16,7 +19,7 @@ def internal_server_error(e):
 def index():
     return render_template('index.html',index='index')
 
-import cgi
+
 @app.route('/log',methods=['get'])
 def page_log():
     with open("./log/log",'r+') as f:
@@ -90,7 +93,7 @@ def tts_page_1(name):
     threading.Thread(target=baidu_tts.read_aloud,args=(text,False,5,5,9,3)).start()
     return name
 
-from main import util
+
 @app.route('/tts',methods=['post'])
 def tts_page_2():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}

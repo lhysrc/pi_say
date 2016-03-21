@@ -1,8 +1,8 @@
 #coding=utf-8
+import logging
 import urllib
 
 import baidu_tts
-import logging
 log = logging.getLogger(__name__)
 wait_time_url = "http://wxbus.gzyyjt.net/wei-bus-app/waitBus/waitTime"
 
@@ -21,7 +21,7 @@ def count_waittime(bus_no,st_name,search_num,num=2,read=True):
     """
     param = {"rsId":search_num,"num":num}
     data = urllib.urlencode(param)
-    import util
+    from common import util
     result = util.getJson(wait_time_url, data)
     cnt, tm = result[0]['count'],result[0]['time']
     if read:
