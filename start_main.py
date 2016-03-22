@@ -4,6 +4,7 @@
 import os
 import threading
 import time
+from common import util
 required_dirs = ['tmp','music','log']
 for d in required_dirs:
     if not os.path.exists(d): os.mkdir(d)
@@ -45,8 +46,20 @@ def load_weather(d=1,t=''):
     baidu_tts.read_aloud(weather.tell_today(d,t), per=3)
 
 
-def play_song_list():
+def play_song_list(n=10):
     ne_music.play_a_list(n=10)
+
+from main.xm_music import xiami
+from random import randint
+def auto_check_in():
+    sleep_secs = randint(0,1800)
+    log.info(u'将在%d秒后进行虾米签到。'%sleep_secs)
+    time.sleep(sleep_secs)
+    x = xiami()
+    ret = x.check_in()
+    if ret:
+        util.sendEmail('hyiit@qq.com','虾米签到失败',ret)
+
 
 def start_main():
 
@@ -58,7 +71,7 @@ def start_main():
         # (9, 39): (alarm_song, ()),
         (7, 43): (load_weather, ()),
         # (21, 10): (play_song_list, ()),
-        (22, 30): (ne_music.play_a_list, ('http://music.163.com/#/playlist?id=306638605',5,True)),
+        (22, 30): (play_sound.play_local_music, (3,'./music/4baby',True)),
     }
 
     holiday_task_list ={
@@ -66,7 +79,7 @@ def start_main():
         (9, 00): (play_song_list, ()),
         (10, 0): (load_weather, ('',True)),
         # (10, 18): (play_song_list, ()),
-        (22, 45): (ne_music.play_a_list, ('http://music.163.com/#/playlist?id=306638605',5,True)),
+        (22, 45): (play_sound.play_local_music, (6,'./music/4baby',True)),
     }
 
     # bao_shi = threading.Thread(target=tell_time)
@@ -98,6 +111,8 @@ def start_main():
         # time.sleep(30)
         # print("start _581")
         # t2.start()
+
+
 
 
 from www import app

@@ -41,17 +41,17 @@ def byteify(input):
 from email.mime.text import MIMEText
 from email.header import Header
 import smtplib
-from common.secret_const import email_addr,email_pwd
-def sendEmail(fromName,toMail,title,content):
+from common.secret_const import email_addr,email_pwd,smtp_server
+def sendEmail(toMail,title,content):
     msg = MIMEText(str(content))
-    msg['From'] = Header('Get Key','utf-8').encode()
+    msg['From'] = Header('Raspberry Pi','utf-8').encode()
     msg['To'] = Header(toMail,'utf-8').encode()
     msg['Subject'] = Header(title,'utf-8').encode()
 
-    server = smtplib.SMTP('smtp.qq.com',25)
+    server = smtplib.SMTP(**smtp_server)
     server.set_debuglevel(1)
     server.login(email_addr,email_pwd)
-    server.sendmail(fromName,[toMail],msg.as_string())
+    server.sendmail(email_addr,[toMail],msg.as_string())
     server.quit()
 
 

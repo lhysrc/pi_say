@@ -3,10 +3,10 @@
 from common.secret_const import xiami_password,xiami_username
 EMAIL = xiami_username
 PASSWORD = xiami_password
-cookie_file = './local/.Xiami.cookies'
+cookie_file = './tmp/.Xiami.cookies'
 
-
-
+import logging
+log = logging.getLogger(__name__)
 
 import re
 import sys
@@ -20,7 +20,7 @@ import requests
 import urllib
 import hashlib
 import select
-from mutagen.id3 import ID3,TRCK,TIT2,TALB,TPE1,APIC,TDRC,COMM,TPOS,USLT
+# from mutagen.id3 import ID3,TRCK,TIT2,TALB,TPE1,APIC,TDRC,COMM,TPOS,USLT
 from HTMLParser import HTMLParser
 
 url_song = "http://www.xiami.com/song/%s"
@@ -124,7 +124,7 @@ class xiami(object):
     def __init__(self):
         self.dir_ = os.getcwdu()
         self.template_record = 'http://www.xiami.com/count/playrecord?sid=%s'
-
+        self.login_retry = 3
         self.collect_id = ''
         self.album_id = ''
         self.artist_id = ''
@@ -136,23 +136,37 @@ class xiami(object):
         self.html = ''
         self.disc_description_archives = {}
 
+        self.init()
         # self.download = self.play if args.play else self.download
 
     def init(self):
+        log_result = None
         if os.path.exists(cookie_file):
             try:
                 cookies = json.load(open(cookie_file))
                 ss.cookies.update(cookies.get('cookies', cookies))
-                if not self.check_login():
-                    print s % (1, 91, '  !! cookie is invalid, please login\n')
+                log_result = self.check_login()
+                if not log_result:
+                    #print s % (1, 91, '  !! cookie is invalid, please login\n')
+                    log.warn ('cookie is invalid')
+                    log_result = self.login()
                     # sys.exit(1)
             except:
                 open(cookie_file, 'w').close()
-                print s % (1, 97, '  please login')
+                #print s % (1, 97, '  please login')
+                log.warn("no login")
+                log_result = self.login()
                 # sys.exit(1)
         else:
-            print s % (1, 91, '  !! cookie_file is missing, please login')
+            #print s % (1, 91, '  !! cookie_file is missing, please login')
+            log.warn ("cookie_file is missing")
+            log_result = self.login()
             # sys.exit(1)
+        if not log_result and self.login_retry:
+            self.login_retry -= 1
+            self.init()
+        elif self.login_retry == 0:
+            log.error("xiami login error 3 times.")
 
     def check_login(self):
         #print s % (1, 97, '\n  -- check_login')
@@ -174,9 +188,9 @@ class xiami(object):
         ss.cookies.update({'member_auth': member_auth})
 
     def login(self, email=EMAIL, password=PASSWORD):
-        print s % (1, 97, '\n  -- login')
-
-        #validate = self.get_validate()
+        # print s % (1, 97, '\n  -- login')
+        log.info("xiami login.")
+        # validate = self.get_validate()
         data = {
             'email': email,
             'password': password,
@@ -403,25 +417,26 @@ class xiami(object):
             return u''
 
     def modified_id3(self, file_name, info):
-        id3 = ID3()
-        id3.add(TRCK(encoding=3, text=info['track']))
-        id3.add(TDRC(encoding=3, text=info['year']))
-        id3.add(TIT2(encoding=3, text=info['song_name']))
-        id3.add(TALB(encoding=3, text=info['album_name']))
-        id3.add(TPE1(encoding=3, text=info['artist_name']))
-        id3.add(TPOS(encoding=3, text=info['cd_serial']))
-        lyric_data = self.get_lyric(info)
-        id3.add(USLT(encoding=3, text=lyric_data)) if lyric_data else None
-        #id3.add(TCOM(encoding=3, text=info['composer']))
-        #id3.add(WXXX(encoding=3, desc=u'xiami_song_url', text=info['song_url']))
-        #id3.add(TCON(encoding=3, text=u'genre'))
-        #id3.add(TSST(encoding=3, text=info['sub_title']))
-        #id3.add(TSRC(encoding=3, text=info['disc_code']))
-        id3.add(COMM(encoding=3, desc=u'Comment', \
-            text=info['comment']))
-        id3.add(APIC(encoding=3, mime=u'image/jpeg', type=3, \
-            desc=u'Front Cover', data=self.get_cover(info)))
-        id3.save(file_name)
+        # id3 = ID3()
+        # id3.add(TRCK(encoding=3, text=info['track']))
+        # id3.add(TDRC(encoding=3, text=info['year']))
+        # id3.add(TIT2(encoding=3, text=info['song_name']))
+        # id3.add(TALB(encoding=3, text=info['album_name']))
+        # id3.add(TPE1(encoding=3, text=info['artist_name']))
+        # id3.add(TPOS(encoding=3, text=info['cd_serial']))
+        # lyric_data = self.get_lyric(info)
+        # id3.add(USLT(encoding=3, text=lyric_data)) if lyric_data else None
+        # #id3.add(TCOM(encoding=3, text=info['composer']))
+        # #id3.add(WXXX(encoding=3, desc=u'xiami_song_url', text=info['song_url']))
+        # #id3.add(TCON(encoding=3, text=u'genre'))
+        # #id3.add(TSST(encoding=3, text=info['sub_title']))
+        # #id3.add(TSRC(encoding=3, text=info['disc_code']))
+        # id3.add(COMM(encoding=3, desc=u'Comment', \
+        #     text=info['comment']))
+        # id3.add(APIC(encoding=3, mime=u'image/jpeg', type=3, \
+        #     desc=u'Front Cover', data=self.get_cover(info)))
+        # id3.save(file_name)
+        pass
 
     def url_parser(self, urls):
         for url in urls:
@@ -532,7 +547,7 @@ class xiami(object):
         html = ss.get('http://www.xiami.com/web').text
         day = re.findall(ur'已连续签到(\d+)天',html)
         if day:
-            print(u'今天已签到，连续签到%s天' % day[0])
+            log.info(u'今天已签到，连续签到%s天' % day[0])
         else:
             checkin_id = re.findall(ur'<a class="check_in" href="/web/checkin/id/(\d+)">每日签到</a>',html)[0]
             if checkin_id:
@@ -540,11 +555,13 @@ class xiami(object):
                 rehtml = ss.get(checkin_url).text
                 day = re.findall(ur'已连续签到(\d+)天',rehtml)[0]
                 if day:
-                    print(u'已自动签到，连续签到%s天' % day)
+                    log.info(u'已自动签到，连续签到%s天' % day)
                 else:
-                    print(u'签到失败:%s'%rehtml)
+                    log.warn(u'签到失败，返回:%s'%rehtml)
+                    return rehtml
             else:
-                print(u'加载签到页面失败:%s' % html)
+                log.warn(u'加载签到页面失败:%s' % html)
+                return html
 
 
     def get_songs(self, album_id, song_id=None):
@@ -1194,12 +1211,12 @@ def main(argv):
     else:
         print s % (2, 91, u'  !! 命令错误\n')
 
+
 if __name__ == '__main__':
     # argv = sys.argv
     # main(argv)
     x = xiami()
     # x.login()
-    x.init()
     # x.url_parser(['http://www.xiami.com/album/2100294190'])
     x.check_in()
 
