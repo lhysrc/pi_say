@@ -31,7 +31,7 @@ def _play(mp3_file):
     if "Windows" in platform.uname():
         play_by_mp3play(mp3_file)
     else:
-        os.system("mpg123 -q %s" % mp3_file)
+        os.system("mpg123 -q '%s'" % mp3_file)
     #log.INFO("结束播放："+mp3_file)
 
 
