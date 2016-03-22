@@ -68,6 +68,7 @@ def start_main():
     workday_task_list = {
         (7, 47): (bao_zhan, ()),
         (7, 35): (alarm_song, ()),
+        (9,  0): (auto_check_in, ()),
         # (9, 39): (alarm_song, ()),
         (7, 43): (load_weather, ()),
         # (21, 10): (play_song_list, ()),
@@ -76,7 +77,8 @@ def start_main():
 
     holiday_task_list ={
         (8, 45): (load_weather, ()),
-        (9, 00): (play_song_list, ()),
+        (9,  0): (auto_check_in, ()),
+        (9, 30): (play_song_list, ()),
         (10, 0): (load_weather, ('',True)),
         # (10, 18): (play_song_list, ()),
         (22, 45): (play_sound.play_local_music, (6,'./music/4baby',True)),
