@@ -2,7 +2,7 @@
 {% block style %}
     {{ super() }}
     <style>
-        #set-url-div {
+        #set-url-div,#localMusic {
             margin: 15px 0
         }
     </style>
@@ -16,14 +16,37 @@
     </div>
     <div class="input-append">
         <form>
-            <div class="row">
-                <label for="tellTime" class="col-md-3">
-                    <input type="button" class="btn btn-default" id="localMusic" value="播放本地音乐">
-                </label>
-            </div>
-                        <hr/>
+{#                        <div>#}
+                <input type="button" class="btn btn-default" id="localMusic" value="播放本地音乐">　
+{#            </div>#}
+            <label>位于
+                <label>
+                    <select class="form-control" id="local-path">
+                        <option>./music</option>
+                        <option selected>./music/mine</option>
+                        <option>./music/4baby</option>
+
+                    </select>
+                </label>　
+{#            </label>#}
+{#            <label>#}
+                <label>
+                    <select class="form-control" id="local-cnt">
+                        <option>1</option>
+                        <option selected>3</option>
+                        <option>5</option>
+                        <option>10</option>
+                        <option>20</option>
+                    </select>
+                </label>首
+            </label>
 
 
+
+        </form>
+        <hr/>
+
+        <form>
             <div class="btn-group btn-group-justified" role="group" id="set-url-div">
 
                 <div class="btn-group" role="group">
@@ -140,8 +163,9 @@
             </div>
             <label class="form-group">
                 <div class="input-group">
-                    <div class="input-group-addon">要播放几首：</div>
+                    <span class="input-group-addon">播放</span>
                     <input class=" form-control" type="text" id="cnt" value="3"/>
+                    <span class="input-group-addon">首</span>
                 </div>
 
                 {#                <textarea class="form-control" id="textToRead" ></textarea>#}
@@ -224,8 +248,10 @@
                 $('#url').val($(this).attr('content'))
             });
             $('#localMusic').click(function () {
-                var cnt = $('#cnt').val();
-                $.post('../lcsong/' + cnt, function (data, status) {
+                var lc_path = $('#local-path').val();
+                var lc_cnt = $('#local-cnt').val();
+                var d = {path: lc_path, cnt: lc_cnt};
+                $.post('../lcsong',d, function (data, status) {
                     if (data) {
                         $('#msg_body').text(data);
                         $('#modal_msg').modal('show');

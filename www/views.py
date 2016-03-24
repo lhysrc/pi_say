@@ -115,13 +115,21 @@ def tts_page_2():
     threading.Thread(target=baidu_tts.read_aloud,args=(text,False,5,5,9,3)).start()
     return text
 
-@app.route('/lcsong/<int:n>',methods=['get','post'])
-def play_local_song(n):
+@app.route('/lcsong',methods=['get','post'])
+def play_local_song():
     p = check_is_playing()
     if p: return p,204
+    json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
+    path = json_data['path']
+    n = int(json_data['cnt'])
     baidu_tts.read_aloud("准备播放本地音乐",True)
-    threading.Thread(target=play_sound.play_local_music,args=(n,)).start()
+    threading.Thread(target=play_sound.play_local_music,args=(n,path)).start()
     return '',200
+    # p = check_is_playing()
+    # if p: return p,204
+    # baidu_tts.read_aloud("准备播放本地音乐",True)
+    # threading.Thread(target=play_sound.play_local_music,args=(n,)).start()
+    # return '',200
 
 @app.route('/rdsong/<id>')
 def play_rd_song(id):
