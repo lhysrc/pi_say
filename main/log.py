@@ -36,7 +36,7 @@ formatter = logging.Formatter('%(asctime)s | %(name)s:\n%(levelname)-6s: %(messa
 """
 
 def handle_logger(logger,filepath = filename):
-    trfhdlr = logging.handlers.RotatingFileHandler(filename, maxBytes=10*1024, backupCount=10)
+    trfhdlr = logging.handlers.RotatingFileHandler(filename, maxBytes=10*1024, backupCount=9)
     # trfhdlr.suffix = ".%Y%m%d"
     trfhdlr.setFormatter(formatter)
     trfhdlr.setLevel(logging.NOTSET)

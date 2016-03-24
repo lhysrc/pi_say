@@ -5,7 +5,7 @@ from flask import render_template,make_response,request
 
 from main import baidu_tts,ne_music,play_sound
 from www import app
-
+from common import util
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -19,12 +19,24 @@ def internal_server_error(e):
 def index():
     return render_template('index.html',index='index')
 
-
 @app.route('/log',methods=['get'])
-def page_log():
-    with open("./log/log",'r+') as f:
+@app.route('/log/<int:page_idx>', methods=['get'])
+def page_log(page_idx=None):
+    if not page_idx:file_name = "./log/log"
+    else:
+        logs = util.GetFileFromThisRootDir("./log")
+        logs.sort()
+        if page_idx>=len(logs):return page_not_found(0)
+        file_name = logs[page_idx]
+    with open(file_name,'r+') as f:
         log_text = f.read()
-    return render_template('log.html',log='log',log_text= unicode(log_text,'utf-8'))
+    ret = {
+        'log':'log',
+        'file_name':file_name,
+        'log_text':unicode(log_text,'utf-8'),
+        'next': page_idx+1 if page_idx else 1
+    }
+    return render_template('log.html', **ret)
 
 
 @app.route('/read',methods=['get'])
@@ -105,16 +117,16 @@ def tts_page_2():
 
 @app.route('/lcsong/<int:n>',methods=['get','post'])
 def play_local_song(n):
-    if play_sound.is_playing_music():
-        return '当前正在播放音乐',299
+    p = check_is_playing()
+    if p: return p,204
     baidu_tts.read_aloud("准备播放本地音乐",True)
     threading.Thread(target=play_sound.play_local_music,args=(n,)).start()
     return '',200
 
 @app.route('/rdsong/<id>')
 def play_rd_song(id):
-    if play_sound.is_playing_music():
-        return '当前正在播放音乐'
+    p = check_is_playing()
+    if p: return p,204
     baidu_tts.read_aloud("准备随机播放音乐",True)
     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
     threading.Thread(target=ne_music.play_a_list,args=(url,1)).start()
@@ -122,8 +134,8 @@ def play_rd_song(id):
 
 @app.route('/ltsong/<id>')
 def play_a_list(id,n=10):
-    if play_sound.is_playing_music():
-        return '当前正在播放音乐'
+    p = check_is_playing()
+    if p: return p,204
     baidu_tts.read_aloud("准备播放%d首音乐"%n,True)
     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
     threading.Thread(target=ne_music.play_a_list,args=(url,n)).start()
@@ -131,10 +143,8 @@ def play_a_list(id,n=10):
 
 @app.route('/play_url',methods=['post'])
 def play_url():
-    if ne_music.loading_url():
-        return '当前正在加载音乐信息，已准备播放',299
-    if play_sound.is_playing_music():
-        return '当前正在播放音乐',299
+    p = check_is_playing()
+    if p: return p,204
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     url = json_data['url']
     n = int(json_data['cnt'])
@@ -142,6 +152,12 @@ def play_url():
     threading.Thread(target=ne_music.play_a_list,args=(url,n,rdm=='true')).start()
     return '',200
 
+def check_is_playing():
+    if ne_music.loading_url():
+        return '当前正在加载音乐信息，已准备播放'
+    if play_sound.is_playing_music():
+        return '当前正在播放音乐'
+    return ""
 
 # @app.route('/tts',methods='post')
 # def tts():
