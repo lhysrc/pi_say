@@ -79,7 +79,7 @@ def start_main():
         (8, 45): (load_weather, ()),
         (9,  0): (auto_check_in, ()),
         (9, 30): (play_song_list, ()),
-        (10, 0): (load_weather, ('',True)),
+        (10,15): (load_weather, ('',True)),
         # (10, 18): (play_song_list, ()),
         (22, 45): (play_sound.play_local_music, (6,'./music/4baby',True)),
     }
@@ -103,6 +103,7 @@ def start_main():
                 interval = max(0, interval)
                 log.info("将在%s秒后执行%s" % (interval, task_func[0].__name__))
                 threading.Timer(interval, task_func[0], task_func[1]).start()
+        log.info("程序运行正常。")
         time.sleep(3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec)
 
         # t1 = threading.Thread(target=_498)
