@@ -78,10 +78,10 @@ def start_main():
     holiday_task_list ={
         (8, 45): (load_weather, ()),
         (9,  0): (auto_check_in, ()),
-        (9, 30): (play_song_list, ()),
-        (10,15): (load_weather, ('',True)),
+        (10, 0): (play_song_list, ()),
+        (9, 55): (load_weather, ('',True)),
         # (10, 18): (play_song_list, ()),
-        (22, 45): (play_sound.play_local_music, (6,'./music/4baby',True)),
+        (22, 45): (play_sound.play_local_music, (5,'./music/4baby',True)),
     }
 
     # bao_shi = threading.Thread(target=tell_time)
