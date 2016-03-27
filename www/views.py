@@ -118,7 +118,7 @@ def tts_page_2():
 @app.route('/lcsong',methods=['get','post'])
 def play_local_song():
     p = check_is_playing()
-    if p: return p,204
+    if p: return p
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     path = str(json_data['path'])
     n = int(json_data['cnt'])
@@ -134,7 +134,7 @@ def play_local_song():
 @app.route('/rdsong/<id>')
 def play_rd_song(id):
     p = check_is_playing()
-    if p: return p,204
+    if p: return p
     baidu_tts.read_aloud("准备随机播放音乐",True)
     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
     threading.Thread(target=ne_music.play_a_list,args=(url,1)).start()
@@ -143,7 +143,7 @@ def play_rd_song(id):
 @app.route('/ltsong/<id>')
 def play_a_list(id,n=10):
     p = check_is_playing()
-    if p: return p,204
+    if p: return p
     baidu_tts.read_aloud("准备播放%d首音乐"%n,True)
     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
     threading.Thread(target=ne_music.play_a_list,args=(url,n)).start()
@@ -152,7 +152,7 @@ def play_a_list(id,n=10):
 @app.route('/play_url',methods=['post'])
 def play_url():
     p = check_is_playing()
-    if p: return p,204
+    if p: return p
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     url = json_data['url']
     n = int(json_data['cnt'])
