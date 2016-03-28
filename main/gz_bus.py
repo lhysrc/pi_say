@@ -64,7 +64,7 @@ def cxld_0_b11():
 #       配置说明
 #    581 = 0;7,48;60;15
 #  公交车 = 暂停天数（不含假日）;开始报站时间;间隔秒;次数
-import config,time
+import config,time,threading
 def baozhan(bus,func):
     v = config.get('bus',bus).split(';')
     pause_days,interval,cnt = int(v[0]),int(v[2]),int(v[3])
@@ -77,7 +77,7 @@ def baozhan(bus,func):
         config.save()
     else:
         for i in range(0,cnt):
-            func()
+            threading.Thread(target=func).start()
             time.sleep(interval)
     return v
 

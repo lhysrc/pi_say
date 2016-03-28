@@ -67,7 +67,8 @@ def start_main():
 
     workday_task_list = {
         (7, 47): (gz_bus.baozhan, ('581',gz_bus.cxld_0_581)),
-        (8, 05): (gz_bus.baozhan, ('498',gz_bus.cxld_0_498())),
+        (8, 05): (gz_bus.baozhan, ('498',gz_bus.cxld_0_498)),
+        (7, 48): (gz_bus.baozhan, ('b11',gz_bus.cxld_0_b11)),
         (7, 35): (alarm_song, ()),
         (9,  0): (auto_check_in, ()),
         # (9, 39): (alarm_song, ()),
