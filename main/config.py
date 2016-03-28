@@ -39,6 +39,7 @@ def set(section,option,value=None):
     if section not in config.sections():
         config.add_section(section)
     config.set(section,option,value)
+    log.info('config set: section:%s, option:%s, value:%s.'%(section,option,value))
     #save_config()
 
 

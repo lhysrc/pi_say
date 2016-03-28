@@ -43,10 +43,28 @@ def page_log(page_idx=None):
 def page_read():
     return render_template('read.html',read='read')
 
+@app.route('/config',methods=['get'])
+def page_config():
+    ret = {
+        'cfg': True,
+        '_581': gz_bus.get_pause_day('581') == 0,
+        '_498': gz_bus.get_pause_day('498') == 0,
+    }
+    return render_template('config.html',**ret)
+
+
 '''
 /read isn't multithreading
 /tts is multithreading to tts
 '''
+from main import gz_bus
+@app.route('/pause-bus',methods=['post'])
+def pause_tell_bus():
+    json_data = {key: dict(request.form)[key][0] for key in dict(request.form)}
+    bus = json_data['bus']
+    days = json_data['days']
+    gz_bus.pause_tell_bus(bus,days)
+    return ""
 
 @app.route('/read',methods=['post'])
 def tts():

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/bootstrap-slider.min.css') }}" rel="stylesheet">
+    <style>
+        .btn-group {
+            margin: 10px 0
+        }
+
+    </style>
+{% endblock %}
+{% block main_content %}
+
+    <div class="page-header">
+        <h1>设置页面</h1>
+    </div>
+    <div>
+        <label>暂停公交报站：</label>
+        <div class="btn-group btn-group-justified" role="group">
+
+            <a class="btn btn-default bus-tell" {% if not _581 %}disabled{% endif %} role="button" content="581">
+{#                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>#}
+                停报581一天</a>
+            <a class="btn btn-default bus-tell" {% if not _498 %}disabled{% endif %} role="button" content="498">
+{#                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>#}
+                停报498一天</a>
+
+        </div>
+
+{##}
+{#        <div class="form-group">#}
+{#            <label for="textToRead">要播报的内容：</label>#}
+{#            <textarea class="form-control" id="textToRead"></textarea>#}
+{#        </div>#}
+{#     #}
+{#        <button type="button" class="btn btn-primary" id="play">#}
+{##}
+{#            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> 播报#}
+{#        </button>#}
+
+
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="modal_msg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">提示</h4>
+                </div>
+                <div class="modal-body" id="msg_body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+
+    <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.bus-tell').click(function () {
+                var btn = $(this);
+                if(btn.attr('disabled')) return false;
+                var d = {
+                    bus:$(this).attr('content'),
+                    days:1
+                };
+                $.post('../pause-bus', d, function (x, y) {
+                    if(!x) btn.addClass('disabled');
+                });
+
+            });
+
+            $('#tellTime').click(function () {
+                var d = getSetting();
+                $.post('../time', d);
+            });
+            $('#tellWeather').click(function () {
+                var d = getSetting();
+                $.post('../weather', d);
+            });
+            function getSetting() {
+                var vol = $('#vol').slider('getValue') - 1;
+                var pit = $('#pit').slider('getValue') - 1;
+                var spd = $('#spd').slider('getValue') - 1;
+                var per = $('.sex:checked').val();
+                return {per: per, vol: vol, pit: pit, spd: spd};
+            }
+
+            $('#play').click(function () {
+                var txt = $('#textToRead').val();
+                if (!txt) {
+                    $('#msg_body').text('请输入要播报的文字。');
+                    $('#modal_msg').modal('show');
+{#                    alert("请输入要播报的文字。");#}
+                    return false;
+                }
+                var d = getSetting();
+                d['text'] = txt;
+                $.post('../read', d, function (x, y) {
+
+                    {#                        $('#contact_form').html("<div id='message'></div>");#}
+                    {#                        $('#message').html("<h2>Contact Form Submitted!</h2>")#}
+                    {#                                .append("<p>We will be in touch soon.</p>")#}
+                    {#                                .hide()#}
+                    {#                                .fadeIn(1500, function () {#}
+                    {#                                    $('#message').append("<img id='checkmark' src='images/check.png' />");#}
+                    {#                                });#}
+
+                });
+                {#                $.ajax('../read', function (data, status) {#}
+                {#                    alert("Data: " + data + "\nStatus: " + status);#}
+                {#                });#}
+                return false
+            });
+
+        });
+    </script>
+{% endblock %}

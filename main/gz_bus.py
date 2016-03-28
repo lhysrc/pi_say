@@ -52,6 +52,42 @@ def cxld_0_581():
     """581往科学城，长兴路东到站信息"""
     return count_waittime(581,"长兴路东",162545)
 
+def cxld_0_b11():
+    """b11往员村方向，长兴路东到站信息 87792 ,返程87995"""
+    return count_waittime('b11', "长兴路东", 87792)
+
 #res = ccxx_1_772()
 #print res,len(res)
 #print res[0]['count']
+
+
+#       配置说明
+#    581 = 0;7,48;60;15
+#  公交车 = 暂停天数（不含假日）;开始报站时间;间隔秒;次数
+import config,time
+def baozhan(bus,func):
+    v = config.get('bus',bus).split(';')
+    pause_days,interval,cnt = int(v[0]),int(v[2]),int(v[3])
+    if pause_days<0:
+        #print "%s不报站"%bus
+        log.warn("%s不报站"%bus)
+    elif pause_days>0:
+        log.warn("今日%s暂停报站，将在%d天后恢复报站。"%(bus,pause_days))
+        config.set('bus',bus,'%d;%s;%d;%d'%(pause_days-1,v[1],interval,cnt))
+        config.save()
+    else:
+        for i in range(0,cnt):
+            func()
+            time.sleep(interval)
+    return v
+
+
+def pause_tell_bus(bus,days=1):
+    v = config.get('bus', bus).split(';')
+    v[0] = str(days)
+    config.set('bus',bus,';'.join(v))
+    config.save()
+
+def get_pause_day(bus):
+    v = config.get('bus', bus).split(';')
+    return int(v[0])
