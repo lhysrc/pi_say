@@ -153,7 +153,7 @@ def baozhan(bus,func):
         for i in range(0,cnt):
             threading.Thread(target=func).start()
             time.sleep(interval)
-    return v
+    # return v
 
 
 def pause_tell_bus(bus,days=1):
