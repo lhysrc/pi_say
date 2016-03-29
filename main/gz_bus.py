@@ -4,7 +4,81 @@ import urllib
 
 import baidu_tts
 log = logging.getLogger(__name__)
-wait_time_url = "http://wxbus.gzyyjt.net/wei-bus-app/waitBus/waitTime"
+
+
+url_main = 'http://wxbus.gzyyjt.net/'
+urlGetStationByName = url_main + 'wei-bus-app/station/getByName'
+urlGetRouteByName = url_main + 'wei-bus-app/route/getByName'
+urlGetBusByStation = url_main + 'wei-bus-app/routeStation/getByStation/%s' # stationId
+urlGetStationByRouteAndDirection = url_main+'wei-bus-app/routeStation/getByRouteAndDirection/%s/%s' # ri/d
+
+urlWaitBusWaitTime = url_main + "wei-bus-app/waitBus/waitTime"
+
+headers = {
+    "Accept"         : "*/*",
+    "Accept-Encoding": "gzip, deflate",
+    "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.6",
+    "Content-Type"   : "application/x-www-form-urlencoded; charset=UTF-8",
+    "Referer"        : "http://wxbus.gzyyjt.net/wei-bus-app/station",
+    "User-Agent"     : "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36",
+    "Origin"         : "http://wxbus.gzyyjt.net",
+    "DNT":1,
+
+}
+
+cookie = {
+    'JSESSIONID' : '3FDFA7A164B15F33436BD56E73BBD6F7',
+    'WBSRV' : 's3',
+    'route' : 'fe9b13b33d88398957ee445b97555283',
+}
+
+import requests
+ss = requests.session()
+ss.headers.update(headers)
+
+
+ss.cookies.update(cookie)
+
+def search_station(name):
+    """通过名称查找站点"""
+    d = {'name':name}
+    res = ss.post(urlGetStationByName, d)
+    stations = res.json()
+    #print stations
+    # [{'i': '12344', 'n': '长兴路东站'},...]
+    return stations
+
+def search_route(name):
+    """通过名称查找线路"""
+    d = {'name':name}
+    res = ss.post(urlGetRouteByName, d)
+    routes = res.json()
+    #print stations
+    # [{'i': '713', 'n': 'B1路'},...]
+    return routes
+
+#print search_route('b1')
+
+def get_all_route(stationid):
+    """通过站点ID查找所有线路"""
+    res = ss.get(urlGetBusByStation % stationid)
+    buses = res.json()
+    #print buses
+    # [{"ri":"89","rn":"581路","rsi":"162545","d":"0","dn":"长福路(天河客运站)总站-黄埔客运站总站"},...]
+    return buses['l'] if 'l' in buses else []
+
+def get_all_station(route_id,direction_id):
+    """通过线路ID和目的ID查找所有停靠站点"""
+    res = ss.get(urlGetStationByRouteAndDirection % (route_id,direction_id))
+    stations = res.json()
+    # [{"i":"162566","n":"长福路(天河客运站)总站","sni":"5655","si":"7606"},...]
+    return stations['l'] if 'l' in stations else []
+
+def get_searchId(station_id,route_id,direction_id):
+    stations = get_all_station(route_id,direction_id)
+    station = filter(lambda s:s['sni']==station_id, stations)
+    if station:return station[0]['i']
+
 
 def count_waittime(bus_no,st_name,search_num,num=2,read=True):
     """根据公车号，站点名，查询编码查找到站信息
@@ -22,7 +96,7 @@ def count_waittime(bus_no,st_name,search_num,num=2,read=True):
     param = {"rsId":search_num,"num":num}
     data = urllib.urlencode(param)
     from common import util
-    result = util.getJson(wait_time_url, data)
+    result = util.getJson(urlWaitBusWaitTime, data)
     cnt, tm = result[0]['count'],result[0]['time']
     if read:
         if cnt == -1:
@@ -91,3 +165,46 @@ def pause_tell_bus(bus,days=1):
 def get_pause_day(bus):
     v = config.get('bus', bus).split(';')
     return int(v[0])
+
+
+
+if __name__ == '__main__':
+
+    s = raw_input(u"1.通过站点查找\n2.通过班次查找\n")
+    if s == '1':
+        s = raw_input(u"请输入站点：\n")
+        stations = search_station(s)
+        for i, b in enumerate(stations): print i, b['n'], b['i']
+        s = raw_input(u"第几个？")
+        stationid = stations[int(s)]['i']
+        print "stationid ",stationid
+        #
+        buses = get_all_route(stationid)
+        for i,b in enumerate(buses):print i,b['rn'],b['dn']
+        s = raw_input(u"第几条？")
+        bus = buses[int(s)] #filter(lambda b:b['rsi']=='162545',buses)[0]
+
+
+        #print bus['ri']
+
+        ri,d = bus['ri'],bus['d']
+        sid = get_searchId(stationid,ri,d)
+        print "该站点查询ID为：",sid
+    elif s == '2':
+        s = raw_input(u"请输入班次：\n")
+        routes = search_route(s)
+        for i, r in enumerate(routes): print i, r['n'], r['i']
+        s = raw_input(u"第几个？")
+        rid = routes[int(s)]['i']
+        s,d='-1',1
+        while s=='-1':
+            d=(d+1)%2
+            stations = get_all_station(rid,d )
+            for i, st in enumerate(stations): print i,st['n'],st['i']
+            s = raw_input(u"第几个？查看返程输入-1")
+        stationid = stations[int(s)]['i']
+        print "stationid ", stationid
+
+    else:
+        pass
+
