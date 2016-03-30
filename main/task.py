@@ -200,9 +200,20 @@ if __name__ == '__main__':
     print rtt
 
     tasks = {
-        'xm':Task("虾米签到",9,0,auto_check_in,(),3) ,
-        'weather1':TellWeatherTask(8,55),
-
+        'xm': Task("虾米签到", 9, 0, auto_check_in, (), 3),
+        'weather1': TellWeatherTask(8, 55),
+        'wy': PlayNetMusicTask(14, 0, "http://music.163.com/#/playlist?id=326005981", 5)
     }
+    load_all_tasks()
+    # print task.tasks
+    from threading import Thread, Timer
+    import time
 
-    print tasks['xm']
+    t = time.localtime()
+    for name in tasks:
+        tk = tasks[name]
+        if t.tm_hour == tk.t_hour and tk.t_min >= t.tm_min:
+            interval = (tk.t_min - t.tm_min) * 60 - t.tm_sec
+            interval = max(0, interval)
+            log.warn(u"将在%s秒后执行任务：%s - %s。" % (interval, name.decode('utf-8'), tk.name))
+            Timer(interval, tk.func, tk.args).start()
