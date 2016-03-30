@@ -105,7 +105,7 @@ def start_main():
                 interval = max(0, interval)
                 log.info("将在%s秒后执行%s" % (interval, task_func[0].__name__))
                 threading.Timer(interval, task_func[0], task_func[1]).start()
-        log.info("程序运行正常。")
+        # log.info("程序运行正常。")
         time.sleep(3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec)
 
         # t1 = threading.Thread(target=_498)

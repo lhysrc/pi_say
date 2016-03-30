@@ -179,7 +179,9 @@ def save_all_tasks():
     config.save()
 
 
-
+def save_task(name,task):
+    config.set("Task",name,task)
+    config.save()
 
 
 

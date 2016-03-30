@@ -9,12 +9,18 @@
 {% endblock %}
 {% block main_content %}
 
-    <div class="page-header">
+    <div class="page-header text-center">
         <h1 class="center-block">音乐页面</h1>
 
 
     </div>
     <div class="input-append">
+
+        <ul class="nav nav-tabs ">
+  <li role="presentation" class="active page-btn" id="lc-page"><a href="#">本地音乐</a></li>
+  <li role="presentation" class=" page-btn"  id="ne-page"><a href="#">网易</a></li>
+  <li role="presentation" class="page-btn disabled"  id="xm-page"><a href="#">虾米</a></li>
+</ul>
         <form>
 {#                        <div>#}
                 <input type="button" class="btn btn-default" id="localMusic" value="播放本地音乐">　
@@ -165,6 +171,9 @@
                 <div class="input-group">
                     <span class="input-group-addon">播放</span>
                     <input class=" form-control" type="text" id="cnt" value="3"/>
+
+
+
                     <span class="input-group-addon">首</span>
                 </div>
 
@@ -231,6 +240,19 @@
     {{ super() }}
     <script>
         $(document).ready(function () {
+            $('.page-btn').not('.disabled').click(function () {
+                $('.page-btn').removeClass('active');
+                $(this).addClass('active');
+                switch($(this).attr('id')){
+                    case "lc-page":
+                        $("#set-url-div").fadeOut(100);
+                        break;
+                    case "ne-page":
+                        $("#set-url-div").fadeIn(100);
+                        break;
+                }
+            });
+
             $('#ul-toplist a').click(function () {
                 var tp_url = 'http://music.163.com/discover/toplist?id=' + $(this).attr('content');
                 $('#url').val(tp_url);
