@@ -36,33 +36,44 @@ formatter = logging.Formatter('%(asctime)s | %(name)s:\n%(levelname)-6s: %(messa
 """
 
 def handle_logger(logger,filepath = filename):
-    trfhdlr = logging.handlers.RotatingFileHandler(filename, maxBytes=10*1024, backupCount=9)
-    # trfhdlr.suffix = ".%Y%m%d"
-    trfhdlr.setFormatter(formatter)
-    trfhdlr.setLevel(logging.NOTSET)
-    log.addHandler(trfhdlr)
-    # fhdlr = logging.FileHandler("./tmp/log.log")
-    # fhdlr.setFormatter(formatter)
-    # fhdlr.setLevel(logging.WARN)
+
     if 'Windows' in platform.uname():
+
         stdout_handler = logging.StreamHandler(sys.__stdout__)
-        stdout_handler.level = logging.DEBUG
+        stdout_handler.setLevel(logging.INFO)
         stdout_handler.formatter = formatter
-        log.addHandler(stdout_handler)
+        logger.addHandler(stdout_handler)
+
+    else:
+        trfhdlr = logging.handlers.RotatingFileHandler(filepath, maxBytes=10 * 1024, backupCount=9)
+        trfhdlr.setFormatter(formatter)
+        trfhdlr.setLevel(logging.NOTSET)
+        logger.addHandler(trfhdlr)
+        # fhdlr = logging.FileHandler("./tmp/log.log")
+        # fhdlr.setFormatter(formatter)
+        # fhdlr.setLevel(logging.WARN)
 
     stderr_handler = logging.StreamHandler(sys.__stderr__)
     stderr_handler.level = logging.WARNING
     stderr_handler.formatter = formatter
-    log.addHandler(stderr_handler)
+    logger.addHandler(stderr_handler)
 
+
+    log.setLevel(logging.INFO)
     # shdlr = logging.StreamHandler()
     # shdlr.setFormatter(formatter)
     # shdlr.setLevel(logging.INFO)
     # if 'Windows' in platform.uname():
     #     log.addHandler(shdlr)
-    log.setLevel(logging.NOTSET)
+    # log.setLevel(logging.NOTSET)
 
 handle_logger(log)
+
+# def get_logger(name):
+#     logger = logging.getLogger(__name__)
+#     handle_logger(logger)
+#     return logger
+
 
 def info(msg):
     log.info(msg)

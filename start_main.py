@@ -43,7 +43,7 @@ def load_weather(d=1,t=''):
         d:穿衣建议
         t:出行建议
     """
-    baidu_tts.read_aloud(weather.tell_today(d,t), per=3)
+    baidu_tts.read_aloud(weather.today(d, t), per=3)
 
 
 def play_song_list(n=10):

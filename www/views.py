@@ -111,7 +111,7 @@ import main.weather
 @app.route('/weather',methods=['get','post'])
 def tell_weather():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
-    json_data['text'] = main.weather.tell_today()
+    json_data['text'] = main.weather.today()
     json_data['text'] = urllib.quote_plus(json_data['text'])
     baidu_tts.read_aloud(**json_data)
     return json_data['text']

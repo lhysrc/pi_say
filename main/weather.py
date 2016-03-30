@@ -7,7 +7,7 @@ import logging
 log = logging.getLogger(__name__)
 import time
 
-
+import baidu_tts
 from common.util import getJson,byteify
 
 header = {'apikey': api_key}
@@ -17,7 +17,7 @@ header = {'apikey': api_key}
 
 
 
-def tell_today(drsg = True, trav = ''):
+def today(drsg = True, trav = False):
 
     json = byteify(getJson(url, header=header))
 
@@ -66,8 +66,12 @@ def tell_today(drsg = True, trav = ''):
            (now_tmp, d_cond, n_cond, min_tmp, max_tmp, comf, drsg, trav)
 
 
+def tell_today(drsg = True, trav = False):
+    w = today(drsg, trav)
+    baidu_tts.read_aloud(w)
+
 if __name__ == '__main__':
-    print(tell_today(trav=True))
+    print(today(trav=True))
     #baidu_tts.read_aloud(tell_today())
 
 # 现在时间是上午7点50分，气温20度；今天白天：晴，夜间：晴，18到27度。舒适度：较舒适，建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。
