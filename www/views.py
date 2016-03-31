@@ -138,9 +138,9 @@ def play_local_song():
     p = check_is_playing()
     if p: return p
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
-    path = str(json_data['path'])
+    path = str(json_data['url'])
     n = int(json_data['cnt'])
-    baidu_tts.read_aloud("准备播放本地音乐",True)
+    # baidu_tts.read_aloud("准备播放本地音乐",True)
     threading.Thread(target=play_sound.play_local_music,args=(n,path)).start()
     return '',200
     # p = check_is_playing()

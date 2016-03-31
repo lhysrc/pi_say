@@ -2,9 +2,10 @@
 {% block style %}
     {{ super() }}
     <style>
-        #set-url-div,#localMusic {
+        #set-url-div, #localMusic,.nav-tabs{
             margin: 15px 0
         }
+
     </style>
 {% endblock %}
 {% block main_content %}
@@ -17,40 +18,50 @@
     <div class="input-append">
 
         <ul class="nav nav-tabs ">
-  <li role="presentation" class="active page-btn" id="lc-page"><a href="#">本地音乐</a></li>
-  <li role="presentation" class=" page-btn"  id="ne-page"><a href="#">网易</a></li>
-  <li role="presentation" class="page-btn disabled"  id="xm-page"><a href="#">虾米</a></li>
-</ul>
-        <form>
-{#                        <div>#}
-                <input type="button" class="btn btn-default" id="localMusic" value="播放本地音乐">　
-{#            </div>#}
-            <label>位于
-                <label>
-                    <select class="form-control" id="local-path">
-                        <option>./music</option>
-                        <option selected>./music/mine</option>
-                        <option>./music/4baby</option>
-
-                    </select>
-                </label>　
+            <li role="presentation" class="page-btn" id="lc-page" content="../lcsong">
+                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">本地音乐
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="local-path">
+                    <li><a >./music</a></li>
+                    <li><a >./music/mine</a></li>
+                    <li><a >./music/4baby</a></li>
+{#                    <li role="separator" class="divider"></li>#}
+{#                    <li><a href="#"></a></li>#}
+                </ul>
+            </li>
+            <li role="presentation" class="page-btn active " id="ne-page" content="../play_url"><a >网易云音乐</a></li>
+            <li role="presentation" class="page-btn disabled" id="xm-page"><a >虾米音乐</a></li>
+        </ul>
+{#        <form>#}
+            {#                        <div>#}
+{#            <input type="button" class="btn btn-default" id="localMusic" value="播放本地音乐">　#}
+            {#            </div>#}
+{#            <label>位于#}
+{#                <label>#}
+{#                    <select class="form-control" id="local-path">#}
+{#                        <option>./music</option>#}
+{#                        <option selected>./music/mine</option>#}
+{#                        <option>./music/4baby</option>#}
+{##}
+{#                    </select>#}
+{#                </label>　#}
+                {#            </label>#}
+                {#            <label>#}
+{#                <label>#}
+{#                    <select class="form-control" id="local-cnt">#}
+{#                        <option>1</option>#}
+{#                        <option selected>3</option>#}
+{#                        <option>5</option>#}
+{#                        <option>10</option>#}
+{#                        <option>20</option>#}
+{#                    </select>#}
+{#                </label>首#}
 {#            </label>#}
-{#            <label>#}
-                <label>
-                    <select class="form-control" id="local-cnt">
-                        <option>1</option>
-                        <option selected>3</option>
-                        <option>5</option>
-                        <option>10</option>
-                        <option>20</option>
-                    </select>
-                </label>首
-            </label>
-
-
-
-        </form>
-        <hr/>
+{##}
+{##}
+{#        </form>#}
+{#        <hr/>#}
 
         <form>
             <div class="btn-group btn-group-justified" role="group" id="set-url-div">
@@ -161,9 +172,10 @@
                 {#                    </label>#}
                 {##}
                 {#                </div>#}
-                <label for="url">要播放的网易云音乐页面链接：</label>
+                <label for="url">要播放的歌曲/歌单的链接或本地路径：</label>
+{#                <label for="url">要播放的网易云音乐页面链接：</label>#}
                 <input class="form-control" type="text" id="url" value=""
-                       placeholder="输入 网易云音乐 页面链接，除上面指定，亦可输入专辑，主播电台等"
+                       placeholder="歌曲/歌单/排行榜/电台 链接 or 本地歌曲路径"
                 />
                 {#                <textarea class="form-control" id="textToRead" ></textarea>#}
             </div>
@@ -171,7 +183,6 @@
                 <div class="input-group">
                     <span class="input-group-addon">播放</span>
                     <input class=" form-control" type="text" id="cnt" value="3"/>
-
 
 
                     <span class="input-group-addon">首</span>
@@ -240,15 +251,21 @@
     {{ super() }}
     <script>
         $(document).ready(function () {
+            $('#local-path a').click(function () {
+                $('#url').val($(this).text());
+                $('#url').attr('disabled','disabled');
+            });
+
             $('.page-btn').not('.disabled').click(function () {
                 $('.page-btn').removeClass('active');
                 $(this).addClass('active');
-                switch($(this).attr('id')){
+                switch ($(this).attr('id')) {
                     case "lc-page":
                         $("#set-url-div").fadeOut(100);
                         break;
                     case "ne-page":
                         $("#set-url-div").fadeIn(100);
+                        $('#url').removeAttr('disabled').val("");
                         break;
                 }
             });
@@ -273,7 +290,7 @@
                 var lc_path = $('#local-path').val();
                 var lc_cnt = $('#local-cnt').val();
                 var d = {path: lc_path, cnt: lc_cnt};
-                $.post('../lcsong',d, function (data, status) {
+                $.post('../lcsong', d, function (data, status) {
                     if (data) {
                         $('#msg_body').text(data);
                         $('#modal_msg').modal('show');
@@ -281,6 +298,8 @@
                 });
             });
             $('#play').click(function () {
+                var postTo = $(".page-btn.active").attr("content");
+                //alert(postTo);
                 if ($(this).hasClass('disabled')) return false;
                 $(this).addClass('disabled');
                 var url = $('#url').val();
@@ -294,7 +313,7 @@
                     return false;
                 }
                 var d = {url: url, cnt: cnt, rdm: rdm};
-                $.post('../play_url', d, function (data, status) {
+                $.post(postTo, d, function (data, status) {
                     if (data) {
                         $('#msg_body').text(data);
                         $('#modal_msg').modal('show');
