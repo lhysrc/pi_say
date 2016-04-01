@@ -5,10 +5,15 @@
         {% block title %}树莓派{% endblock %}
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon">
+    <script src="{{ url_for('static',filename = 'jquery.js') }}"></script>
+    <script src="{{ url_for('static',filename = 'js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static',filename = 'js/angular.js') }}"></script>
+
     {% block styles %}
-        <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
-        <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon">
-        <link rel="icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon">
+
 
 
         {% block style %}
@@ -92,8 +97,7 @@
         </footer>
     </div>
     {% block scripts %}
-        <script src="{{ url_for('static',filename = 'jquery.js') }}"></script>
-        <script src="{{ url_for('static',filename = 'js/bootstrap.js') }}"></script>
+
         {% block script %}{% endblock %}
     {%- endblock %}
 {% endblock %}
