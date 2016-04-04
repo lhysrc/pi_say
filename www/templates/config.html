@@ -14,7 +14,7 @@
     <div class="page-header">
         <h1>设置页面</h1>
     </div>
-    <div>
+    <div ng-app="" ng-controller="busCtrl">
         <label>暂停公交报站：</label>
         <div class="btn-group btn-group-justified" role="group">
 
@@ -63,6 +63,10 @@
 
     <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
     <script>
+        app.module('configApp',[]);
+        app.controller('busCtrl',function () {
+
+        });
         $(document).ready(function () {
             $('.bus-tell').click(function () {
                 var btn = $(this);

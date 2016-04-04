@@ -53,10 +53,7 @@ def page_config():
     return render_template('config.html',**ret)
 
 
-'''
-/read isn't multithreading
-/tts is multithreading to tts
-'''
+
 from main import gz_bus
 @app.route('/pause-bus',methods=['post'])
 def pause_tell_bus():
@@ -66,6 +63,11 @@ def pause_tell_bus():
     gz_bus.pause_tell_bus(bus,days)
     return ""
 
+
+"""
+/read isn't multithreading
+/tts is multithreading to tts
+"""
 @app.route('/read',methods=['post'])
 def tts():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
@@ -111,7 +113,9 @@ import main.weather
 @app.route('/weather',methods=['get','post'])
 def tell_weather():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
-    json_data['text'] = main.weather.today()
+    json_data['idx'] = 0 if 'idx' not in json_data else json_data['idx']
+    json_data['text'] = main.weather.day_of_week(int(json_data['idx']))
+    del json_data['idx']
     json_data['text'] = urllib.quote_plus(json_data['text'])
     baidu_tts.read_aloud(**json_data)
     return json_data['text']
@@ -140,6 +144,7 @@ def play_local_song():
     json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
     path = str(json_data['url'])
     n = int(json_data['cnt'])
+    app.logger.info(u"准备播放%d首'%s'里的音乐。"%(n,path))
     # baidu_tts.read_aloud("准备播放本地音乐",True)
     threading.Thread(target=play_sound.play_local_music,args=(n,path)).start()
     return '',200
@@ -175,6 +180,7 @@ def play_url():
     url = json_data['url']
     n = int(json_data['cnt'])
     rdm = json_data['rdm']
+    app.logger.info(u"准备播放%d首'%s'里的音乐。" % (n, url))
     threading.Thread(target=ne_music.play_a_list,args=(url,n,rdm=='true')).start()
     return '',200
 

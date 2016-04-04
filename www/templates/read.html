@@ -21,7 +21,7 @@
     <div class="page-header">
         <h1>播报页面</h1>
     </div>
-    <div>
+    <div ng-app="readApp">
 
         <div id="div-setting">
             <label class="large">
@@ -41,23 +41,23 @@
                 </label>
                 <label class="col-md-6" id="sexRadios">
                     性别　
-                    <div class="radio-inline">
+                    <span class="radio-inline">
                         <label>
                             <input type="radio" name="sexRadios" class="sex" value="2" checked>
                             随机　
                         </label>
-                    </div>
-                    <div class="radio-inline">
+                    </span>
+                    <span class="radio-inline">
                         <label>
                             <input type="radio" name="sexRadios" class="sex" value="1">
                             男　</label>
-                    </div>
-                    <div class="radio-inline">
+                    </span>
+                    <span class="radio-inline">
                         <label>
                             <input type="radio" name="sexRadios" class="sex" value="0">
                             女　
                         </label>
-                    </div>
+                    </span>
 
                 </label>
 
@@ -85,6 +85,17 @@
             {#                        <span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span>#}
             {#                        今日天气#}
             {#                    </button>#}
+            <div class="btn-group" role="group" ng-controller="weatherCtrl">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    一周天气
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="dd in days"><a ng-click="tellWeather($index)">{{dd['m'] +"月"+ dd['d']+"日，星期"+ dd['w']}}</a></li>
+
+                </ul>
+            </div>
         </div>
         {#                    <div class="btn-group" role="group">#}
         {#                        <button type="button" class="btn btn-default">Right</button>#}
@@ -136,7 +147,52 @@
 
     <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
     <script>
+        week = '日一二三四五六';
+        /**
+         * @return {string}
+         */
+        function GetDateStr(addDayCount) {
+            //var dd = new Date();
+            var dd = new Date(new Date().getTime() + 24*60*60*1000*addDayCount);
+            //dd.setDate(dd.getDate() + addDayCount);//获取AddDayCount天后的日期
+            var y = dd.getFullYear();
+            var m = dd.getMonth() + 1;//获取当前月份的日期
+            var d = dd.getDate();
+            var w = dd.getDay();
+            return {y:y, m:m, d:d, w:week[w]};
+        }
+        function getSetting() {
+                var vol = $('#vol').slider('getValue') - 1;
+                var pit = $('#pit').slider('getValue') - 1;
+                var spd = $('#spd').slider('getValue') - 1;
+                var per = $('.sex:checked').val();
+                return {per: per, vol: vol, pit: pit, spd: spd};
+        }
+        var app = angular.module('readApp', []);
+        app.controller('weatherCtrl', function ($scope,$http) {
+            $scope.days = [];
+            for (var i = 1; i < 7; i++) {
+                $scope.days.push(new GetDateStr(i));
+            }
+            $scope.tellWeather = function (idx) {
+                d = getSetting();
+                d['idx'] = idx + 1;
+                $http({
+                    url: '../weather',
+                    method: "POST",
+                    data:  $.param(d),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                });
+                //$http.post('../weather', getSetting());
+            };
+
+        });
         $(document).ready(function () {
+
+
+
+
+
             // Instantiate a slider
             var mySlider = $("input.slider").slider();
             {#            for(var i in mySlider){#}
@@ -161,13 +217,7 @@
                 var d = getSetting();
                 $.post('../weather', d);
             });
-            function getSetting() {
-                var vol = $('#vol').slider('getValue') - 1;
-                var pit = $('#pit').slider('getValue') - 1;
-                var spd = $('#spd').slider('getValue') - 1;
-                var per = $('.sex:checked').val();
-                return {per: per, vol: vol, pit: pit, spd: spd};
-            }
+
 
             $('#play').click(function () {
                 var txt = $('#textToRead').val();

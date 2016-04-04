@@ -14,6 +14,10 @@ app = Flask(__name__)
 import views
 # bs = Bootstrap(app)
 
+# 模板变量中添加空格，防止与angular js 冲突
+app.jinja_env.variable_end_string = ' }}'
+app.jinja_env.variable_start_string = '{{ '
+
 def run_app():
     app.run(port=3080,threaded=True)
 
