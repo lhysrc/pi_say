@@ -6,6 +6,13 @@
         .btn-group {
             margin: 10px 0
         }
+        .btn[disabled],.btn[disabled]:hover{
+            background-color: #cccccc;
+        }
+        th,td{
+            text-align: center;
+
+        }
 
     </style>
 {% endblock %}
@@ -14,18 +21,36 @@
     <div class="page-header">
         <h1>设置页面</h1>
     </div>
-    <div ng-app="" ng-controller="busCtrl">
+    <div ng-app="configApp" ng-controller="busCtrl">
         <label>暂停公交报站：</label>
-        <div class="btn-group btn-group-justified" role="group">
-
-            <a class="btn btn-default bus-tell" {% if not _581 %}disabled{% endif %} role="button" content="581">
+        <table class="table table-bordered table-hover text-center">
+            <thead class="">
+                <tr >
+                    <th >#</th>
+                    <th>暂停一天</th>
+                    <th>停止</th>
+                    <th>恢复</th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr ng-repeat="(b,s) in b_ss">
+                    <td ><label ng-bind="b"></label></td>
+                    <td><a class="btn btn-warning" ng-disabled="s==1" ng-click="setPauseBus(b,1)">暂停一天</a></td>
+                    <td><a class="btn btn-danger" ng-disabled="s==-1" ng-click="setPauseBus(b,-1)">停止</a></td>
+                    <td><a class="btn btn-success" ng-disabled="s==0" ng-click="setPauseBus(b,0)">恢复</a></td>
+                </tr>
+            </tbody>
+        </table>
+{#        <div class="btn-group btn-group-justified" role="group">#}
+{##}
+{#            <a class="btn btn-default bus-tell" {% if not _581 %}disabled{% endif %} role="button" content="581">#}
 {#                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>#}
-                停报581一天</a>
-            <a class="btn btn-default bus-tell" {% if not _498 %}disabled{% endif %} role="button" content="498">
+{#                停报581一天</a>#}
+{#            <a class="btn btn-default bus-tell" {% if not _498 %}disabled{% endif %} role="button" content="498">#}
 {#                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>#}
-                停报498一天</a>
-
-        </div>
+{#                停报498一天</a>#}
+{##}
+{#        </div>#}
 
 {##}
 {#        <div class="form-group">#}
@@ -63,8 +88,27 @@
 
     <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
     <script>
-        app.module('configApp',[]);
-        app.controller('busCtrl',function () {
+        var app = angular.module('configApp',[]);
+        app.controller('busCtrl',function ($scope,$http) {
+            $http.post('../bus_status')
+                    .success(function (data,status) {
+                        if(status!=200) return;
+                        $scope.b_ss = data;
+                    });
+            $scope.setPauseBus=function (bus,day) {
+                if($scope.b_ss[bus] == day) return;
+                $http({
+                    url: '../pause-bus',
+                    method: "POST",
+                    data:  $.param({bus:bus,days:day}),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }).success(function (data,status) {
+                    //alert(status);
+                    if(status == 200) {//btn.addClass('disabled');
+                        $scope.b_ss[bus] = day;
+                    }
+                });
+            }
 
         });
         $(document).ready(function () {
@@ -79,49 +123,6 @@
                     if(!x) btn.addClass('disabled');
                 });
 
-            });
-
-            $('#tellTime').click(function () {
-                var d = getSetting();
-                $.post('../time', d);
-            });
-            $('#tellWeather').click(function () {
-                var d = getSetting();
-                $.post('../weather', d);
-            });
-            function getSetting() {
-                var vol = $('#vol').slider('getValue') - 1;
-                var pit = $('#pit').slider('getValue') - 1;
-                var spd = $('#spd').slider('getValue') - 1;
-                var per = $('.sex:checked').val();
-                return {per: per, vol: vol, pit: pit, spd: spd};
-            }
-
-            $('#play').click(function () {
-                var txt = $('#textToRead').val();
-                if (!txt) {
-                    $('#msg_body').text('请输入要播报的文字。');
-                    $('#modal_msg').modal('show');
-{#                    alert("请输入要播报的文字。");#}
-                    return false;
-                }
-                var d = getSetting();
-                d['text'] = txt;
-                $.post('../read', d, function (x, y) {
-
-                    {#                        $('#contact_form').html("<div id='message'></div>");#}
-                    {#                        $('#message').html("<h2>Contact Form Submitted!</h2>")#}
-                    {#                                .append("<p>We will be in touch soon.</p>")#}
-                    {#                                .hide()#}
-                    {#                                .fadeIn(1500, function () {#}
-                    {#                                    $('#message').append("<img id='checkmark' src='images/check.png' />");#}
-                    {#                                });#}
-
-                });
-                {#                $.ajax('../read', function (data, status) {#}
-                {#                    alert("Data: " + data + "\nStatus: " + status);#}
-                {#                });#}
-                return false
             });
 
         });

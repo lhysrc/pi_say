@@ -1,7 +1,7 @@
 # coding=utf-8
 import threading
 
-from flask import render_template,make_response,request
+from flask import render_template,make_response,request,jsonify
 
 from main import baidu_tts,ne_music,play_sound
 from www import app
@@ -53,7 +53,18 @@ def page_config():
     return render_template('config.html',**ret)
 
 
-
+@app.route('/bus_status',methods=['post'])
+def bus_status():
+    # json_data = {key: dict(request.form)[key][0] for key in dict(request.form)}
+    # bus = json_data['bus']
+    # days = json_data['days']
+    # gz_bus.pause_tell_bus(bus,days)
+    ret = {
+        '581':gz_bus.get_pause_day('581'),
+        'b11': gz_bus.get_pause_day('b11'),
+        '498': gz_bus.get_pause_day('498'),
+    }
+    return  jsonify(ret)
 from main import gz_bus
 @app.route('/pause-bus',methods=['post'])
 def pause_tell_bus():
