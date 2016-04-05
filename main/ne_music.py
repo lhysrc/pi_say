@@ -171,7 +171,7 @@ class neteaseMusic(object):
         if 'playlist' in self.url:
             self.playlist_id = re.search(
                     r'playlist.+?(\d+)', self.url).group(1)
-            print(s % (2, 92, u'\n  -- 正在分析歌单信息 ...'))
+            log.info(s % (2, 92, u'\n  -- 正在分析歌单信息 ...'))
             self.load_playlist()
         elif 'toplist' in self.url:
             t = re.search(r'toplist.+?(\d+)', self.url)
@@ -179,17 +179,17 @@ class neteaseMusic(object):
                 self.playlist_id = t.group(1)
             else:
                 self.playlist_id = '3778678' # 热歌榜
-            print(s % (2, 92, u'\n  -- 正在分析排行榜信息 ...'))
+            log.info(s % (2, 92, u'\n  -- 正在分析排行榜信息 ...'))
             self.load_playlist()
         elif 'album' in self.url:
             self.album_id = re.search(
                     r'album.+?(\d+)', self.url).group(1)
-            print(s % (2, 92, u'\n  -- 正在分析专辑信息 ...'))
+            log.info(s % (2, 92, u'\n  -- 正在分析专辑信息 ...'))
             self.load_album()
         elif 'artist' in self.url:
             self.artist_id = re.search(
                     r'artist.+?(\d+)', self.url).group(1)
-            print(s % (2, 92, u'\n  -- 正在分析艺术家 Top 50 信息 ...'))
+            log.info(s % (2, 92, u'\n  -- 正在分析艺术家 Top 50 信息 ...'))
             self.load_artist_top_50_songs()
             # code = raw_input('\n  >> 输入 a 下载该艺术家所有专辑.\n' \
             #     '  >> 输入 t 下载该艺术家 Top 50 歌曲.\n  >> ')
@@ -204,20 +204,20 @@ class neteaseMusic(object):
         elif 'song' in self.url:
             self.song_id = re.search(
                     r'song.+?(\d+)', self.url).group(1)
-            print(s % (2, 92, u'\n  -- 正在分析歌曲信息 ...'))
+            log.info(s % (2, 92, u'\n  -- 正在分析歌曲信息 ...'))
             self.load_song()
         elif 'djradio' in self.url:
             self.djradio_id = re.search(
                     r'id=(\d+)', self.url).group(1)
-            print(s % (2, 92, u'\n  -- 正在分析DJ节目信息 ...'))
+            log.info(s % (2, 92, u'\n  -- 正在分析DJ节目信息 ...'))
             self.load_djradio()
         elif 'program' in self.url:
             self.dj_id = re.search(
                     r'id=(\d+)', self.url).group(1)
-            print(s % (2, 92, u'\n  -- 正在分析DJ节目信息 ...'))
+            log.info(s % (2, 92, u'\n  -- 正在分析DJ节目信息 ...'))
             self.load_dj()
         else:
-            print(s % (2, 91, u'   请正确输入music.163.com网址.'))
+            log.info(s % (2, 91, u'   请提供正确的music.163.com网址.'))
         log.info(u'共有%d首歌：%s' % (len(self.song_infos), self.url))
 
     def get_song_info(self, i):
@@ -508,9 +508,11 @@ def play_a_list(url=None, n=0,rdm=True):
             x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
         else:
             x = neteaseMusic(url)
-    n = len(x.song_infos) if n<=0 or n>len(x.song_infos) else n
-    l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
-    for i in l:
+    # n = len(x.song_infos) if n<=0 or n>len(x.song_infos) else n
+    # l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
+    l = x.song_infos
+    if rdm: random.shuffle(l)
+    for i in l[:n]:
         if 'durl' not in i:continue
         log.info(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
         play_sound.play_music(i['durl'])
