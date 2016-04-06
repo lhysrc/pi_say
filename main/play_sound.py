@@ -120,7 +120,7 @@ def play_local_music(n,music_fold='./music_files',rdm=True):
     n = len(files) if n<=0 or n>len(files) else n
     play_files = random.sample(files,n) if rdm else files[:n]
     for f in play_files:
-        log.info(u"播放本地音乐：%s"%f)
+        log.info("播放本地音乐：%s"%f) # 此处加u就出错，不知为何，已犯多次……
         play_music(f)
 
 if __name__ == '__main__':
