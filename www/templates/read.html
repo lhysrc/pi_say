@@ -21,7 +21,7 @@
     <div class="page-header">
         <h1>播报页面</h1>
     </div>
-    <div ng-app="readApp">
+    <div ng-app="readApp" ng-controller="readCtrl">
 
         <div id="div-setting">
             <label class="large">
@@ -85,7 +85,7 @@
             {#                        <span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span>#}
             {#                        今日天气#}
             {#                    </button>#}
-            <div class="btn-group" role="group" ng-controller="weatherCtrl">
+            <div class="btn-group" role="group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                     一周天气
@@ -109,7 +109,7 @@
 
         <div class="form-group">
             <label for="textToRead">要播报的内容：</label>
-            <textarea class="form-control" id="textToRead"></textarea>
+            <textarea class="form-control" id="textToRead" ng-model="text"></textarea>
         </div>
         {##}
         {#            <div class="checkbox">#}
@@ -121,6 +121,31 @@
 
             <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> 播报
         </button>
+        <button type="button" class="btn btn-warning" id="play" ng-click="text=''">
+            {#            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> #}
+            清空
+        </button>
+
+
+        <div class="checkbox">
+            <label>
+                <input ng-model="chk" type="checkbox" disabled>定时
+            </label>
+            <!-- Small button group -->
+            <div class="btn-group dropup"  >
+                <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false" ng-disabled = "!chk">
+                     <span ng-bind="delay_time"></span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="t in default_secs"><a ng-click="set_delay_time($index)">{{t[1]}} &nbsp; | &nbsp; {{t[0]}}</a></li>
+
+                    <li role="separator" class="divider"></li>
+                    <li><a ><input class="form-control input-sm" ng-model="delay_time" type="text" /></a></li>
+                </ul>
+            </div>
+            秒
+        </div>
 
 
     </div>
@@ -169,7 +194,7 @@
                 return {per: per, vol: vol, pit: pit, spd: spd};
         }
         var app = angular.module('readApp', []);
-        app.controller('weatherCtrl', function ($scope,$http) {
+        app.controller('readCtrl', function ($scope, $http) {
             $scope.days = [];
             for (var i = 1; i < 7; i++) {
                 $scope.days.push(new GetDateStr(i));
@@ -186,7 +211,21 @@
                 //$http.post('../weather', getSetting());
             };
 
+            $scope.delay_time = 90;
+            secs = [30,60,90,120,300,600,1800,3600];
+            sec_names = ['半分钟','一分钟','一分半','两分钟','五分钟','十分钟','半小时','一小时'];
+
+            $scope.default_secs = [];
+            for (var i2=0;i2<secs.length;i2++){
+                $scope.default_secs[i2] = [secs[i2],sec_names[i2]];
+            }
+            $scope.set_delay_time = function (idx) {
+                $scope.delay_time = secs[idx];
+                if(!$scope.text) $scope.text = '定时时间到';
+            };
         });
+
+
         $(document).ready(function () {
 
 

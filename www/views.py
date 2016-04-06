@@ -87,7 +87,7 @@ def tts():
     # print(json_data)
     app.logger.info(u"获得播报信息：%s" % json_data['text'])
     json_data['text'] = urllib.quote_plus(json_data['text'].encode('utf8'))
-    baidu_tts.read_aloud(**json_data)
+    baidu_tts.read_aloud(**json_data) #todo 平加定时播报，并播报多次
     #threading.Thread(target=baidu_tts.read_aloud, args=(json_data)).start()
     return render_template('read.html',read='read')
 
