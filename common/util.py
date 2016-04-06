@@ -90,4 +90,4 @@ if __name__ == '__main__':
     # print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
     # print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
     print(os.getcwd())
-    print(GetFileFromThisRootDir("../music"))
+    print(GetFileFromThisRootDir("../music_files"))

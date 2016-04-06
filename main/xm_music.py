@@ -312,7 +312,7 @@ class xiami(object):
             #% int(time.time())
         url = re.search(r'src="(http.+checkcode.+?)"', cn).group(1)
         path = os.path.join(os.path.expanduser('~'), 'vcode.png')
-        with open(path, 'w') as g:
+        with open(path, 'wb') as g:
             data = ss.get(url).content
             g.write(data)
         print "  ++ 验证码已经保存至", s % (2, 91, path)
@@ -1217,8 +1217,8 @@ if __name__ == '__main__':
     # main(argv)
     x = xiami()
     # x.login()
-    # x.url_parser(['http://www.xiami.com/album/2100294190'])
-    x.check_in()
+    x.url_parser(['http://www.xiami.com/album/2100294190'])
+    #x.check_in()
 
 
     # url = 'http://m3.file.xiami.com/h/gzycHoYe6TpghKWTSY0JciAa6eXdGjaAxLRSj7cUqAQnLJEPZ4vmkJORQglB3CGaqEceE7qZ2jxGHuxbRNypwa%2BJGUHfCBxdB6pf'

@@ -110,12 +110,12 @@ def play_by_pymedia(sound_file):
     while snd.isPlaying(): time.sleep( .5 )
 
 #play("./tmp/x.mp3")
-#play("./music/xiu_lian_ai_qing.mp3")
+#play("./music_files/xiu_lian_ai_qing.mp3")
 import random
 from common import util
 
 
-def play_local_music(n,music_fold='./music',rdm=True):
+def play_local_music(n,music_fold='./music_files',rdm=True):
     files = util.GetFileFromThisRootDir(music_fold, '.mp3')
     n = len(files) if n<=0 or n>len(files) else n
     play_files = random.sample(files,n) if rdm else files[:n]

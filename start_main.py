@@ -5,7 +5,7 @@ import os
 import threading
 import time
 from common import util
-required_dirs = ['tmp','music','log']
+required_dirs = ['tmp','music_files','log']
 for d in required_dirs:
     if not os.path.exists(d): os.mkdir(d)
 
@@ -74,7 +74,7 @@ def start_main():
         # (9, 39): (alarm_song, ()),
         (7, 43): (load_weather, ()),
         # (21, 10): (play_song_list, ()),
-        (22, 30): (play_sound.play_local_music, (3,'./music/4baby',True)),
+        (22, 30): (play_sound.play_local_music, (3,'./music_files/4baby',True)),
     }
 
     holiday_task_list ={
@@ -83,7 +83,7 @@ def start_main():
         (10, 0): (play_song_list, ()),
         (9, 55): (load_weather, ('',True)),
         # (10, 18): (play_song_list, ()),
-        (22, 45): (play_sound.play_local_music, (5,'./music/4baby',True)),
+        (22, 45): (play_sound.play_local_music, (5,'./music_files/4baby',True)),
     }
 
     # bao_shi = threading.Thread(target=tell_time)
