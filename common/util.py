@@ -67,10 +67,11 @@ def getHashCode(s):
     return convert_n_bytes(h,4)
 
 
-def GetFileFromThisRootDir(dir,ext = None):
+def get_files_from_path(path, ext = None):
+    if os.path.isfile(path) and os.path.splitext(path)[1][1:] == ext: return [path]
     allfiles = []
     needExtFilter = (ext != None)
-    for root,dirs,files in os.walk(dir):
+    for root,dirs,files in os.walk(path):
         for filespath in files:
             filepath = os.path.join(root, filespath)
             extension = os.path.splitext(filepath)[1][1:]
@@ -90,4 +91,4 @@ if __name__ == '__main__':
     # print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
     # print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
     print(os.getcwd())
-    print(GetFileFromThisRootDir("../music_files"))
+    print(get_files_from_path("../music_files"))

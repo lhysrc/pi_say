@@ -14,6 +14,7 @@
 
         }
 
+
     </style>
 {% endblock %}
 {% block main_content %}
@@ -34,7 +35,7 @@
             </thead>
             <tbody >
                 <tr ng-repeat="(b,s) in b_ss">
-                    <td ><label ng-bind="b"></label></td>
+                    <td ><label  ng-bind="b" ></label></td>
                     <td><a class="btn btn-warning" ng-disabled="s==1" ng-click="setPauseBus(b,1)">暂停一天</a></td>
                     <td><a class="btn btn-danger" ng-disabled="s==-1" ng-click="setPauseBus(b,-1)">停止</a></td>
                     <td><a class="btn btn-success" ng-disabled="s==0" ng-click="setPauseBus(b,0)">恢复</a></td>

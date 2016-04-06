@@ -24,7 +24,7 @@ def index():
 def page_log(page_idx=None):
     if not page_idx:file_name = "./log/log"
     else:
-        logs = util.GetFileFromThisRootDir("./log")
+        logs = util.get_files_from_path("./log")
         logs.sort()
         if page_idx>=len(logs):return page_not_found(0)
         file_name = logs[page_idx]
