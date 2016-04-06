@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # vim: set fileencoding=utf8
-import play_sound,logging
+import main.play_sound,logging
 log = logging.getLogger(__name__)
 import json
 # import md5
@@ -515,7 +515,7 @@ def play_a_list(url=None, n=0,rdm=True):
     for i in l[:n]:
         if 'durl' not in i:continue
         log.info(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
-        play_sound.play_music(i['durl'])
+        main.play_sound.play_music(i['durl'])
 
 def loading_url():
     return net_lock.locked()

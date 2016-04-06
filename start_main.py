@@ -1,10 +1,10 @@
 #! /usr/bin/py
 # coding=utf-8
 
-import os
 import threading
 import time
 
+import os
 from common import util
 
 required_dirs = ['tmp','music_files','log']
@@ -12,7 +12,8 @@ for d in required_dirs:
     if not os.path.exists(d): os.mkdir(d)
 
 from main import baidu_tts,tell_time
-from main import ne_music, gz_bus, weather, play_sound
+from main import gz_bus, weather, play_sound
+from music import ne_music
 from main.log import log
 
 def bao_zhan():

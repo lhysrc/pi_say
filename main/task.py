@@ -7,9 +7,10 @@
 import baidu_tts
 import config
 import gz_bus
-import ne_music
 import play_sound
 import weather
+from music import ne_music
+
 # task_names = {
 #     "播放本地音乐":play_sound.play_local_music,
 #     "播放网络音乐":ne_music.play_a_list,
@@ -85,7 +86,7 @@ class PlayNetMusicTask(Task):
         self.url = url
         self.n = n
         super(PlayNetMusicTask, self).__init__(u"播放网络音乐",
-                                               hr, mn, ne_music.play_a_list, (url, n, True), type,pause_days)
+                                               hr, mn, ne_music.play_a_list, (url, n, True), type, pause_days)
 
     def __repr__(self):
         return "%s(%s,%s,'%s',%s,%s,%s) " % (

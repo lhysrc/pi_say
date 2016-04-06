@@ -3,9 +3,10 @@ import threading
 
 from flask import render_template,make_response,request,jsonify
 
-from main import baidu_tts,ne_music,play_sound
-from www import app
 from common import util
+from main import baidu_tts, play_sound
+from music import ne_music
+from www import app
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -171,7 +172,7 @@ def play_rd_song(id):
     if p: return p
     baidu_tts.read_aloud("准备随机播放音乐",True)
     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
-    threading.Thread(target=ne_music.play_a_list,args=(url,1)).start()
+    threading.Thread(target=ne_music.play_a_list, args=(url, 1)).start()
     return '开始随机播放音乐'
 
 @app.route('/ltsong/<id>')
@@ -180,7 +181,7 @@ def play_a_list(id,n=10):
     if p: return p
     baidu_tts.read_aloud("准备播放%d首音乐"%n,True)
     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
-    threading.Thread(target=ne_music.play_a_list,args=(url,n)).start()
+    threading.Thread(target=ne_music.play_a_list, args=(url, n)).start()
     return '',200
 
 @app.route('/play_url',methods=['post'])
@@ -192,7 +193,7 @@ def play_url():
     n = int(json_data['cnt'])
     rdm = json_data['rdm']
     app.logger.info(u"准备播放%d首'%s'里的音乐。" % (n, url))
-    threading.Thread(target=ne_music.play_a_list,args=(url,n,rdm=='true')).start()
+    threading.Thread(target=ne_music.play_a_list, args=(url, n, rdm == 'true')).start()
     return '',200
 
 def check_is_playing():
