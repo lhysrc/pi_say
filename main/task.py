@@ -4,9 +4,12 @@
 # 报站
 # 播报语音：天气
 # 自动签到（无需自定义）
-import time,config
-
-import play_sound,ne_music,gz_bus,baidu_tts,weather
+import baidu_tts
+import config
+import gz_bus
+import ne_music
+import play_sound
+import weather
 # task_names = {
 #     "播放本地音乐":play_sound.play_local_music,
 #     "播放网络音乐":ne_music.play_a_list,
@@ -155,7 +158,7 @@ def load_weather(d=1,t=''):
 def play_song_list(n=10):
     ne_music.play_a_list(n=10)
 
-from main.xm_music import xiami
+from music.xm_music import xiami
 from random import randint
 def auto_check_in():
     sleep_secs = randint(0,1800)
@@ -208,7 +211,7 @@ if __name__ == '__main__':
     }
     load_all_tasks()
     # print task.tasks
-    from threading import Thread, Timer
+    from threading import Timer
     import time
 
     t = time.localtime()

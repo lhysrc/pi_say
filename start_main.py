@@ -4,7 +4,9 @@
 import os
 import threading
 import time
+
 from common import util
+
 required_dirs = ['tmp','music_files','log']
 for d in required_dirs:
     if not os.path.exists(d): os.mkdir(d)
@@ -49,7 +51,7 @@ def load_weather(d=1,t=''):
 def play_song_list(n=10):
     ne_music.play_a_list(n=10)
 
-from main.xm_music import xiami
+from music.xm_music import xiami
 from random import randint
 def auto_check_in():
     sleep_secs = randint(0,1800)
