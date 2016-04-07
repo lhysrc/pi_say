@@ -76,20 +76,20 @@ def pause_tell_bus():
     return ""
 
 
-"""
-/read isn't multithreading
-/tts is multithreading to tts
-"""
+import json
 @app.route('/read',methods=['post'])
 def tts():
-    json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
+    # print request.data
+    json_data = json.loads(request.data) #{key:dict(request.form)[key][0] for key in dict(request.form)}
     # text = json_data['text']
     # print(json_data)
     app.logger.info(u"获得播报信息：%s" % json_data['text'])
+    if 'delay_sec' in json_data and json_data['text'] == u'定时时间到':
+        json_data['cache'] = True
     json_data['text'] = urllib.quote_plus(json_data['text'].encode('utf8'))
-    baidu_tts.read_aloud(**json_data) #todo 平加定时播报，并播报多次
+    baidu_tts.read_aloud_async(**json_data)
     #threading.Thread(target=baidu_tts.read_aloud, args=(json_data)).start()
-    return render_template('read.html',read='read')
+    return u'将在%s后播报。'%json_data['delay_sec'] if 'delay_sec' in json_data else ''
 
 @app.route('/music')
 def page_music():

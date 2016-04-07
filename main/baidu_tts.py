@@ -100,16 +100,21 @@ def get_mp3_file(text, spd=5, pit=5, vol=9, per=0):
     text = text.strip()
     file_name = "./tmp/%s.mp3" % util.getHashCode(text)
     if os.path.isfile(file_name):
-        log.info("'%s'的语音文件已存在，直接播放" % text)
+        log.info("'%s'的语音文件已存在，直接播放" % urllib2.unquote(text))
     else:
         file_name = download_tts_file(text, file_name, spd, pit, vol, per)
     return file_name
 
 
-import uuid
+import uuid,threading
 
+def read_aloud_async(text, cache=False, spd=5, pit=5, vol=9, per=3, read_times = 1,delay_sec=0):
+    delay_sec = int(delay_sec) if delay_sec else 0
+    read_times = int(read_times) if read_times else 1
+    threading.Timer(delay_sec,read_aloud,(text, cache, spd, pit, vol, per, read_times)).start()
+    log.info("将于%d秒后播报%d次：%s"%(delay_sec,read_times,urllib2.unquote(text)))
 
-def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3):
+def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3, read_times = 1):
     """
         cache: 缓存语音文件，当然，缓存后，后续参数都失去意义
     """
@@ -121,7 +126,9 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3):
     retry = 3
     while retry:
         if mp3_file:
-            play_sound.play(mp3_file)
+            while read_times>0:
+                play_sound.play(mp3_file)
+                read_times-=1
             break
         else:
             log.warn("语音转换重试。")
@@ -155,8 +162,8 @@ if __name__ == '__main__':
 
     # play_sound.play(LOCAL_AUDIOS['TTS_ERROR'])
     t = time.localtime()
-    read_aloud("现在时间是%s点%s分%s秒" % (t.tm_hour, t.tm_min, t.tm_sec),per=3)
-
+    #read_aloud("现在时间是%s点%s分%s秒" % (t.tm_hour, t.tm_min, t.tm_sec),per=3)
+    #read_aloud('定时时间到',True)
     pass
 
 

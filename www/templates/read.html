@@ -117,7 +117,7 @@
         {#                    <input type="checkbox"> Check me out#}
         {#                </label>#}
         {#            </div>#}
-        <button type="button" class="btn btn-primary" id="play">
+        <button type="button" class="btn btn-primary" id="play" ng-click="read()" ng-disabled="loading">
 
             <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> 播报
         </button>
@@ -129,13 +129,13 @@
 
         <div class="checkbox">
             <label>
-                <input ng-model="chk" type="checkbox" disabled>定时
+                <input id="delay-chk" ng-model="delay_chk" type="checkbox" >定时
             </label>
             <!-- Small button group -->
             <div class="btn-group dropup"  >
                 <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false" ng-disabled = "!chk">
-                     <span ng-bind="delay_time"></span> <span class="caret"></span>
+                        aria-haspopup="true" aria-expanded="false" ng-disabled = "!delay_chk">
+                     <span id="delay-sec" ng-bind="delay_time"></span> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     <li ng-repeat="t in default_secs"><a ng-click="set_delay_time($index)">{{t[1]}} &nbsp; | &nbsp; {{t[0]}}</a></li>
@@ -151,12 +151,12 @@
     </div>
     <!-- Modal -->
     <div class="modal fade" id="modal_msg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">提示</h4>
+                    <h4 class="modal-title text-center" id="myModalLabel">提示</h4>
                 </div>
                 <div class="modal-body" id="msg_body">
                     ...
@@ -172,6 +172,11 @@
 
     <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
     <script>
+        function showMsgBox(text) {
+            $('#msg_body').text(text);
+            $('#modal_msg').modal('show');
+        }
+
         week = '日一二三四五六';
         /**
          * @return {string}
@@ -223,6 +228,30 @@
                 $scope.delay_time = secs[idx];
                 if(!$scope.text) $scope.text = '定时时间到';
             };
+
+            $scope.read = function () {
+                if (!$scope.text) {
+                    showMsgBox('请输入要播报的文字。');
+                    return false;
+                }
+                d = getSetting();
+                d['text'] = $scope.text;
+                if($scope.delay_chk) d['delay_sec'] = $scope.delay_time;
+                $scope.loading = true;
+                $http({url: '../read',
+                        method: "POST",
+                        data:d})
+                        .success(function (x,y) {
+                            if(x && y==200){
+                                showMsgBox(x);
+                            }
+                            if(y!=200){
+                                showMsgBox('错误：'+y);
+                            }
+                            $scope.loading = false;
+                        });
+            };
+
         });
 
 
@@ -258,18 +287,23 @@
             });
 
 
-            $('#play').click(function () {
-                var txt = $('#textToRead').val();
-                if (!txt) {
-                    $('#msg_body').text('请输入要播报的文字。');
-                    $('#modal_msg').modal('show');
+{#            $('#play').click(function () {#}
+{#                return false;#}
+{#                var txt = $('#textToRead').val();#}
+{#                if (!txt) {#}
+{#                    $('#msg_body').text('请输入要播报的文字。');#}
+{#                    $('#modal_msg').modal('show');#}
 {#                    alert("请输入要播报的文字。");#}
-                    return false;
-                }
-                var d = getSetting();
-                d['text'] = txt;
-                $.post('../read', d, function (x, y) {
-
+{#                    return false;#}
+{#                }#}
+{##}
+{#                $('#play').addClass('disabled');#}
+{#                var d = getSetting();#}
+{#                d['text'] = txt;#}
+{#                if($('#delay-chk').prop('checked'))#}
+{#                    d['delay_sec'] = $('#delay-sec').text();#}
+{#                $.post('../read', d, function (x, y) {#}
+{#                    $('#play').removeClass('disabled');#}
                     {#                        $('#contact_form').html("<div id='message'></div>");#}
                     {#                        $('#message').html("<h2>Contact Form Submitted!</h2>")#}
                     {#                                .append("<p>We will be in touch soon.</p>")#}
@@ -277,13 +311,13 @@
                     {#                                .fadeIn(1500, function () {#}
                     {#                                    $('#message').append("<img id='checkmark' src='images/check.png' />");#}
                     {#                                });#}
-
-                });
+{##}
+{#                });#}
                 {#                $.ajax('../read', function (data, status) {#}
                 {#                    alert("Data: " + data + "\nStatus: " + status);#}
                 {#                });#}
-                return false
-            });
+{#                return false#}
+{#            });#}
 
         });
     </script>
