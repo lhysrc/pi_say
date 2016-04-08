@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 from common.secret_const import xiami_password,xiami_username
+from song_info import SongInfo
+
 EMAIL = xiami_username
 PASSWORD = xiami_password
 cookie_file = './tmp/.Xiami.cookies'
@@ -132,7 +134,7 @@ class xiami(object):
         self.user_id = ''
         self.cover_id = ''
         self.cover_data = ''
-
+        self.song_infos = []
         self.html = ''
         self.disc_description_archives = {}
 
@@ -225,6 +227,7 @@ class xiami(object):
                 return True
             else:
                 if 'checkcode' not in res.content:
+                    log.info(u'需要输入验证码。')
                     return False
                 validate = self.get_validate(res.content)
                 data['validate'] = validate
@@ -443,7 +446,8 @@ class xiami(object):
             if '/collect/' in url:
                 self.collect_id = re.search(r'/collect/(\d+)', url).group(1)
                 #print(s % (2, 92, u'\n  -- 正在分析精选集信息 ...'))
-                self.download_collect()
+                log.info("分析精选集信息:%s"%url)
+                self.load_collect()
 
             elif '/album/' in url:
                 self.album_id = re.search(r'/album/(\d+)', url).group(1)
@@ -458,24 +462,27 @@ class xiami(object):
 
                 self.artist_id = re.search(r'/artist/(\d+)', url).group(1) \
                     if '/artist/' in url else get_artist_id(url)
-                code = raw_input('  >> a  # 艺术家所有专辑.\n' \
-                    '  >> r  # 艺术家 radio\n' \
-                    '  >> t  # 艺术家top 20歌曲.\n  >> ')
-                if code == 'a':
-                    #print(s % (2, 92, u'\n  -- 正在分析艺术家专辑信息 ...'))
-                    self.download_artist_albums()
-                elif code == 't':
-                    #print(s % (2, 92, u'\n  -- 正在分析艺术家top20信息 ...'))
-                    self.download_artist_top_20_songs()
-                elif code == 'r':
-                    self.download_artist_radio()
-                else:
-                    print(s % (1, 92, u'  --> Over'))
+                self.load_artist_top_20_songs()
+
+
+                # code = raw_input('  >> a  # 艺术家所有专辑.\n' \
+                #     '  >> r  # 艺术家 radio\n' \
+                #     '  >> t  # 艺术家top 20歌曲.\n  >> ')
+                # if code == 'a':
+                #     #print(s % (2, 92, u'\n  -- 正在分析艺术家专辑信息 ...'))
+                #     self.download_artist_albums()
+                # elif code == 't':
+                #     #print(s % (2, 92, u'\n  -- 正在分析艺术家top20信息 ...'))
+                #     self.download_artist_top_20_songs()
+                # elif code == 'r':
+                #     self.download_artist_radio()
+                # else:
+                #     print(s % (1, 92, u'  --> Over'))
 
             elif '/song/' in url:
                 self.song_id = re.search(r'/song/(\d+)', url).group(1)
                 #print(s % (2, 92, u'\n  -- 正在分析歌曲信息 ...'))
-                self.download_song()
+                self.load_song()
 
             elif '/u/' in url:
                 self.user_id = re.search(r'/u/(\d+)', url).group(1)
@@ -683,12 +690,13 @@ class xiami(object):
         songs = self.get_songs(album_id, song_id=song_id)
         return songs
 
-    def download_song(self):
+    def load_song(self):
         songs = self.get_song(self.song_id)
-        print(s % (2, 97, u'\n  >> ' + u'1 首歌曲将要下载.')) \
-            if not args.play else ''
+        # print(s % (2, 97, u'\n  >> ' + u'1 首歌曲将要下载.')) \
+        #     if not args.play else ''
         #self.song_infos = [song_info]
-        self.download(songs)
+        # self.download(songs)
+        self.load(songs)
 
     def download_songs(self, song_ids):
         for song_id in song_ids:
@@ -709,28 +717,32 @@ class xiami(object):
         #songs = songs[args.from_ - 1:]
         # print(s % (2, 97, u'\n  >> ' + amount_songs + u' 首歌曲将要下载.')) \
         #     if not args.play else ''
-        self.play(songs)
+        # self.play(songs)
         #self.download(songs, amount_songs, args.from_)
 
-    def download_collect(self):
+        self.load(songs)
+
+    def load_collect(self):
         html = ss.get(url_collect % self.collect_id).text
         html = html.split('<div id="wall"')[0]
         collect_name = re.search(r'<h2>(.+?)<', html).group(1)
-        d = collect_name
-        dir_ = os.path.join(os.getcwdu(), d)
-        self.dir_ = modificate_file_name_for_wget(dir_)
+        # d = collect_name
+        # dir_ = os.path.join(os.getcwdu(), d)
+        # self.dir_ = modificate_file_name_for_wget(dir_)
         song_ids = re.findall('/song/(\d+)" title', html)
-        amount_songs = unicode(len(song_ids))
-        song_ids = song_ids[args.from_ - 1:]
-        print(s % (2, 97, u'\n  >> ' + amount_songs + u' 首歌曲将要下载.')) \
-            if not args.play else ''
-        n = args.from_
+        # amount_songs = unicode(len(song_ids))
+        # song_ids = song_ids[args.from_ - 1:]
+        # print(s % (2, 97, u'\n  >> ' + amount_songs + u' 首歌曲将要下载.')) \
+        #     if not args.play else ''
+        # n = args.from_
+        log.info("获取到精选集‘%s’共有%s首歌曲。"%(collect_name,len(song_ids)))
         for i in song_ids:
             songs = self.get_song(i)
-            self.download(songs, amount_songs, n)
+            # self.download(songs, amount_songs, n)
+            self.load(songs)
             self.html = ''
             self.disc_description_archives = {}
-            n += 1
+            # n += 1
 
     def download_artist_albums(self):
         ii = 1
@@ -745,31 +757,33 @@ class xiami(object):
                 for i in album_ids:
                     print '  ++ http://www.xiami.com/album/%s' % i
                     self.album_id = i
-                    self.download_album()
+                    self.load_album()
                     self.html = ''
                     self.disc_description_archives = {}
             else:
                 break
             ii += 1
 
-    def download_artist_top_20_songs(self):
+    def load_artist_top_20_songs(self):
         html = ss.get(url_artist_top_song % self.artist_id).text
         song_ids = re.findall(r'/song/(.+?)" title', html)
         artist_name = re.search(
             r'<p><a href="/artist/\d+">(.+?)<', html).group(1)
-        d = modificate_text(artist_name + u' - top 20')
-        dir_ = os.path.join(os.getcwdu(), d)
-        self.dir_ = modificate_file_name_for_wget(dir_)
-        amount_songs = unicode(len(song_ids))
-        print(s % (2, 97, u'\n  >> ' + amount_songs + u' 首歌曲将要下载.')) \
-            if not args.play else ''
-        n = 1
+        # d = modificate_text(artist_name + u' - top 20')
+        # dir_ = os.path.join(os.getcwdu(), d)
+        # self.dir_ = modificate_file_name_for_wget(dir_)
+        # amount_songs = unicode(len(song_ids))
+        # print(s % (2, 97, u'\n  >> ' + amount_songs + u' 首歌曲将要下载.')) \
+        #     if not args.play else ''
+        # n = 1
+        log.info(u"获取歌手‘%s’的前20名歌曲。"%artist_name)
         for i in song_ids:
             songs = self.get_song(i)
-            self.download(songs, amount_songs, n)
+            #self.download(songs, amount_songs, n)
+            self.load(songs)
             self.html = ''
             self.disc_description_archives = {}
-            n += 1
+            #n += 1
 
     def download_artist_radio(self):
         html = ss.get(url_artist_top_song % self.artist_id).text
@@ -944,7 +958,7 @@ class xiami(object):
                 print s % (1, 93, '  !! no find:'), ' - '.join(info)
                 continue
             self.song_id = j[0]['id']
-            self.download_song()
+            self.load_song()
 
     def display_infos(self, i, nn, n):
         print n, '/', nn
@@ -995,6 +1009,17 @@ class xiami(object):
             #     sys.exit(0)
             # else:
             #     pass
+    def load(self,songs):
+        for i in songs:
+            durl = self.get_durl(i['song_id'])
+            song_name = i['song_name']
+            artist_name = i['artist_name']
+            si = SongInfo(durl,song_name,artist_name)
+            si.song_type = 'xm'
+            si.song_page = 'http://www.xiami.com/song/%s' % i['song_id']
+            self.song_infos.append(si)
+
+
 
     def download(self, songs, amount_songs=u'1', n=1):
         dir_ = modificate_file_name_for_wget(self.dir_)
@@ -1213,14 +1238,16 @@ def main(argv):
 
 
 if __name__ == '__main__':
+    from main import log
     # argv = sys.argv
     # main(argv)
     x = xiami()
     # x.login()
-    x.url_parser(['http://www.xiami.com/album/2100294190'])
+    x.url_parser(['http://www.xiami.com/artist/2117','http://www.xiami.com/song/1771752120'])
     #x.check_in()
 
-
+    for i in x.song_infos:
+        print i.song_name,i.song_page,i.url
     # url = 'http://m3.file.xiami.com/h/gzycHoYe6TpghKWTSY0JciAa6eXdGjaAxLRSj7cUqAQnLJEPZ4vmkJORQglB3CGaqEceE7qZ2jxGHuxbRNypwa%2BJGUHfCBxdB6pf'
     # from main import play_sound
     # play_sound._play(url)
