@@ -863,21 +863,22 @@ class xiami(object):
         html = ss.get('http://www.xiami.com/chart/index/c/%s' \
                       % self.chart_id).text
         title = re.search(r'<title>(.+?)</title>', html).group(1)
-        d = modificate_text(title)
-        dir_ = os.path.join(os.getcwdu(), d)
-        self.dir_ = modificate_file_name_for_wget(dir_)
+        # d = modificate_text(title)
+        # dir_ = os.path.join(os.getcwdu(), d)
+        # self.dir_ = modificate_file_name_for_wget(dir_)
 
         html = ss.get(
             'http://www.xiami.com/chart/data?c=%s&limit=200&type=%s' \
             % (self.chart_id, type_)).text
         song_ids = re.findall(r'/song/(\d+)', html)
-        n = 1
+        # n = 1
+        log.info(u'加载排行榜‘%s’的歌曲信息。'%unicode(title))
         for i in song_ids:
             songs = self.get_song(i)
-            self.download(songs, n=n)
+            self.load(songs)
             self.html = ''
             self.disc_description_archives = {}
-            n += 1
+            # n += 1
 
     def download_genre(self, url_genre):
         html = ss.get(url_genre % (self.genre_id, 1)).text
@@ -1243,7 +1244,7 @@ if __name__ == '__main__':
     # main(argv)
     x = xiami()
     # x.login()
-    x.url_parser(['http://www.xiami.com/artist/2117','http://www.xiami.com/song/1771752120'])
+    x.url_parser(['http://www.xiami.com/chart/index/c/102/type/1'])
     #x.check_in()
 
     for i in x.song_infos:
