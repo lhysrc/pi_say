@@ -184,6 +184,7 @@ def play_a_list(id,n=10):
     threading.Thread(target=ne_music.play_a_list, args=(url, n)).start()
     return '',200
 
+import music
 @app.route('/play_url',methods=['post'])
 def play_url():
     p = check_is_playing()
@@ -193,8 +194,15 @@ def play_url():
     n = int(json_data['cnt'])
     rdm = json_data['rdm']
     app.logger.info(u"准备播放%d首'%s'里的音乐。" % (n, url))
-    threading.Thread(target=ne_music.play_a_list, args=(url, n, rdm == 'true')).start()
+    # threading.Thread(target=ne_music.play_a_list, args=(url, n, rdm == 'true')).start()
+    threading.Thread(target=music.play_songs, args=(url, n, rdm == 'true')).start()
     return '',200
+
+@app.route('/set_player/<int:i>')
+def set_player(i):
+    funcs =[music.stop,music.play_and_pause,music.next_song]
+    if 0<=i<=2:funcs[i]()
+    else:music.set_vol(i*10)
 
 def check_is_playing():
     if ne_music.loading_url():
