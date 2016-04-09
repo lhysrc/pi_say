@@ -203,7 +203,7 @@ def play_url():
 def set_player(i):
     funcs =[music.stop,music.play_and_pause,music.next_song]
     if 0<=i<=2:funcs[i]()
-    else:music.set_vol(i*10)
+    else:music.set_vol(i)
     return '',200
 
 def check_is_playing():
