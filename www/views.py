@@ -158,7 +158,8 @@ def play_local_song():
     n = int(json_data['cnt'])
     app.logger.info(u"准备播放%d首'%s'里的音乐。"%(n,path))
     # baidu_tts.read_aloud("准备播放本地音乐",True)
-    threading.Thread(target=play_sound.play_local_music,args=(n,path)).start()
+    # threading.Thread(target=play_sound.play_local_music,args=(n,path)).start()
+    threading.Thread(target=music.play_songs, args=(path, n, True)).start()
     return '',200
     # p = check_is_playing()
     # if p: return p,204
@@ -203,6 +204,7 @@ def set_player(i):
     funcs =[music.stop,music.play_and_pause,music.next_song]
     if 0<=i<=2:funcs[i]()
     else:music.set_vol(i*10)
+    return '',200
 
 def check_is_playing():
     if ne_music.loading_url():
