@@ -12,18 +12,18 @@ def play(mp3_file):
         _play(mp3_file)
 
 # 播放音乐和播报分别使用两个锁
-music_lock = threading.Lock()
-def play_music(mp3_file):
-    music_lock.acquire()
-    try:
-        _play(mp3_file)
-    except:
-        log.exception("play music error.")
-    music_lock.release()
+# music_lock = threading.Lock()
+# def play_music(mp3_file):
+#     music_lock.acquire()
+#     try:
+#         _play(mp3_file)
+#     except:
+#         log.exception("play music error.")
+#     music_lock.release()
 
 
-def is_playing_music():
-    return music_lock.locked()
+# def is_playing_music():
+#     return music_lock.locked()
 
 def _play(mp3_file):
     #log.INFO("开始播放："+mp3_file)
@@ -111,17 +111,17 @@ def play_by_pymedia(sound_file):
 
 #play("./tmp/x.mp3")
 #play("./music_files/xiu_lian_ai_qing.mp3")
-import random
-from common import util
+# import random
+# from common import util
 
 
-def play_local_music(n,music_fold='./music_files',rdm=True):
-    files = util.get_files_from_path(music_fold, '.mp3')
-    n = len(files) if n<=0 or n>len(files) else n
-    play_files = random.sample(files,n) if rdm else files[:n]
-    for f in play_files:
-        log.info("播放本地音乐：%s"%f) # 此处加u就出错，不知为何，已犯多次……
-        play_music(f)
+# def play_local_music(n,music_fold='./music_files',rdm=True):
+#     files = util.get_files_from_path(music_fold, '.mp3')
+#     n = len(files) if n<=0 or n>len(files) else n
+#     play_files = random.sample(files,n) if rdm else files[:n]
+#     for f in play_files:
+#         log.info("播放本地音乐：%s"%f) # 此处加u就出错，不知为何，已犯多次……
+#         play_music(f)
 
 if __name__ == '__main__':
     play_by_mp3play(u"C:/Users/linho/Music/Downloads/群星/我是歌手第四季 第2期/修炼爱情.mp3")

@@ -167,23 +167,23 @@ def play_local_song():
     # threading.Thread(target=play_sound.play_local_music,args=(n,)).start()
     # return '',200
 
-@app.route('/rdsong/<id>')
-def play_rd_song(id):
-    p = check_is_playing()
-    if p: return p
-    baidu_tts.read_aloud("准备随机播放音乐",True)
-    url = 'http://music.163.com/#/discover/toplist?id=%s'%id
-    threading.Thread(target=ne_music.play_a_list, args=(url, 1)).start()
-    return '开始随机播放音乐'
-
-@app.route('/ltsong/<id>')
-def play_a_list(id,n=10):
-    p = check_is_playing()
-    if p: return p
-    baidu_tts.read_aloud("准备播放%d首音乐"%n,True)
-    url = 'http://music.163.com/#/discover/toplist?id=%s'%id
-    threading.Thread(target=ne_music.play_a_list, args=(url, n)).start()
-    return '',200
+# @app.route('/rdsong/<id>')
+# def play_rd_song(id):
+#     p = check_is_playing()
+#     if p: return p
+#     baidu_tts.read_aloud("准备随机播放音乐",True)
+#     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
+#     threading.Thread(target=ne_music.play_a_list, args=(url, 1)).start()
+#     return '开始随机播放音乐'
+#
+# @app.route('/ltsong/<id>')
+# def play_a_list(id,n=10):
+#     p = check_is_playing()
+#     if p: return p
+#     baidu_tts.read_aloud("准备播放%d首音乐"%n,True)
+#     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
+#     threading.Thread(target=ne_music.play_a_list, args=(url, n)).start()
+#     return '',200
 
 import music
 @app.route('/play_url',methods=['post'])
@@ -199,7 +199,7 @@ def play_url():
     threading.Thread(target=music.play_songs, args=(url, n, rdm == 'true')).start()
     return '',200
 
-@app.route('/set_player/<int:i>')
+@app.route('/set-player/<int:i>')
 def set_player(i):
     funcs =[music.stop,music.play_and_pause,music.next_song]
     if 0<=i<=2:funcs[i]()
@@ -207,9 +207,9 @@ def set_player(i):
     return '',200
 
 def check_is_playing():
-    if ne_music.loading_url():
+    if music.is_loading_song_infos():
         return '当前正在加载音乐信息，已准备播放'
-    if play_sound.is_playing_music():
+    if music.is_playing():
         return '当前正在播放音乐'
     return ""
 

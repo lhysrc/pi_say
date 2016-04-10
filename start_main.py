@@ -13,7 +13,7 @@ for d in required_dirs:
 
 from main import baidu_tts,tell_time
 from main import gz_bus, weather, play_sound
-from music import ne_music
+import music
 from main.log import log
 
 def bao_zhan():
@@ -35,10 +35,11 @@ def bao_zhan():
 @tell_time.tell_time_first
 def alarm_song():
     try:
-        ne_music.play_a_list(n=1)
+        music.set_vol(30)
+        music.play_songs('http://music.163.com/#/discover/toplist?id=3778678')
     except:
         log.exception("播放闹钟音乐出错。")
-        play_sound.play_local_music(1)
+        music.play_songs()
 
 @tell_time.tell_time_first
 def load_weather(d=1,t=''):
@@ -50,7 +51,9 @@ def load_weather(d=1,t=''):
 
 
 def play_song_list(n=10):
-    ne_music.play_a_list(n=10)
+    music.set_vol(30)
+    music.play_songs('http://music.163.com/#/discover/toplist?id=3778678',n)
+
 
 from music.xm_music import xiami
 from random import randint
@@ -77,7 +80,7 @@ def start_main():
         # (9, 39): (alarm_song, ()),
         (7, 43): (load_weather, ()),
         # (21, 10): (play_song_list, ()),
-        (22, 30): (play_sound.play_local_music, (3,'./music_files/4baby',True)),
+        (22, 45): (music.play_songs, ('./music_files/4baby',3,True)),
     }
 
     holiday_task_list ={
@@ -86,7 +89,7 @@ def start_main():
         (10, 0): (play_song_list, ()),
         (9, 55): (load_weather, ('',True)),
         # (10, 18): (play_song_list, ()),
-        (22, 45): (play_sound.play_local_music, (5,'./music_files/4baby',True)),
+        (22, 45): (music.play_songs, ('./music_files/4baby',5,True)),
     }
 
     # bao_shi = threading.Thread(target=tell_time)

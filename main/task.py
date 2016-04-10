@@ -9,7 +9,7 @@ import config
 import gz_bus
 import play_sound
 import weather
-from music import ne_music
+import music
 
 # task_names = {
 #     "播放本地音乐":play_sound.play_local_music,
@@ -73,7 +73,7 @@ class PlayLocalMusicTask(Task):
         self.path = path
         self.n = n
         super(PlayLocalMusicTask, self).__init__(u"播放本地音乐",
-                                                 hr, mn, play_sound.play_local_music, (n,path,True), type,pause_days)
+                                                 hr, mn, music.play_songs, (path, n, True), type,pause_days)
 
     def __repr__(self):
         return "%s(%s,%s,'%s',%s,%s,%s) " % (
@@ -86,7 +86,7 @@ class PlayNetMusicTask(Task):
         self.url = url
         self.n = n
         super(PlayNetMusicTask, self).__init__(u"播放网络音乐",
-                                               hr, mn, ne_music.play_a_list, (url, n, True), type, pause_days)
+                                               hr, mn, music.play_songs, (url, n, True), type, pause_days)
 
     def __repr__(self):
         return "%s(%s,%s,'%s',%s,%s,%s) " % (
@@ -139,13 +139,7 @@ class ReadTextTask(Task):
 
 
 
-@tell_time.tell_time_first
-def alarm_song():
-    try:
-        ne_music.play_a_list(n=1)
-    except:
-        log.exception("播放闹钟音乐出错。")
-        play_sound.play_local_music(1)
+
 
 @tell_time.tell_time_first
 def load_weather(d=1,t=''):
@@ -156,8 +150,7 @@ def load_weather(d=1,t=''):
     baidu_tts.read_aloud(weather.today(d, t), per=3)
 
 
-def play_song_list(n=10):
-    ne_music.play_a_list(n=10)
+
 
 from music.xm_music import xiami
 from random import randint

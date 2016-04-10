@@ -12,7 +12,7 @@ import re
 # from cache import Cache
 # from config import Config
 import logging
-from common.decorators import singleton
+from common.decorator import singleton
 log = logging.getLogger(__name__)
 
 # carousel x in [left, right]
@@ -32,7 +32,7 @@ class Player:
         self.process_first = False
         # self.storage = Storage()
         # self.info = {'playing_volume':50,}
-        self.playing_volume = 50
+        self.playing_volume = 80
         self.songs = [] #SongInfo list
         self.playing_idx = 0
         # self.playing_id = -1
@@ -42,7 +42,7 @@ class Player:
         # self.end_callback = None
         # self.playing_song_changed_callback = None
 
-    def popen_recall(self, onExit, url):
+    def popen_recall(self, song_info):
         """
         Runs the given args in a subprocess.Popen, and then calls the function
         onExit when the subprocess completes.
@@ -50,17 +50,18 @@ class Player:
         would give to subprocess.Popen.
         """
 
-        def runInThread(onExit,song_url):
+        def runInThread(song_info):
             para = ['mpg123', '-R']
             # para[1:1] = self.mpg123_parameters
             self.popen_handler = subprocess.Popen(para, stdin=subprocess.PIPE,
                                                   stdout=subprocess.PIPE,
                                                   stderr=subprocess.PIPE)
-            self.popen_handler.stdin.write("V " + str(self.playing_volume) + "\n")
-            self.popen_handler.stdin.write("L " + song_url + "\n")
+            self.set_volume(self.playing_volume)
+            log.info(u"开始播放%s"%song_info.file_name)
+            self.popen_handler.stdin.write("L " + song_info.url + "\n")
             self.process_first = True
             while (True):
-                if self.playing_flag == False:
+                if not self.playing_flag:
                     break
                 try:
                     strout = self.popen_handler.stdout.readline()
@@ -83,7 +84,7 @@ class Player:
 
             if self.playing_flag:
                 self.next_idx()
-                onExit()
+                self.recall()
             return
 
         # def getLyric():
@@ -126,7 +127,7 @@ class Player:
         #     cache_thread = threading.Thread(target=cacheSong, args=(
         #         popenArgs['song_id'], popenArgs['song_name'], popenArgs['artist'], popenArgs['mp3_url']))
         #     cache_thread.start()
-        thread = threading.Thread(target=runInThread, args=(onExit,url))
+        thread = threading.Thread(target=runInThread, args=(song_info,))
         thread.start()
         # lyric_download_thread = threading.Thread(target=getLyric, args=())
         # lyric_download_thread.start()
@@ -136,8 +137,8 @@ class Player:
         # returns immediately after the thread starts
         return thread
 
-    def get_playing_id(self):
-        return self.playing_idx
+    def get_playing_song(self):
+        return self.songs[self.playing_idx]
 
     def recall(self):
         # if self.info["idx"] >= len(self.info["player_list"]) and self.end_callback != None:
@@ -157,7 +158,7 @@ class Player:
         # if self.notifier == True:
         #     self.ui.notify("Now playing", item['song_name'], item['album_name'], item['artist'])
         # self.playing_id = item['song_id']
-        self.popen_recall(self.recall, item.url)
+        self.popen_recall(item)
 
     # def generate_shuffle_playing_list(self):
     #     del self.info["playing_list"][:]

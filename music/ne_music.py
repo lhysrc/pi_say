@@ -495,30 +495,30 @@ class neteaseMusic(object):
 #     i = random.randint(0, len(x.song_infos) - 1)
 #     play_sound.play(i['durl'])
 
-import random,threading
-
-net_lock = threading.Lock()
-def play_a_list(url=None, n=0,rdm=True):
-    """
-        n:播放n首
-        rdm:是否随机
-    """
-    with net_lock:
-        if not url:
-            x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
-        else:
-            x = neteaseMusic(url)
-    # n = len(x.song_infos) if n<=0 or n>len(x.song_infos) else n
-    # l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
-    l = x.song_infos
-    if rdm: random.shuffle(l)
-    for i in l[:n]:
-        if 'durl' not in i:continue
-        log.info(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
-        main.play_sound.play_music(i['durl'])
-
-def loading_url():
-    return net_lock.locked()
+# import random,threading
+#
+# net_lock = threading.Lock()
+# def play_a_list(url=None, n=0,rdm=True):
+#     """
+#         n:播放n首
+#         rdm:是否随机
+#     """
+#     with net_lock:
+#         if not url:
+#             x = neteaseMusic('http://music.163.com/#/discover/toplist?id=3778678')
+#         else:
+#             x = neteaseMusic(url)
+#     # n = len(x.song_infos) if n<=0 or n>len(x.song_infos) else n
+#     # l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
+#     l = x.song_infos
+#     if rdm: random.shuffle(l)
+#     for i in l[:n]:
+#         if 'durl' not in i:continue
+#         log.info(u"播放%s：http://music.163.com/song/%s " % (i['file_name'],i['song_id']))
+#         main.play_sound.play_music(i['durl'])
+#
+# def loading_url():
+#     return net_lock.locked()
 
 # def play_random_hot_song():
 #     url = 'http://music.163.com/#/discover/toplist?id=3778678'
@@ -550,7 +550,7 @@ if __name__ == '__main__':
 
     #play_a_list(url='http://music.163.com/#/song/402073804',n=1)
     #play_a_list(url = 'http://music.163.com/#/song?id=27483420',n=1)
-    play_a_list(url = 'http://music.163.com/#/song?id=33206214',n=1)
+    #play_a_list(url = 'http://music.163.com/#/song?id=33206214',n=1)
     #play_a_list(url = 'http://music.163.com/#/song?id=27646199',n=1)
     #play_a_list(n=10)
     #
@@ -568,3 +568,4 @@ if __name__ == '__main__':
     # x.play_all()
     # x.download(3)
     # x.download_song()
+    pass

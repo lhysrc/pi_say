@@ -28,7 +28,7 @@ def play_songs(url='./music_files', n=1, rdm=True):
                 si.song_page = s['song_url']
                 si.song_type = 'ne'
                 infos.append(si)
-        elif 'xiami' in url: # todo 虾米信息加载未完善
+        elif 'xiami.com' in url: # todo 虾米信息加载未完善
             x = xiami()
             x.url_parser([url])
             infos = None
