@@ -34,7 +34,7 @@ def play_songs(url='./music_files', n=1, rdm=True):
             infos = None
         else:
             files = util.get_files_from_path(url,'.mp3')
-            infos = [SongInfo(f,file_name=os.path.split(f)[1],is_local=True) for f in files]
+            infos = [SongInfo(f,file_name=unicode(os.path.split(f)[1]),is_local=True) for f in files]
             pass
     # n = len(x.song_infos) if n<=0 or n>len(x.song_infos) else n
     # l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]

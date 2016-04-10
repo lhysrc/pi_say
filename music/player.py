@@ -57,7 +57,7 @@ class Player:
                                                   stdout=subprocess.PIPE,
                                                   stderr=subprocess.PIPE)
             self.set_volume(self.playing_volume)
-            log.info(u"开始播放%s"%song_info.file_name)
+            log.info(u"开始播放‘%s’。"%song_info.file_name)
             self.popen_handler.stdin.write("L " + song_info.url + "\n")
             self.process_first = True
             while (True):
@@ -389,9 +389,11 @@ class Player:
     #     self.recall()
 
     def set_volume(self,vol):
+        if self.playing_volume == vol:return
         self.playing_volume = vol
         try:
             self.popen_handler.stdin.write("V " + str(self.playing_volume) + "\n")
+            log.info(u'音量已设置为：%d'%vol)
         except:
             self.switch()
 
