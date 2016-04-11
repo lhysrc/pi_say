@@ -41,6 +41,7 @@ def play_songs(url='./music_files', n=1, rdm=True, vol=80):
     if rdm: random.shuffle(infos)
     infos = infos[:n]
     player.playing_volume = vol
+    player.playing_idx = 0
     player.songs = infos
     player.recall()
     # for i in infos[:n]:

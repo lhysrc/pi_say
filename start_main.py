@@ -97,7 +97,7 @@ def start_main():
     }
 
     log.info("程序开始运行")
-    baidu_tts.read_aloud("程序开始运行", True)
+    baidu_tts.read_aloud_async("程序开始运行", True, per=0)
     while True:
         t = time.localtime()
         wd = tell_time.is_workday(t)

@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+import socket
 
 from config import get_baidu_tts_token,set_baidu_tts_token
 
@@ -60,6 +61,9 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
     发音人选择，取值0-1 ；0为女声，1为男声，默认为女声
 
     &per=0&vol=9&pit=9&spd=1
+
+    返回值：
+    0：成功；1：网络错误；2：转换失败
     """
 
     file_name = "./tmp/%s.mp3" % uuid.uuid1() if not file_name else file_name
@@ -73,7 +77,7 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
     try:
         request = urllib2.Request(url)
         opener = urllib2.build_opener()
-        response = opener.open(request)
+        response = opener.open(request,timeout=10)
 
         if 'mp3' in response.headers['Content-type']:
             #     refresh_token()
@@ -85,26 +89,26 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
             log.error('语音转换出错：text:%s;result:%s' % (text,j))
             if j['err_no'] == 502:
                 refresh_token()
-            return ''
+            return 2,''
         else:
-            return ''
-    except urllib2.URLError:
+            return 2,''
+    except (urllib2.URLError,socket.timeout):
         log.exception("网络有问题，无法访问：%s" % url)
-        return LOCAL_AUDIOS['NET_ERROR']
+        return 1,LOCAL_AUDIOS['NET_ERROR']
     with open(file_name, "wb") as f:
         f.write(c)
-    return file_name
+    return 0,file_name
 
 
 def get_mp3_file(text, spd=5, pit=5, vol=9, per=0):
     text = text.strip()
-    file_name = "./tmp/%s.mp3" % util.getHashCode(text)
+    file_name = "./tmp/%s.mp3" % hash(text)
     if os.path.isfile(file_name):
         #log.info("'%s'的语音文件已存在，直接播放" % urllib2.unquote(text))
-        pass
+        return 0,file_name
     else:
-        file_name = download_tts_file(text, file_name, spd, pit, vol, per)
-    return file_name
+        return download_tts_file(text, file_name, spd, pit, vol, per)
+    # return file_name
 
 
 import uuid,threading
@@ -121,22 +125,26 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3, read_times = 1):
         cache: 缓存语音文件，当然，缓存后，后续参数都失去意义
     """
     # log.INFO("开始播报：%s" % text)
+    # status, mp3_file = get_mp3_file(text, spd, pit, vol, per)
     if cache:
-        mp3_file = get_mp3_file(text, spd, pit, vol, per)
+        status,mp3_file = get_mp3_file(text, spd, pit, vol, per)
     else:
-        mp3_file = download_tts_file(text, None, spd, pit, vol, per)
+        status,mp3_file = download_tts_file(text, None, spd, pit, vol, per)
     retry = 3
     while retry:
-        if mp3_file:
+        if status ==0:
             tmp = read_times
             while read_times>0:
                 play_sound.play(mp3_file)
                 read_times-=1
             log.info("播报‘%s’%d次完成。" % (urllib2.unquote(text), tmp))
             break
-        else:
+        elif status==1:
+            play_sound.play(mp3_file)
+            break
+        elif status==2:
             log.warn("语音转换重试。")
-            mp3_file = get_mp3_file(text)
+            status, mp3_file = get_mp3_file(text)
             retry -= 1
     else:
         play_sound.play(LOCAL_AUDIOS['TTS_ERROR'])
