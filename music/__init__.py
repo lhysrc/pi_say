@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 net_lock = threading.Lock() #加载音乐信息的锁
 player = Player()
-def play_songs(url='./music_files', n=1, rdm=True):
+def play_songs(url='./music_files', n=1, rdm=True, vol=80):
     """
         n:播放n首
         rdm:是否随机
@@ -40,7 +40,7 @@ def play_songs(url='./music_files', n=1, rdm=True):
     # l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
     if rdm: random.shuffle(infos)
     infos = infos[:n]
-
+    player.playing_volume = vol
     player.songs = infos
     player.recall()
     # for i in infos[:n]:

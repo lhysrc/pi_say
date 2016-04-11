@@ -12,7 +12,7 @@ for d in required_dirs:
     if not os.path.exists(d): os.mkdir(d)
 
 from main import baidu_tts,tell_time
-from main import gz_bus, weather, play_sound
+from main import gz_bus, weather
 import music
 from main.log import log
 
@@ -29,18 +29,24 @@ def bao_zhan():
 
 
 
-
+def tell_time_every_10min(times=6):
+    while times:
+        t = time.localtime()
+        if t.tm_min == 0: continue
+        tell_time.tell_time(t)
+        times -= 1
+        time.sleep(60*10)
 
 
 @tell_time.tell_time_first
 def alarm_song():
     try:
-        music.set_vol(30)
-        music.play_songs('http://music.163.com/#/discover/toplist?id=3778678')
+        music.player.playing_volume = 30
+        music.play_songs('http://music.163.com/#/discover/toplist?id=3778678',vol=30)
     except:
         log.exception("播放闹钟音乐出错。")
         music.player.stop()
-        music.play_songs()
+        music.play_songs(vol=30)
 
 @tell_time.tell_time_first
 def load_weather(d=1,t=''):
@@ -52,8 +58,7 @@ def load_weather(d=1,t=''):
 
 
 def play_song_list(n=10):
-    music.set_vol(30)
-    music.play_songs('http://music.163.com/#/discover/toplist?id=3778678',n)
+    music.play_songs('http://music.163.com/#/discover/toplist?id=3778678',n,vol=30)
 
 
 from music.xm_music import xiami
@@ -77,10 +82,9 @@ def start_main():
         (8, 05): (gz_bus.baozhan, ('498',gz_bus.cxld_0_498)),
         (7, 48): (gz_bus.baozhan, ('b11',gz_bus.cxld_0_b11)),
         (7, 35): (alarm_song, ()),
+        (7, 50): (tell_time_every_10min,()),
         (9,  0): (auto_check_in, ()),
-        # (9, 39): (alarm_song, ()),
         (7, 43): (load_weather, ()),
-        # (21, 10): (play_song_list, ()),
         (22, 45): (music.play_songs, ('./music_files/4baby',3,True)),
     }
 
@@ -89,12 +93,9 @@ def start_main():
         (9,  0): (auto_check_in, ()),
         (10, 0): (play_song_list, ()),
         (9, 55): (load_weather, ('',True)),
-        # (10, 18): (play_song_list, ()),
         (22, 45): (music.play_songs, ('./music_files/4baby',5,True)),
     }
 
-    # bao_shi = threading.Thread(target=tell_time)
-    # bao_shi.start()
     log.info("程序开始运行")
     baidu_tts.read_aloud("程序开始运行", True)
     while True:
@@ -115,14 +116,6 @@ def start_main():
         # log.info("程序运行正常。")
         time.sleep(3600 - time.localtime().tm_min * 60 - time.localtime().tm_sec)
 
-        # t1 = threading.Thread(target=_498)
-        # t2 = threading.Thread(target=_581)
-        # print("start _498")
-        # t1.start()
-        # print("wait 30'")
-        # time.sleep(30)
-        # print("start _581")
-        # t2.start()
 
 
 

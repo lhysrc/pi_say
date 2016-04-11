@@ -243,6 +243,7 @@ class Player:
                 self.popen_handler.kill()
             except:
                 return
+            log.info("stop play.")
 
     def pause(self):
         if not self.playing_flag and not self.popen_handler:
@@ -389,7 +390,7 @@ class Player:
     #     self.recall()
 
     def set_volume(self,vol):
-        if self.playing_volume == vol:return
+        if not self.playing_flag or self.playing_volume == vol:return
         self.playing_volume = vol
         try:
             self.popen_handler.stdin.write("V " + str(self.playing_volume) + "\n")
