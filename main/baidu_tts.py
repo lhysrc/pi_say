@@ -128,10 +128,11 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3, read_times = 1):
     retry = 3
     while retry:
         if mp3_file:
+            tmp = read_times
             while read_times>0:
                 play_sound.play(mp3_file)
                 read_times-=1
-            log.info("播报‘%s’%d次完成。" % (urllib2.unquote(text), read_times))
+            log.info("播报‘%s’%d次完成。" % (urllib2.unquote(text), tmp))
             break
         else:
             log.warn("语音转换重试。")
