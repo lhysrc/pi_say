@@ -82,7 +82,7 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
             c = response.read()
         elif 'json' in response.headers['Content-type']:
             j = json.load(response)
-            log.error('语音转换出错：%s' % j)
+            log.error('语音转换出错：text:%s;result:%s' % (text,j))
             if j['err_no'] == 502:
                 refresh_token()
             return ''

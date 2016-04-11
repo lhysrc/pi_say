@@ -82,13 +82,6 @@ def get_files_from_path(path, ext = None):
     return allfiles
 
 if __name__ == '__main__':
-    # print getHashCode('http://outofmemory.cn/')
-    # print getHashCode('http://outofmemory.cn/code-snippet/2311/C-rumenjiaocheng-c-multithreading-process-course')
-    # print getHashCode('http://outofmemory.cn/code-snippet/2321/C-rumenjiaocheng-usage-arrow-unsafe-code-block/')
-    # print getHashCode('http://outofmemory.cn/code-snippet/2322/mysql-achieve-sql-server-with-lock')
-    # print getHashCode('http://outofmemory.cn/')
-    # print getHashCode('772距岑村小学还有1站，预计在5分钟后到达')
-    # print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
-    # print getHashCode('772距岑村小学还有2站，预计在5分钟后到达')
+
     print(os.getcwd())
     print(get_files_from_path("../music_files"))

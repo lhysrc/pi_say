@@ -39,6 +39,7 @@ def alarm_song():
         music.play_songs('http://music.163.com/#/discover/toplist?id=3778678')
     except:
         log.exception("播放闹钟音乐出错。")
+        music.player.stop()
         music.play_songs()
 
 @tell_time.tell_time_first
