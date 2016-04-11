@@ -89,7 +89,7 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
         else:
             return ''
     except urllib2.URLError:
-        log.error("网络有问题，无法访问：%s" % url)
+        log.exception("网络有问题，无法访问：%s" % url)
         return LOCAL_AUDIOS['NET_ERROR']
     with open(file_name, "wb") as f:
         f.write(c)
@@ -100,7 +100,8 @@ def get_mp3_file(text, spd=5, pit=5, vol=9, per=0):
     text = text.strip()
     file_name = "./tmp/%s.mp3" % util.getHashCode(text)
     if os.path.isfile(file_name):
-        log.info("'%s'的语音文件已存在，直接播放" % urllib2.unquote(text))
+        #log.info("'%s'的语音文件已存在，直接播放" % urllib2.unquote(text))
+        pass
     else:
         file_name = download_tts_file(text, file_name, spd, pit, vol, per)
     return file_name
@@ -112,7 +113,8 @@ def read_aloud_async(text, cache=False, spd=5, pit=5, vol=9, per=3, read_times =
     delay_sec = int(delay_sec) if delay_sec else 0
     read_times = int(read_times) if read_times else 1
     threading.Timer(delay_sec,read_aloud,(text, cache, spd, pit, vol, per, read_times)).start()
-    log.info("将于%d秒后播报%d次：%s"%(delay_sec,read_times,urllib2.unquote(text)))
+    if delay_sec>0:
+        log.info("将于%d秒后播报%d次：%s"%(delay_sec,read_times,urllib2.unquote(text)))
 
 def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3, read_times = 1):
     """
@@ -129,6 +131,7 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3, read_times = 1):
             while read_times>0:
                 play_sound.play(mp3_file)
                 read_times-=1
+            log.info("播报‘%s’%d次完成。" % (urllib2.unquote(text), read_times))
             break
         else:
             log.warn("语音转换重试。")
