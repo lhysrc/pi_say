@@ -57,7 +57,7 @@ class Player:
                                                   stdout=subprocess.PIPE,
                                                   stderr=subprocess.PIPE)
             self.popen_handler.stdin.write("V " + str(self.playing_volume) + "\n")
-            log.info(u"开始播放‘%s’。[%d]%s"%(song_info.file_name,self.playing_idx,song_info.song_page))
+            log.info(u"开始播放‘%s’，音量%d。[%d] %s"%(song_info.file_name,self.playing_volume,self.playing_idx,song_info.song_page))
             self.popen_handler.stdin.write("L " + song_info.url + "\n")
             self.process_first = True
             while (True):
