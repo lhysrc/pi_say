@@ -32,8 +32,8 @@ def bao_zhan():
 def tell_time_every_10min(times=6):
     while times:
         t = time.localtime()
-        if t.tm_min == 0: continue
-        tell_time.tell_time(t)
+        if t.tm_min != 0:
+            tell_time.tell_time(t)
         times -= 1
         time.sleep(60*10)
 
