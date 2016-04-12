@@ -93,7 +93,7 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
         else:
             return 2,''
     except (urllib2.URLError,socket.timeout):
-        log.exception("网络有问题，无法访问：%s" % url)
+        log.exception("网络有问题，无法访问：%s" % urllib2.unquote(url))
         return 1,LOCAL_AUDIOS['NET_ERROR']
     with open(file_name, "wb") as f:
         f.write(c)

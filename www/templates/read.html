@@ -117,6 +117,13 @@
         {#                    <input type="checkbox"> Check me out#}
         {#                </label>#}
         {#            </div>#}
+        <label class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">播报</span>
+                <input class="form-control" ng-model="read_times" type="text" id="cnt"/>
+                <span class="input-group-addon">次</span>
+            </div>
+        </label>
         <button type="button" class="btn btn-primary" id="play" ng-click="read()" ng-disabled="loading">
 
             <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> 播报
@@ -228,14 +235,19 @@
                 $scope.delay_time = secs[idx];
                 if(!$scope.text) $scope.text = '定时时间到';
             };
-
+            $scope.read_times = 1;
             $scope.read = function () {
                 if (!$scope.text) {
                     showMsgBox('请输入要播报的文字。');
                     return false;
                 }
+                if (!($scope.read_times>0) || $scope.read_times>50){
+                    showMsgBox('播报次数错误或过大。');
+                    return false;
+                }
                 d = getSetting();
                 d['text'] = $scope.text;
+                d['read_times'] = $scope.read_times;
                 if($scope.delay_chk) d['delay_sec'] = $scope.delay_time;
                 $scope.loading = true;
                 $http({url: '../read',
