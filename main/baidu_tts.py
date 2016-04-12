@@ -86,14 +86,14 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
             c = response.read()
         elif 'json' in response.headers['Content-type']:
             j = json.load(response)
-            log.error('语音转换出错：text:%s;result:%s' % (text,j))
+            log.error('语音转换出错：text:‘%s’;result:‘%s’' % (urllib2.unquote(text),j))
             if j['err_no'] == 502:
                 refresh_token()
             return 2,''
         else:
             return 2,''
     except (urllib2.URLError,socket.timeout):
-        log.exception("网络有问题，无法访问：%s" % urllib2.unquote(url))
+        log.error("网络有问题，无法访问：%s" % urllib2.unquote(url))
         return 1,LOCAL_AUDIOS['NET_ERROR']
     with open(file_name, "wb") as f:
         f.write(c)
