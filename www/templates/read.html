@@ -118,19 +118,19 @@
         {#                </label>#}
         {#            </div>#}
         <label class="form-group">
-            <div class="input-group">
+            <div class="input-group" ng-class="{true: '', false: 'has-error'}[read_times>0&&read_times<50]">
                 <span class="input-group-addon">播报</span>
                 <input class="form-control" ng-model="read_times" type="text" id="cnt"/>
                 <span class="input-group-addon">次</span>
             </div>
         </label>
-        <button type="button" class="btn btn-primary" id="play" ng-click="read()" ng-disabled="loading">
+        <button type="button" class="btn btn-primary" id="play" ng-click="read()" ng-disabled="loading || !text">
 
             <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> 播报
         </button>
-        <button type="button" class="btn btn-warning" id="play" ng-click="text=''">
+        <button type="button" class="btn btn-warning" id="play" ng-click="text='';read_times=1;delay_chk=false" >
             {#            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> #}
-            清空
+            重置
         </button>
 
 
