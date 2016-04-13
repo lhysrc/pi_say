@@ -41,9 +41,14 @@ def play_songs(url='./music_files', n=1, rdm=True, vol=80):
     if rdm: random.shuffle(infos)
     infos = infos[:n]
     player.playing_volume = vol
-    player.playing_idx = 0
-    player.songs = infos
-    player.recall()
+    if not player.playing_flag:
+        player.playing_idx = 0
+        player.songs = infos
+        player.recall()
+    else:
+        # 如果正在播放，把新获取的歌曲加到列表后
+        player.songs += infos
+
     # for i in infos[:n]:
     #     if not i.url:
     #         log.warn(u"地址‘ %s ’无法播放，将跳过。"%i.url)
