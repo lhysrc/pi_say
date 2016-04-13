@@ -106,7 +106,7 @@
         {##}
         {#                        <button type="button" class="btn btn-default" id="tellWeather">今日天气</button>#}
 
-
+        <hr/>
         <div class="form-group">
             <label for="textToRead">要播报的内容：</label>
             <textarea class="form-control" id="textToRead" ng-model="text"></textarea>
@@ -139,16 +139,22 @@
                 <input id="delay-chk" ng-model="delay_chk" type="checkbox" >定时
             </label>
             <!-- Small button group -->
-            <div class="btn-group dropup"  >
+            <div class="btn-group dropup" ng-class="{true: '', false: 'has-error'}[delay_time>=0]">
                 <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false" ng-disabled = "!delay_chk">
+                        aria-haspopup="true" aria-expanded="false" ng-disabled="!delay_chk"
+                        ng-class="{true: '', false: 'has-error'}[delay_time>=0]">
                      <span id="delay-sec" ng-bind="delay_time"></span> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     <li ng-repeat="t in default_secs"><a ng-click="set_delay_time($index)">{{t[1]}} &nbsp; | &nbsp; {{t[0]}}</a></li>
 
                     <li role="separator" class="divider"></li>
-                    <li><a ><input class="form-control input-sm" ng-model="delay_time" type="text" /></a></li>
+                    <li><a>
+
+                        <input class="form-control input-sm" ng-model="delay_time" type="text"/>
+
+                    </a>
+                    </li>
                 </ul>
             </div>
             秒
@@ -237,18 +243,24 @@
             };
             $scope.read_times = 1;
             $scope.read = function () {
-                if (!$scope.text) {
-                    showMsgBox('请输入要播报的文字。');
-                    return false;
-                }
+                {#                if (!$scope.text) {#}
+                {#                    showMsgBox('请输入要播报的文字。');#}
+                {#                    return false;#}
+                {#                }#}
                 if (!($scope.read_times>0) || $scope.read_times>50){
                     showMsgBox('播报次数错误或过大。');
                     return false;
                 }
+                if ($scope.delay_chk) {
+                    if (!($scope.delay_time > 0)) {
+                        showMsgBox('定时时间错误。');
+                        return false;
+                    }
+                    d['delay_sec'] = $scope.delay_time;
+                }
                 d = getSetting();
                 d['text'] = $scope.text;
                 d['read_times'] = $scope.read_times;
-                if($scope.delay_chk) d['delay_sec'] = $scope.delay_time;
                 $scope.loading = true;
                 $http({url: '../read',
                         method: "POST",

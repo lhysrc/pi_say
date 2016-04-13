@@ -199,18 +199,45 @@ def play_url():
     threading.Thread(target=music.play_songs, args=(url, n, rdm == 'true')).start()
     return '',200
 
-@app.route('/set-player/<int:i>')
-def set_player(i):
-    funcs =[music.stop,music.play_and_pause,music.next_song]
-    if 0<=i<=2:funcs[i]()
-    else:music.set_vol(i)
+
+from music import player
+player_func = {
+    'stop':player.stop,
+    'p':player.play_and_pause,
+    'next':player.next,
+    'prev': player.prev,
+}
+@app.route('/set-player',methods=['post'])
+def set_player():
+    json_data = json.loads(request.data)
+    if 'func' in json_data and json_data['func'] in player_func:
+        player_func[json_data['func']]()
+    if 'vol' in json_data:
+        player.set_volume(json_data['vol'])
     return '',200
+
+import random
+@app.route('/playing-info',methods=['post'])
+def get_playing_info():
+    ret = {
+        'song_info':player.get_playing_song(),
+        'vol':player.playing_volume,
+        'pause':player.pause_flag,
+        'playing':player.playing_flag
+    }
+    # ret = {
+    #     'song_name': music.SongInfo('url','name','artist').file_name,
+    #     'vol'      : random.randint(0,100),
+    #     'pause'    : True,
+    #     'playing'  : True
+    # }
+    return jsonify(ret)
 
 def check_is_playing():
     if music.is_loading_song_infos():
-        return '当前正在加载音乐信息，已准备播放'
+        return '当前正在加载音乐信息，已准备播放！'
     if music.is_playing():
-        return '当前正在播放音乐'
+        return '当前正在播放音乐。'
     return ""
 
 # @app.route('/tts',methods='post')
