@@ -19,7 +19,7 @@
     <div ng-app="music">
         <div  class="page-header text-center" id="playing-ctrl" ng-controller="playingCtrl">
 
-            <div class="alert  alert-success text-center" ng-class="{flase: 'alert-success', true: 'alert-warning'}[playing_info['pause']]"
+            <div class="alert  alert-success text-center" ng-class="{false: 'alert-success', true: 'alert-warning'}[playing_info['pause']]"
                  ng-show="playing_info['playing']" role="alert" >
 
                 <button  class="pull-left btn btn-xs btn-danger" ng-click="set_player('stop')"><!--停止-->
@@ -28,9 +28,9 @@
                  <button  class="pull-right btn btn-xs btn-info" ng-click="set_player('next')"><!--下一首-->
                     <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
                 </button>
-                <button  class="pull-right btn btn-xs" ng-class="{flase: 'btn-warning', true: 'btn-success'}[playing_info['pause']]"
+                <button  class="pull-right btn btn-xs" ng-class="{false: 'btn-warning', true: 'btn-success'}[playing_info['pause']]"
                           ng-click="set_player('p')" ><!--暂停-->
-                    <span class="glyphicon" ng-class="{flase: 'glyphicon-pause', true: 'glyphicon-play'}[playing_info['pause']]"
+                    <span class="glyphicon" ng-class="{false: 'glyphicon-pause', true: 'glyphicon-play'}[playing_info['pause']]"
                           aria-hidden="true"></span>
                 </button>
 {#                <button  class="pull-right btn btn-xs btn-default"  id="example"#}

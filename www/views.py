@@ -220,7 +220,7 @@ import random
 @app.route('/playing-info',methods=['post'])
 def get_playing_info():
     ret = {
-        'song_info':player.get_playing_song(),
+        'song_name':player.get_playing_song().file_name if player.playing_flag else None,
         'vol':player.playing_volume,
         'pause':player.pause_flag,
         'playing':player.playing_flag
