@@ -218,7 +218,7 @@
                 $scope.days.push(new GetDateStr(i));
             }
             $scope.tellWeather = function (idx) {
-                d = getSetting();
+                var d = getSetting();
                 d['idx'] = idx + 1;
                 $http({
                     url: '../weather',
@@ -251,6 +251,7 @@
                     showMsgBox('播报次数错误或过大。');
                     return false;
                 }
+                var d = getSetting();
                 if ($scope.delay_chk) {
                     if (!($scope.delay_time > 0)) {
                         showMsgBox('定时时间错误。');
@@ -258,7 +259,6 @@
                     }
                     d['delay_sec'] = $scope.delay_time;
                 }
-                d = getSetting();
                 d['text'] = $scope.text;
                 d['read_times'] = $scope.read_times;
                 $scope.loading = true;
