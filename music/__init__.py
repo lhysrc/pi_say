@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 net_lock = threading.Lock() #加载音乐信息的锁
 player = Player()
-def play_songs(url='./music_files', n=1, rdm=True, vol=80):
+def play_songs(url='./music_files', n=1, rdm=True, vol=None):
     """
         n:播放n首
         rdm:是否随机
@@ -31,7 +31,7 @@ def play_songs(url='./music_files', n=1, rdm=True, vol=80):
         elif 'xiami.com' in url: # todo 虾米信息加载未完善
             x = xiami()
             x.url_parser([url])
-            infos = None
+            infos = x.song_infos
         else:
             files = util.get_files_from_path(url,'.mp3')
             infos = [SongInfo(f,file_name=os.path.split(f)[1].decode('utf-8'),is_local=True) for f in files]
@@ -40,7 +40,8 @@ def play_songs(url='./music_files', n=1, rdm=True, vol=80):
     # l = random.sample(x.song_infos,n) if rdm else x.song_infos[:n]
     if rdm: random.shuffle(infos)
     infos = infos[:n]
-    player.playing_volume = vol
+    if vol:
+        player.playing_volume = vol
     if not player.playing_flag:
         player.playing_idx = 0
         player.songs = infos

@@ -58,7 +58,7 @@ def load_weather(d=1,t=''):
 
 
 def play_song_list(n=10):
-    music.play_songs('http://music.163.com/#/discover/toplist?id=3778678',n,vol=30)
+    music.play_songs('http://music.163.com/#/discover/toplist?id=3778678',n,vol=50)
 
 
 from music.xm_music import xiami
