@@ -155,7 +155,6 @@ def baozhan(bus,func):
             time.sleep(interval)
     # return v
 
-
 def pause_tell_bus(bus,days=1):
     v = config.get('bus', bus).split(';')
     v[0] = str(days)
@@ -165,6 +164,20 @@ def pause_tell_bus(bus,days=1):
 def get_pause_day(bus):
     v = config.get('bus', bus).split(';')
     return int(v[0])
+
+
+
+status = {} # 报站状态
+import config,time,threading
+def tell_bus(bus_name,station,search_id,cnt = 15,interval = 60):
+    status[search_id] = True
+    for i in range(0,cnt):
+        if not status[search_id]:break
+        threading.Thread(target=count_waittime,args=(bus_name,station,search_id)).start()
+        time.sleep(interval)
+    status[search_id] = False
+
+
 
 
 

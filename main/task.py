@@ -94,15 +94,17 @@ class PlayMusicTask(Task):
             self.__class__.__name__, self.t_hour, self.t_min, self.url, self.n, self.vol, self.type,self.pause_days)
 
 class TellBusTask(Task):
-    def __init__(self, hr, mn,search_id, cnt=15, interval=60, type=1,pause_days = 0):
+    def __init__(self, hr, mn,bus_name,station,search_id, cnt=15, interval=60, type=1,pause_days = 0):
+        self.bus_name = bus_name
+        self.station = station
         self.search_id = search_id
         self.cnt = cnt
         self.interval = interval
-        super(TellBusTask, self).__init__(u"报站",hr, mn, gz_bus.baozhan, (search_id, cnt, interval),type,pause_days)
+        super(TellBusTask, self).__init__(u"报站",hr, mn, gz_bus.tell_bus, (bus_name,station,search_id,cnt,interval),type,pause_days)
 
     def __repr__(self):
-        return "%s(%s,%s,'%s',%s,%s,%s,%s) " % (
-            self.__class__.__name__, self.t_hour, self.t_min, self.search_id, self.cnt, self.interval,self.type, self.pause_days)
+        return "%s(%s,%s,'%s','%s','%s',%s,%s,%s,%s) " % (
+            self.__class__.__name__, self.t_hour, self.t_min,self.bus_name,self.station,self.search_id, self.cnt, self.interval,self.type, self.pause_days)
 
 class TellWeatherTask(Task):
     def __init__(self, hr, mn, d = True, t=False, type=3,pause_days = 0):
