@@ -22,7 +22,23 @@
     <div class="page-header">
         <h1>设置页面</h1>
     </div>
+
     <div ng-app="configApp" ng-controller="busCtrl">
+        <h3><label>定时任务管理</label></h3>
+            <ul class="nav nav-tabs ">
+                <li role="presentation" class="page-btn" id="lc-page" content="../lcsong">
+                    <a>公　交                    </a>
+                </li>
+                <li role="presentation" class="page-btn  " id="ne-page" content="../play_url"><a>音　乐</a></li>
+                <li role="presentation" class="page-btn " id="xm-page"><a>播　报</a></li>
+            </ul>
+
+
+
+
+
+        <hr/>
+
         <label>暂停公交报站：</label>
         <table class="table table-bordered table-hover text-center">
             <thead class="">
@@ -90,6 +106,9 @@
     <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
     <script>
         var app = angular.module('configApp',[]);
+        app.controller('cfgCtrl',function($scope,$http){
+
+        });
         app.controller('busCtrl',function ($scope,$http) {
             $http.post('../bus_status')
                     .success(function (data,status) {

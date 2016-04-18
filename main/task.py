@@ -54,6 +54,18 @@ class Task(object):
         return "%s('%s',%s,%s,%s,%s,%s,%s) " % (
         self.__class__.__name__, self.name,self.t_hour, self.t_min, self.func.__name__, self.args, self.type, self.pause_days)
 
+    def __getitem__(self, item):
+        if item in self.__dict__:
+            return self.__dict__[item]
+        else: return None
+
+    def __setitem__(self, key, value):
+        if key in self.__dict__:
+            self.__dict__[key] = value
+        else:
+            return
+
+
     #     self._start_date = datetime.datetime.today()
     # @property
     # def pause_days(self):
