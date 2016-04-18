@@ -2,6 +2,8 @@
 {% block style %}
     {{ super() }}
     <link href="{{ url_for('static', filename='css/bootstrap-slider.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap-menu.css') }}" rel="stylesheet">
+
     <style>
         #set-url-div, #localMusic,.nav-tabs{
             margin: 15px 0
@@ -121,35 +123,45 @@
                 <div class="btn-group btn-group-justified" role="group" id="set-url-div">
                     {#                style="display:none">#}
 
-                    <div class="btn-group" role="group">
+                    <div class="btn-group dropdown" role="group">
                         <a type="button" class="btn btn-info dropdown-toggle"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             排行榜
                             <span class="caret"></span>
                         </a>
-                        <ul class="dropdown-menu" id="ul-toplist">
+                        <ul class="dropdown-menu multi-level" role="menu" id="ul-toplist">
                             <li><a class="btn-default" content='3779629'>云音乐新歌榜</a></li>
                             <li><a class="btn-default" content='3778678'>云音乐热歌榜</a></li>
                             <li><a class="btn-default" content='2884035'>网易原创歌曲榜</a></li>
                             <li><a class="btn-default" content='19723756'>云音乐飙升榜</a></li>
-                            <li><a class="btn-default" content='10520166'>云音乐电音榜</a></li>
-                            <li><a class="btn-default" content='180106'>UK排行榜周榜</a></li>
-                            <li><a class="btn-default" content='60198'>美国Billboard周榜</a></li>
-                            <li><a class="btn-default" content='21845217'>KTV嗨榜</a></li>
-                            <li><a class="btn-default" content='11641012'>iTunes榜</a></li>
-                            <li><a class="btn-default" content='120001'>Hit FM Top榜</a></li>
-                            <li><a class="btn-default" content='60131'>日本Oricon周榜</a></li>
-                            <li><a class="btn-default" content='3733003'>韩国Melon排行榜周榜</a></li>
-                            <li><a class="btn-default" content='60255'>韩国Mnet排行榜周榜</a></li>
-                            <li><a class="btn-default" content='46772709'>韩国Melon原声周榜</a></li>
-                            <li><a class="btn-default" content='112504'>中国TOP排行榜(港台榜)</a></li>
-                            <li><a class="btn-default" content='64016'>中国TOP排行榜(内地榜)</a></li>
-                            <li><a class="btn-default" content='10169002'>香港电台中文歌曲龙虎榜</a></li>
-                            <li><a class="btn-default" content='4395559'>华语金曲榜</a></li>
-                            <li><a class="btn-default" content='1899724'>中国嘻哈榜</a></li>
-                            <li><a class="btn-default" content='27135204'>法国 NRJ EuroHot 30周榜</a></li>
-                            <li><a class="btn-default" content='112463'>台湾Hito排行榜</a></li>
-                            <li><a class="btn-default" content='3812895'>Beatport全球电子舞曲榜</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li class="dropdown-submenu">
+                                <a tabindex="-1" id="dropdown-more" content="">更多...</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="btn-default" content=''>...收起</a></li>
+                                    <li><a class="btn-default" content='10520166'>云音乐电音榜</a></li>
+                                    <li><a class="btn-default" content='180106'>UK排行榜周榜</a></li>
+                                    <li><a class="btn-default" content='60198'>美国Billboard周榜</a></li>
+                                    <li><a class="btn-default" content='21845217'>KTV嗨榜</a></li>
+                                    <li><a class="btn-default" content='11641012'>iTunes榜</a></li>
+                                    <li><a class="btn-default" content='120001'>Hit FM Top榜</a></li>
+                                    <li><a class="btn-default" content='60131'>日本Oricon周榜</a></li>
+                                    <li><a class="btn-default" content='3733003'>韩国Melon排行榜周榜</a></li>
+                                    <li><a class="btn-default" content='60255'>韩国Mnet排行榜周榜</a></li>
+                                    <li><a class="btn-default" content='46772709'>韩国Melon原声周榜</a></li>
+                                    <li><a class="btn-default" content='112504'>中国TOP排行榜(港台榜)</a></li>
+                                    <li><a class="btn-default" content='64016'>中国TOP排行榜(内地榜)</a></li>
+                                    <li><a class="btn-default" content='10169002'>香港电台中文歌曲龙虎榜</a></li>
+                                    <li><a class="btn-default" content='4395559'>华语金曲榜</a></li>
+                                    <li><a class="btn-default" content='1899724'>中国嘻哈榜</a></li>
+                                    <li><a class="btn-default" content='27135204'>法国 NRJ EuroHot 30周榜</a></li>
+                                    <li><a class="btn-default" content='112463'>台湾Hito排行榜</a></li>
+                                    <li><a class="btn-default" content='3812895'>Beatport全球电子舞曲榜</a></li>
+                                </ul>
+                            </li>
+{#                            <li><a class="btn-default" content=''>自定义</a></li>#}
+
+
                         </ul>
                     </div>
                     <div class="btn-group" role="group">
@@ -370,6 +382,15 @@
 {#        });#}
 
         $(document).ready(function () {
+            $('#dropdown-more').click(function(){
+                var ul = $(this).parent();
+                ul.addClass('open');
+                $(this).next().children().click(function(){
+                    ul.removeClass('open');
+                    return false;
+                });
+                return false;
+            });
             $('#local-path a').click(function () {
                 $('#url').val($(this).text());
                 $('#url').attr('disabled','disabled');
