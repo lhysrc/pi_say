@@ -23,7 +23,7 @@
         <h1>设置页面</h1>
     </div>
 
-    <div ng-app="configApp" ng-controller="busCtrl">
+    <div ng-app="configApp" ng-controller="cfgCtrl">
         <h3><label>定时任务管理</label></h3>
             <ul class="nav nav-tabs ">
                 <li role="presentation" class="page-btn" id="lc-page" content="../lcsong">
@@ -32,10 +32,25 @@
                 <li role="presentation" class="page-btn  " id="ne-page" content="../play_url"><a>音　乐</a></li>
                 <li role="presentation" class="page-btn " id="xm-page"><a>播　报</a></li>
             </ul>
+        <table class="table table-bordered table-hover text-center">
+            <thead class="">
+            <tr>
+                <th>#</th>
+                <th>暂停一天</th>
+                <th>停止</th>
+                <th>恢复</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="(n,t) in music_tasks">
+                <td><label ng-bind="n"></label></td>
+                <td>{{t.args}}</td>
+                <td>{{t.args}}</td>
+                <td>{{t.args}}</td>
+            </tr>
 
-
-
-
+            </tbody>
+        </table>
 
         <hr/>
 
@@ -107,8 +122,25 @@
     <script>
         var app = angular.module('configApp',[]);
         app.controller('cfgCtrl',function($scope,$http){
-
+            $scope.music_tasks = {};
+            $scope.bus_tasks = {};
+            $scope.read_tasks = {};
+            $http.post('../tasks')
+                    .success(function (data, status) {
+                        if (status != 200) return;
+                        $scope.tasks = data;
+                        for (var t in $scope.tasks) {
+                            switch ($scope.tasks[t].name) {
+                                case 'music':
+                                    $scope.music_tasks[t] = $scope.tasks[t];
+                                    break;
+                                case 'bus':
+                                    $scope.bus_tasks[t] = $scope.tasks[t];break;
+                            }
+                        }
+                    });
         });
+
         app.controller('busCtrl',function ($scope,$http) {
             $http.post('../bus_status')
                     .success(function (data,status) {

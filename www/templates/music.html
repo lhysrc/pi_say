@@ -240,10 +240,15 @@
                     {##}
                     {#                </div>#}
                     <label for="url">要播放的歌曲/歌单的链接或本地路径：</label>
+                    <div class = ' input-group  '>
     {#                <label for="url">要播放的网易云音乐页面链接：</label>#}
-                    <input class="form-control" type="text" id="url" value=""
-                           placeholder="歌曲/歌单/排行榜/电台 链接 or 本地歌曲路径"
-                    />
+                        <input class="form-control" type="text" id="url" value="" ng-value="musicurl"
+                               placeholder="歌曲/歌单/排行榜/电台 链接 or 本地歌曲路径"
+                        />
+                        <span class="input-group-btn">
+                            <a class="btn btn-default" type="button" ng-href="{{musicurl}}" target="_blank">前往</a>
+                        </span>
+                    </div>
                     {#                <textarea class="form-control" id="textToRead" ></textarea>#}
                 </div>
                 <label class="form-group">
@@ -377,9 +382,9 @@
                 $scope.set_player('vol');
             });
         });
-{#        app.controller('settingCtrl', function ($scope) {#}
-{#            $scope.y = 'xyz'#}
-{#        });#}
+        app.controller('settingCtrl', function ($scope) {
+            $scope.musicurl = 'xyz'
+        });
 
         $(document).ready(function () {
             $('#dropdown-more').click(function(){

@@ -240,6 +240,13 @@ def check_is_playing():
         return '当前正在播放音乐。'
     return ""
 
+from main import task
+@app.route('/tasks',methods=['post'])
+def tasks():
+    tks = {}
+    for name in task.tasks.keys():
+        tks[name] = task.tasks[name].to_dict()
+    return jsonify(tks)
 # @app.route('/tts',methods='post')
 # def tts():
 #     baidu_tts.read_aloud("123")
