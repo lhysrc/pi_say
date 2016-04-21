@@ -13,6 +13,13 @@
             text-align: center;
 
         }
+        table.time input{
+            width:50px;
+            padding:0 0;
+            text-align: center;
+        }
+
+
 
 
     </style>
@@ -26,27 +33,51 @@
     <div ng-app="configApp" ng-controller="cfgCtrl">
         <h3><label>定时任务管理</label></h3>
             <ul class="nav nav-tabs ">
-                <li role="presentation" class="page-btn" id="lc-page" content="../lcsong">
+                <li role="presentation" class="page-btn">
                     <a>公　交                    </a>
                 </li>
-                <li role="presentation" class="page-btn  " id="ne-page" content="../play_url"><a>音　乐</a></li>
-                <li role="presentation" class="page-btn " id="xm-page"><a>播　报</a></li>
+                <li role="presentation" class="page-btn  " ><a>音　乐</a></li>
+                <li role="presentation" class="page-btn " ><a>播　报</a></li>
             </ul>
         <table class="table table-bordered table-hover text-center">
             <thead class="">
             <tr>
-                <th>#</th>
-                <th>暂停一天</th>
+{#                <th>#</th>#}
+                <th>时间</th>
                 <th>停止</th>
                 <th>恢复</th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="(n,t) in music_tasks">
-                <td><label ng-bind="n"></label></td>
-                <td>{{t.args}}</td>
-                <td>{{t.args}}</td>
-                <td>{{t.args}}</td>
+            <tr ng-repeat="t in group_tasks.bus">
+{#                <td><label ng-bind="t.id"></label></td>#}
+{#                <td>#}
+{#                    <uib-timepicker ng-model="t" ng-change="time_changed(t)" hour-step="1" minute-step="5" show-meridian="false" show-spinners="false"></uib-timepicker>#}
+{#                </td>#}
+                <td class="text-center">
+{#                    <input type="text" class="form-control" size="8" ng-model="time" bs-timepicker>#}
+                    <table class="time">
+                        <tr>
+                            <td class="from-group"><input type="number" max="23" min="0" class="form-control" maxlength="2" ng-model="t.hour"></td>
+                            <td>:</td>
+                            <td class="from-group"><input type="number" max="59" min="0" class="form-control" ng-model="t.min" maxlength="2"></td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td>
+                    <label>
+{#                        <uib-timepicker ng-model="t.date" ng-change="changed()" hour-step="1" minute-step="10" show-meridian="ismeridian"></uib-timepicker>#}
+                        <input ng-model="t.args[0]"/>
+                    </label>
+                </td>
+                <td><label>
+                        <input ng-model="t.args[1]"/>
+                    </label></td>
+                <td><label>
+                        <input ng-model="t.args[2]"/>
+                    </label></td>
+                <td><button class="btn" ng-click="send(t)" ></button></td>
             </tr>
 
             </tbody>
@@ -120,23 +151,52 @@
 
     <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
     <script>
-        var app = angular.module('configApp',[]);
-        app.controller('cfgCtrl',function($scope,$http){
-            $scope.music_tasks = {};
-            $scope.bus_tasks = {};
-            $scope.read_tasks = {};
-            $http.post('../tasks')
+        var app = angular.module('configApp', ['ui.bootstrap'])
+        .filter('tk2Date', function () {
+            return function (tk) {
+                var d = new Date();
+                d.setHours(tk.hour);
+                d.setMinutes(tk.min);
+                return d;
+            }
+        })
+        .controller('cfgCtrl',function($scope,$http){
+            $scope.group_tasks = {
+                music:[],bus:[],weather:[],read:[]
+            };
+            $scope.send = function (tk) {
+                var d = tk.date;
+                tk.date = undefined;
+                $http.post('../tasks',data=tk)
+                        .success(function (data,status) {
+                            console.log(data,status);
+                        });
+                tk.date = d;
+            };
+            $scope.getDate = function (tk) {
+                var d = new Date();
+                d.setHours(tk.hour);
+                d.setMinutes(tk.min);
+                tk.date = d;
+            };
+            $scope.time_changed = function (tk) {
+                tk.hour = tk.date.getHours();
+                tk.min = tk.date.getMinutes();
+            };
+            $http.get('../tasks')
                     .success(function (data, status) {
                         if (status != 200) return;
-                        $scope.tasks = data;
-                        for (var t in $scope.tasks) {
-                            switch ($scope.tasks[t].name) {
-                                case 'music':
-                                    $scope.music_tasks[t] = $scope.tasks[t];
-                                    break;
-                                case 'bus':
-                                    $scope.bus_tasks[t] = $scope.tasks[t];break;
-                            }
+                        $scope.tasks = data['result'];
+                        for (var i in $scope.tasks) {
+                            var t = $scope.tasks[i];
+                            $scope.group_tasks[t.type].push(t);
+{#                            switch (t.type) {#}
+{#                                case 'music':#}
+{#                                    $scope.music_tasks.push(t);#}
+{#                                    break;#}
+{#                                case 'tell_bus':#}
+{#                                    $scope.bus_tasks.push(t);break;#}
+{#                            }#}
                         }
                     });
         });

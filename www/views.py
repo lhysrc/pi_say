@@ -236,17 +236,36 @@ def get_playing_info():
 def check_is_playing():
     if music.is_loading_song_infos():
         return '当前正在加载音乐信息，已准备播放！'
-    if music.is_playing():
+    if player.playing_flag:
         return '当前正在播放音乐。'
     return ""
 
-from main import task
-@app.route('/tasks',methods=['post'])
-def tasks():
-    tks = {}
-    for name in task.tasks.keys():
-        tks[name] = task.tasks[name].to_dict()
-    return jsonify(tks)
+from main import task2
+@app.route('/tasks',methods=['get','post'])
+@app.route('/tasks/<type>',methods=['get'])
+def cfg_tasks(type = None):
+    tasks = task2.tasks
+    if request.method == 'GET':
+        tks = map(lambda t:t.to_dict(True),tasks)
+        tks = filter(lambda t:t != None,tks)
+        if type : tks = filter(lambda t:t['type']==type,tks)
+        return jsonify(result=tks)
+    if request.method == 'POST':
+        rq_data = json.loads(request.data)
+        #for tk in rq_data:
+        if not isinstance(rq_data,list):rq_data = [rq_data]
+        for tk_dic in rq_data:
+            if 'id' in tk_dic:
+                task2.tasks = [task2.Task(**tk_dic) if tk.id == tk_dic['id'] else tk for tk in task2.tasks]
+                # for i,tk in enumerate(tasks):
+                #     if tk.id == tk_dic['id']:
+                #         tasks[i] = task2.Task(**tk_dic)
+            else:
+                tasks.append(task2.Task(**tk_dic))
+        task2.save_all_tasks()
+        return '',200
 # @app.route('/tts',methods='post')
 # def tts():
 #     baidu_tts.read_aloud("123")
+
+

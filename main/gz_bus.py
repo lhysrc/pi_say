@@ -178,11 +178,11 @@ def tell_bus(bus_name,station,search_id,cnt = 15,interval = 60):
     status[search_id] = False
 
 
-from task2 import *
-t581 = Task('581',7,47,TELL_BUS,(581,"长兴路东",162545),holiday=False)
-t498 = Task('498',8,5,TELL_BUS,(498,"长兴路东",261508),holiday=False)
-tB11 = Task('B11',7,47,TELL_BUS,('b11', "长兴路东", 87792),holiday=False)
-tasks += [t581,t498,tB11]
+# from task2 import *
+# t581 = Task('581',7,47,TELL_BUS,(581,"长兴路东",162545),holiday=False)
+# t498 = Task('498',8,5,TELL_BUS,(498,"长兴路东",261508),holiday=False)
+# tB11 = Task('B11',7,47,TELL_BUS,('b11', "长兴路东", 87792),holiday=False)
+# tasks += [t581,t498,tB11]
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ def music():pass
 def tell_bus():pass
 def tell_weather():pass
 def read_text():pass
-MUSIC,TELL_BUS,TELL_WEATHER,READ_TEXT = 'music','tell_bus','tell_weather','read_text'
+MUSIC,TELL_BUS,TELL_WEATHER,READ_TEXT = 'music','bus','weather','read'
 task_types = {
     MUSIC       : music,
     TELL_BUS    : tell_bus,
@@ -17,23 +17,24 @@ task_types = {
 }
 
 class Task(object):
-    def __init__(self, hour, min, task_type_or_func,args=(), workday=False,holiday=False, pause_days=0):
-        self.id = str(uuid.uuid4())
-        self.task_type_or_func = task_type_or_func
+    def __init__(self, hour, min, type,args=(), workday=False,holiday=False, pause_days=0, id=None):
+        self.type = type # 类型或函数
         self.args = tuple(args)
         self.hour = hour
         self.min = min
         self.workday = workday
         self.holiday = holiday
         self.pause_days = pause_days
+        self.id = str(uuid.uuid4()) if not id else id
 
     def __repr__(self):
-         return str(self.__dict__) if self.task_type_or_func in task_types else '<PreTask>'
+         return str(self.__dict__) if self.type in task_types else '<PreTask>'
 
-    def to_dict(self):
-        if self.task_type_or_func not in task_types:return None
+    def to_dict(self,include_id = False):
+        if self.type not in task_types:return None
         d = self.__dict__.copy()
-        del d['id']
+        if not include_id:
+            del d['id']
         return d
 
 
@@ -47,7 +48,7 @@ def load_all_tasks():
     #todo: log
 
 def save_all_tasks():
-    for k,g in itertools.groupby(tasks,key=lambda t:t.task_type_or_func):
+    for k,g in itertools.groupby(tasks,key=lambda t:t.type):
         if k in task_types:
             g = map(lambda t:t.to_dict(),g)
             config.set('Task', k, json.dumps(g))
@@ -59,6 +60,17 @@ def save_all_tasks():
 #     task_to_save
 #     config.set("Task",name,task)
 #     config.save()
+
+tasks += [Task(7, 47, TELL_BUS, (581, "长兴路东", 162545), workday=True),
+          Task(8, 5, TELL_BUS, (498, "长兴路东", 261508), workday=True),
+          Task(7, 47, TELL_BUS, ('b11', "长兴路东", 87792), workday=True),
+          Task(7, 35, MUSIC, (), workday=True),
+          Task( 10, 0, MUSIC, (), holiday=False),
+          Task( 22, 49, MUSIC, (), workday=True, holiday=False,pause_days=3),
+          Task(9,0,max,())
+]
+
+save_all_tasks()
 
 if __name__ == '__main__':
 
@@ -94,4 +106,6 @@ if __name__ == '__main__':
                 task.pause_days -= 1
                 task_changed = True
                 print(u"今日不执行任务‘%s’，将于%s日后执行。|%s。" % (func.__name__, task.pause_days,task))
+            else:
+                print(u"任务‘%s’已停止。|%s。" % (func.__name__,  task))
     if task_changed: save_all_tasks()

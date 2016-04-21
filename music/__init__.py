@@ -4,7 +4,6 @@ import os
 import random,threading
 
 from common import util
-from main import play_sound
 from .ne_music import neteaseMusic
 from .song_info import SongInfo
 from .xm_music import xiami
@@ -59,18 +58,18 @@ def play_songs(url='./music_files', n=1, rdm=True, vol=None):
 
 def is_loading_song_infos():
     return net_lock.locked()
-
-def is_playing():
-    return player.playing_flag
-
-def set_vol(vol):
-    player.set_volume(vol)
-
-def play_and_pause():
-    player.play_and_pause()
-
-def next_song():
-    player.next()
-
-def stop():
-    player.stop()
+#
+# def is_playing():
+#     return player.playing_flag
+#
+# def set_vol(vol):
+#     player.set_volume(vol)
+#
+# def play_and_pause():
+#     player.play_and_pause()
+#
+# def next_song():
+#     player.next()
+#
+# def stop():
+#     player.stop()
