@@ -1,26 +1,32 @@
 {% extends "base.html" %}
 {% block styles %}
     {{ super() }}
-    <link href="{{ url_for('static', filename='css/bootstrap-slider.min.css') }}" rel="stylesheet">
+{#    <link href="{{ url_for('static', filename='css/bootstrap-slider.min.css') }}" rel="stylesheet">#}
     <style>
-        .btn-group {
-            margin: 10px 0
-        }
-        .btn[disabled],.btn[disabled]:hover{
+{#        .btn-group {#}
+{#            margin: 10px 0#}
+{#        }#}
+
+        .btn[disabled], .btn[disabled]:hover {
             background-color: #cccccc;
         }
-        th,td{
+
+        th, td {
             text-align: center;
 
         }
-        table.time input{
-            width:50px;
-            padding:0 0;
+
+        table.time input {
+            //width: 50px;
+            padding: 0 0;
             text-align: center;
+            height:32.8px;
         }
 
-
-
+        a.btn.nav-link.btn-primary:hover{
+            background-color: #286090;
+            border-color:#204d74 ;
+        }
 
     </style>
 {% endblock %}
@@ -32,99 +38,250 @@
 
     <div ng-app="configApp" ng-controller="cfgCtrl">
         <h3><label>定时任务管理</label></h3>
-            <ul class="nav nav-tabs ">
-                <li role="presentation" class="page-btn">
-                    <a>公　交                    </a>
-                </li>
-                <li role="presentation" class="page-btn  " ><a>音　乐</a></li>
-                <li role="presentation" class="page-btn " ><a>播　报</a></li>
-            </ul>
-        <table class="table table-bordered table-hover text-center">
-            <thead class="">
-            <tr>
-{#                <th>#</th>#}
-                <th>时间</th>
-                <th>停止</th>
-                <th>恢复</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="t in group_tasks.bus">
-{#                <td><label ng-bind="t.id"></label></td>#}
-{#                <td>#}
-{#                    <uib-timepicker ng-model="t" ng-change="time_changed(t)" hour-step="1" minute-step="5" show-meridian="false" show-spinners="false"></uib-timepicker>#}
+        <ul class="nav nav-tabs ">
+            <li role="presentation" class="page-btn">
+                <a>公　交 </a>
+            </li>
+            <li role="presentation" class="page-btn  "><a>音　乐</a></li>
+            <li role="presentation" class="page-btn "><a>播　报</a></li>
+        </ul>
+{#        <table class="table table-bordered table-hover text-center">#}
+{#            <thead class="">#}
+{#            <tr>#}
+                {#                <th>#</th>#}
+{#                <th>时间</th>#}
+{#                <th>停止</th>#}
+{#                <th>恢复</th>#}
+{#            </tr>#}
+{#            </thead>#}
+{#            <tbody>#}
+{#            <tr ng-repeat="t in group_tasks.bus">#}
+                {#                <td><label ng-bind="t.id"></label></td>#}
+                {#                <td>#}
+                {#                    <uib-timepicker ng-model="t" ng-change="time_changed(t)" hour-step="1" minute-step="5" show-meridian="false" show-spinners="false"></uib-timepicker>#}
+                {#                </td>#}
+{#                <td class="text-center">#}
+                    {#                    <input type="text" class="form-control" size="8" ng-model="time" bs-timepicker>#}
+{#                    <table class="time">#}
+{#                        <tr>#}
+{#                            <td class="from-group"><input type="number" max="23" min="0" class="form-control"#}
+{#                                                          maxlength="2" ng-model="t.hour"></td>#}
+{#                            <td>:</td>#}
+{#                            <td class="from-group"><input type="number" max="59" min="0" class="form-control"#}
+{#                                                          ng-model="t.min" maxlength="2"></td>#}
+{#                        </tr>#}
+{#                    </table>#}
+{##}
 {#                </td>#}
-                <td class="text-center">
-{#                    <input type="text" class="form-control" size="8" ng-model="time" bs-timepicker>#}
-                    <table class="time">
+{#                <td>#}
+{#                    <label>#}
+                        {#                        <uib-timepicker ng-model="t.date" ng-change="changed()" hour-step="1" minute-step="10" show-meridian="ismeridian"></uib-timepicker>#}
+{#                        <input ng-model="t.args[0]"/>#}
+{#                    </label>#}
+{#                </td>#}
+{#                <td><label>#}
+{#                    <input ng-model="t.args[1]"/>#}
+{#                </label></td>#}
+{#                <td><label>#}
+{#                    <input ng-model="t.args[2]"/>#}
+{#                </label></td>#}
+{#                <td>#}
+{#                    <button class="btn" ng-click="send(t)"></button>#}
+{#                </td>#}
+{#            </tr>#}
+{##}
+{#            </tbody>#}
+{#        </table>#}
+
+{#        <hr/>#}
+        <div class="row" id="bus-task">
+            <div class="col-md-3 col-xs-4">
+                <ul class="nav nav-pills nav-stacked">
+                    <li ng-repeat="t in group_tasks.bus" class="nav-item" role="presentation">
+                        <a class="btn nav-link" ng-class="{'btn-primary':t===bus_t}" ng-click="set_bus_t(t)">{{t.hour}}:{{t.min}}</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="btn btn-default"  ng-click="add_task()">添加任务</a>
+                    </li>
+
+                </ul>
+
+
+            </div>
+
+
+            <div class="col-md-9 col-xs-8">
+                <div  class="alert alert-sm" style="margin-bottom: 0"
+                     ng-class="{'alert-success':bus_t.pause_days==0,'alert-warning':bus_t.pause_days>0,'alert-danger':bus_t.pause_days<0,}">
+
+                    <div class="pull-right " >
+                        <h4>
+                            <label class="label label-lg label-success" ng-show="bus_t.holiday">正在报站</label>
+                            <button class=" btn btn-xs btn-danger" ng-click="" ng-show="bus_t.holiday">
+                                <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                            </button>
+                            <button class="pull-right btn btn-xs btn-info" ng-show="!bus_t.holiday"
+                                    ng-click="set_player('p')"><!--暂停-->
+                                <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                            </button>
+                        </h4>
+                    </div>
+
+
+                    <span ng-bind="get_pause_state(bus_t)"></span><span class="badge" ng-bind="bus_t.pause_days>0?bus_t.pause_days:''"></span>
+                </div>
+                <label >执行时间：</label>
+{#                <table class="time ">#}
+{#                    <tr>#}
+{#                        <td><label>执行时间：</label></td>#}
+{#                        <td>#}
+{#                            <div class="btn-group ">#}
+{##}
+{#                                <label class="btn btn-default" ng-model="bus_t.workday"#}
+{#                                       ng-click="bus_t.workday=!bus_t.workday"#}
+{#                                       ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
+{#                                <label class="btn btn-default" ng-model="bus_t.holiday"#}
+{#                                       ng-click="bus_t.holiday=!bus_t.holiday"#}
+{#                                       ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
+{##}
+{#                            </div>#}
+{#                        </td>#}
+{#                        <td class="form-group"><input type="number" max="23" min="0" class="form-control" maxlength="2"#}
+{#                                                      ng-model="bus_t.hour"></td>#}
+{#                        <td>:</td>#}
+{#                        <td class="form-group"><input type="number" max="59" min="0" class="form-control"#}
+{#                                                      ng-model="bus_t.min" maxlength="2"></td>#}
+{#                    </tr>#}
+{#                </table>#}
+                <div class="row ">
+                    <div class=" col-md-6" >
+                        <div class="btn-group btn-group-justified" style="margin-top: 0">
+
+                            <label class="btn btn-default" ng-model="bus_t.workday"
+                                   ng-click="bus_t.workday=!bus_t.workday"
+                                   ng-class="{'btn-primary active':bus_t.workday}">工作日</label>
+                            <label class="btn btn-default" ng-model="bus_t.holiday"
+                                   ng-click="bus_t.holiday=!bus_t.holiday"
+                                   ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>
+
+                        </div>
+                    </div>
+                    <div  class=" col-md-6">
+                    <table class="time " >
                         <tr>
-                            <td class="from-group"><input type="number" max="23" min="0" class="form-control" maxlength="2" ng-model="t.hour"></td>
+                            {#                        <td><label>执行时间：</label></td>#}
+{#                            <td>#}
+{#                                <div class="btn-group">#}
+{##}
+{#                                    <label class="btn btn-default" ng-model="bus_t.workday"#}
+{#                                           ng-click="bus_t.workday=!bus_t.workday"#}
+{#                                           ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
+{#                                    <label class="btn btn-default" ng-model="bus_t.holiday"#}
+{#                                           ng-click="bus_t.holiday=!bus_t.holiday"#}
+{#                                           ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
+{##}
+{#                                </div>#}
+{#                            </td>#}
+                            <td class="form-group"><input type="number" max="23" min="0" class="form-control"
+                                                          maxlength="2"
+                                                          ng-model="bus_t.hour"></td>
                             <td>:</td>
-                            <td class="from-group"><input type="number" max="59" min="0" class="form-control" ng-model="t.min" maxlength="2"></td>
+                            <td class="form-group"><input type="number" max="59" min="0" class="form-control"
+                                                          ng-model="bus_t.min" maxlength="2"></td>
                         </tr>
                     </table>
+</div>
+                </div>
 
-                </td>
-                <td>
-                    <label>
-{#                        <uib-timepicker ng-model="t.date" ng-change="changed()" hour-step="1" minute-step="10" show-meridian="ismeridian"></uib-timepicker>#}
-                        <input ng-model="t.args[0]"/>
+                <div class="row"  style="margin-top: 5px">
+                    <label class="col-md-3 col-xs-12">
+                        车次：<input ng-model="bus_t.args[0]" class="form-control">
                     </label>
-                </td>
-                <td><label>
-                        <input ng-model="t.args[1]"/>
-                    </label></td>
-                <td><label>
-                        <input ng-model="t.args[2]"/>
-                    </label></td>
-                <td><button class="btn" ng-click="send(t)" ></button></td>
-            </tr>
+                    <label class="col-md-5  col-xs-12">
+                        站台：<input ng-model="bus_t.args[1]" class="form-control">
+                    </label>
+                    <label class="col-md-4  col-xs-12">
+                        查询码：<input ng-model="bus_t.args[2]" class="form-control">
+                    </label>
+                </div>
+                <div class="input-group col-md-6" ng-hide="bus_t.pause_days<0">
+                        <span class="input-group-addon">暂停</span>
+                        <input class=" form-control" type="number" id="cnt" min="0" ng-model="bus_t.pause_days"/>
 
-            </tbody>
-        </table>
 
-        <hr/>
+                        <span class="input-group-addon">天</span>
+                </div>
+{#                <label >#}
+{#                        执行日段：#}
+{#                    </label>#}
+{#                <div class="row">#}
+{#                    <label class="col-md-6">#}
+{#                        执行日段：#}
+{#                        <a class="col-md-3 btn" ng-class="{'btn-primary':bus_t.workday}" >工作日</a>#}
+{#                        <a class="col-md-3 btn" ng-class="{'btn-primary':bus_t.holiday}" >节假日</a>#}
+{#                    </label>#}
+{##}
+{#                    <div class="btn-group col-md-3">#}
+{##}
+{#                        <label class="btn btn-default" ng-model="bus_t.workday" ng-click="bus_t.workday=!bus_t.workday"#}
+{#                               ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
+{#                        <label class="btn btn-default" ng-model="bus_t.holiday" ng-click="bus_t.holiday=!bus_t.holiday"#}
+{#                               ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
+{##}
+{#                    </div>#}
+{#                    <label class="col-md-5">#}
+{#                        站台：<input ng-model="bus_t.args[1]" class="form-control">#}
+{#                    </label>#}
+{#                    <label class="col-md-4">#}
+{#                        搜索码：<input ng-model="bus_t.args[2]" class="form-control">#}
+{#                    </label>#}
+{#                </div>#}
+            </div>
 
-        <label>暂停公交报站：</label>
-        <table class="table table-bordered table-hover text-center">
-            <thead class="">
-                <tr >
-                    <th >#</th>
-                    <th>暂停一天</th>
-                    <th>停止</th>
-                    <th>恢复</th>
-                </tr>
-            </thead>
-            <tbody >
-                <tr ng-repeat="(b,s) in b_ss">
-                    <td ><label  ng-bind="b" ></label></td>
-                    <td><a class="btn btn-warning" ng-disabled="s==1" ng-click="setPauseBus(b,1)">暂停一天</a></td>
-                    <td><a class="btn btn-danger" ng-disabled="s==-1" ng-click="setPauseBus(b,-1)">停止</a></td>
-                    <td><a class="btn btn-success" ng-disabled="s==0" ng-click="setPauseBus(b,0)">恢复</a></td>
-                </tr>
-            </tbody>
-        </table>
-{#        <div class="btn-group btn-group-justified" role="group">#}
-{##}
-{#            <a class="btn btn-default bus-tell" {% if not _581 %}disabled{% endif %} role="button" content="581">#}
-{#                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>#}
-{#                停报581一天</a>#}
-{#            <a class="btn btn-default bus-tell" {% if not _498 %}disabled{% endif %} role="button" content="498">#}
-{#                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>#}
-{#                停报498一天</a>#}
-{##}
-{#        </div>#}
 
-{##}
-{#        <div class="form-group">#}
-{#            <label for="textToRead">要播报的内容：</label>#}
-{#            <textarea class="form-control" id="textToRead"></textarea>#}
-{#        </div>#}
-{#     #}
-{#        <button type="button" class="btn btn-primary" id="play">#}
-{##}
-{#            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> 播报#}
-{#        </button>#}
+        </div>
+
+
+        {#        <label>暂停公交报站：</label>#}
+        {#        <table class="table table-bordered table-hover text-center">#}
+        {#            <thead class="">#}
+        {#                <tr >#}
+        {#                    <th >#</th>#}
+        {#                    <th>暂停一天</th>#}
+        {#                    <th>停止</th>#}
+        {#                    <th>恢复</th>#}
+        {#                </tr>#}
+        {#            </thead>#}
+        {#            <tbody >#}
+        {#                <tr ng-repeat="(b,s) in b_ss">#}
+        {#                    <td ><label  ng-bind="b" ></label></td>#}
+        {#                    <td><a class="btn btn-warning" ng-disabled="s==1" ng-click="setPauseBus(b,1)">暂停一天</a></td>#}
+        {#                    <td><a class="btn btn-danger" ng-disabled="s==-1" ng-click="setPauseBus(b,-1)">停止</a></td>#}
+        {#                    <td><a class="btn btn-success" ng-disabled="s==0" ng-click="setPauseBus(b,0)">恢复</a></td>#}
+        {#                </tr>#}
+        {#            </tbody>#}
+        {#        </table>#}
+        {#        <div class="btn-group btn-group-justified" role="group">#}
+        {##}
+        {#            <a class="btn btn-default bus-tell" {% if not _581 %}disabled{% endif %} role="button" content="581">#}
+        {#                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>#}
+        {#                停报581一天</a>#}
+        {#            <a class="btn btn-default bus-tell" {% if not _498 %}disabled{% endif %} role="button" content="498">#}
+        {#                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>#}
+        {#                停报498一天</a>#}
+        {##}
+        {#        </div>#}
+
+        {##}
+        {#        <div class="form-group">#}
+        {#            <label for="textToRead">要播报的内容：</label>#}
+        {#            <textarea class="form-control" id="textToRead"></textarea>#}
+        {#        </div>#}
+        {#     #}
+        {#        <button type="button" class="btn btn-primary" id="play">#}
+        {##}
+        {#            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> 播报#}
+        {#        </button>#}
 
 
     </div>
@@ -149,74 +306,85 @@
 {% endblock %}
 {% block script %}
 
-    <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
+{#    <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>#}
     <script>
         var app = angular.module('configApp', ['ui.bootstrap'])
-        .filter('tk2Date', function () {
-            return function (tk) {
-                var d = new Date();
-                d.setHours(tk.hour);
-                d.setMinutes(tk.min);
-                return d;
-            }
-        })
-        .controller('cfgCtrl',function($scope,$http){
-            $scope.group_tasks = {
-                music:[],bus:[],weather:[],read:[]
-            };
-            $scope.send = function (tk) {
-                var d = tk.date;
-                tk.date = undefined;
-                $http.post('../tasks',data=tk)
-                        .success(function (data,status) {
-                            console.log(data,status);
-                        });
-                tk.date = d;
-            };
-            $scope.getDate = function (tk) {
-                var d = new Date();
-                d.setHours(tk.hour);
-                d.setMinutes(tk.min);
-                tk.date = d;
-            };
-            $scope.time_changed = function (tk) {
-                tk.hour = tk.date.getHours();
-                tk.min = tk.date.getMinutes();
-            };
-            $http.get('../tasks')
+{#                .filter('tk2Date', function () {#}
+{#                    return function (tk) {#}
+{#                        var d = new Date();#}
+{#                        d.setHours(tk.hour);#}
+{#                        d.setMinutes(tk.min);#}
+{#                        return d;#}
+{#                    }#}
+{#                })#}
+                .controller('cfgCtrl', function ($scope, $http) {
+                    $scope.group_tasks = {
+                        music: [], bus: [], weather: [], read: []
+                    };
+                    $scope.send = function (tk) {
+                        var d = tk.date;
+                        tk.date = undefined;
+                        $http.post('../tasks', data = tk)
+                                .success(function (data, status) {
+                                    console.log(data, status);
+                                });
+                        tk.date = d;
+                    };
+                    $scope.get_pause_state = function (tk) {
+                        var status = "正常";
+                        if(!tk) return "";
+                        if(tk.pause_days<0) status = "停止";
+{#                        if(tk.pause_days=0) return "正常";#}
+                        if(tk.pause_days>0) status = "暂停";
+                        return "状态："+status;
+                    };
+                    $scope.set_bus_t = function (tk) {
+                        $scope.bus_t = tk;
+                    };
+{#                    $scope.getDate = function (tk) {#}
+{#                        var d = new Date();#}
+{#                        d.setHours(tk.hour);#}
+{#                        d.setMinutes(tk.min);#}
+{#                        tk.date = d;#}
+{#                    };#}
+{#                    $scope.time_changed = function (tk) {#}
+{#                        tk.hour = tk.date.getHours();#}
+{#                        tk.min = tk.date.getMinutes();#}
+{#                    };#}
+                    $http.get('../tasks')
+                            .success(function (data, status) {
+                                if (status != 200) return;
+                                $scope.tasks = data['result'];
+                                for (var i in $scope.tasks) {
+                                    var t = $scope.tasks[i];
+                                    $scope.group_tasks[t.type].push(t);
+                                    {#                            switch (t.type) {#}
+                                    {#                                case 'music':#}
+                                    {#                                    $scope.music_tasks.push(t);#}
+                                    {#                                    break;#}
+                                    {#                                case 'tell_bus':#}
+                                    {#                                    $scope.bus_tasks.push(t);break;#}
+                                    {#                            }#}
+                                }
+                            });
+                });
+
+        app.controller('busCtrl', function ($scope, $http) {
+            $http.post('../bus_status')
                     .success(function (data, status) {
                         if (status != 200) return;
-                        $scope.tasks = data['result'];
-                        for (var i in $scope.tasks) {
-                            var t = $scope.tasks[i];
-                            $scope.group_tasks[t.type].push(t);
-{#                            switch (t.type) {#}
-{#                                case 'music':#}
-{#                                    $scope.music_tasks.push(t);#}
-{#                                    break;#}
-{#                                case 'tell_bus':#}
-{#                                    $scope.bus_tasks.push(t);break;#}
-{#                            }#}
-                        }
-                    });
-        });
-
-        app.controller('busCtrl',function ($scope,$http) {
-            $http.post('../bus_status')
-                    .success(function (data,status) {
-                        if(status!=200) return;
                         $scope.b_ss = data;
                     });
-            $scope.setPauseBus=function (bus,day) {
-                if($scope.b_ss[bus] == day) return;
+            $scope.setPauseBus = function (bus, day) {
+                if ($scope.b_ss[bus] == day) return;
                 $http({
                     url: '../pause-bus',
                     method: "POST",
-                    data:  $.param({bus:bus,days:day}),
+                    data: $.param({bus: bus, days: day}),
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                }).success(function (data,status) {
+                }).success(function (data, status) {
                     //alert(status);
-                    if(status == 200) {//btn.addClass('disabled');
+                    if (status == 200) {//btn.addClass('disabled');
                         $scope.b_ss[bus] = day;
                     }
                 });
@@ -226,13 +394,13 @@
         $(document).ready(function () {
             $('.bus-tell').click(function () {
                 var btn = $(this);
-                if(btn.attr('disabled')) return false;
+                if (btn.attr('disabled')) return false;
                 var d = {
-                    bus:$(this).attr('content'),
-                    days:1
+                    bus: $(this).attr('content'),
+                    days: 1
                 };
                 $.post('../pause-bus', d, function (x, y) {
-                    if(!x) btn.addClass('disabled');
+                    if (!x) btn.addClass('disabled');
                 });
 
             });

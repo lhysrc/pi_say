@@ -70,7 +70,7 @@
 {#                   　 <input type='text'   ng-model="vol">#}
 {#            </div>#}
         </div>
-        <div class="input-append" ng-app="music" ng-controller="settingCtrl">
+        <div class="input-append" ng-controller="settingCtrl">
 {#            <div class="alert text-center alert-success" role="alert">正在播放：{{y}}</div>#}
             <ul class="nav nav-tabs ">
                 <li role="presentation" class="page-btn" id="lc-page" content="../lcsong">
@@ -242,7 +242,7 @@
                     <label for="url">要播放的歌曲/歌单的链接或本地路径：</label>
                     <div class = ' input-group  '>
     {#                <label for="url">要播放的网易云音乐页面链接：</label>#}
-                        <input class="form-control" type="text" id="url" value="" ng-value="musicurl"
+                        <input class="form-control" type="text" id="url" ng-bind="musicurl"
                                placeholder="歌曲/歌单/排行榜/电台 链接 or 本地歌曲路径"
                         />
                         <span class="input-group-btn">
@@ -381,10 +381,10 @@
                 $scope.vol = volCtrl.slider('getValue');
                 $scope.set_player('vol');
             });
+
         });
         app.controller('settingCtrl', function ($scope) {
-            $scope.musicurl = 'xyz'
-        });
+            //$scope.musicurl = 'xyz'
 
         $(document).ready(function () {
             $('#dropdown-more').click(function(){
@@ -417,7 +417,8 @@
 
             $('#ul-toplist a').click(function () {
                 var tp_url = 'http://music.163.com/discover/toplist?id=' + $(this).attr('content');
-                $('#url').val(tp_url);
+                //$('#url').val(tp_url);
+                $scope.musicurl = tp_url;
             });
             $('#ul-playlist a').click(function () {
                 var pl_url = 'http://music.163.com/#/playlist?id=' + $(this).attr('content');
@@ -469,6 +470,7 @@
                 return false;
             });
 
+        });
         });
     </script>
 {% endblock %}
