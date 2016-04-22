@@ -28,6 +28,10 @@
             border-color:#204d74 ;
         }
 
+        #bus-task div.input-group,div.form-group{
+            margin-top: 10px;
+        }
+
     </style>
 {% endblock %}
 {% block main_content %}
@@ -36,7 +40,7 @@
         <h1>设置页面</h1>
     </div>
 
-    <div ng-app="configApp" ng-controller="cfgCtrl">
+    <div ng-app="configApp"  ng-controller="cfgCtrl">
         <h3><label>定时任务管理</label></h3>
         <ul class="nav nav-tabs ">
             <li role="presentation" class="page-btn">
@@ -94,7 +98,7 @@
 {#        </table>#}
 
 {#        <hr/>#}
-        <div class="row" id="bus-task">
+        <div class="row form-group" id="bus-task">
             <div class="col-md-3 col-xs-4">
                 <ul class="nav nav-pills nav-stacked">
                     <li ng-repeat="t in group_tasks.bus" class="nav-item" role="presentation">
@@ -111,10 +115,10 @@
 
 
             <div class="col-md-9 col-xs-8">
-                <div  class="alert alert-sm" style="margin-bottom: 0"
+                <div class="alert alert-sm" style="margin-bottom: 0"
                      ng-class="{'alert-success':bus_t.pause_days==0,'alert-warning':bus_t.pause_days>0,'alert-danger':bus_t.pause_days<0,}">
 
-                    <div class="pull-right " >
+                    <div class="pull-right ">
                         <h4>
                             <label class="label label-lg label-success" ng-show="bus_t.holiday">正在报站</label>
                             <button class=" btn btn-xs btn-danger" ng-click="" ng-show="bus_t.holiday">
@@ -128,33 +132,34 @@
                     </div>
 
 
-                    <span ng-bind="get_pause_state(bus_t)"></span><span class="badge" ng-bind="bus_t.pause_days>0?bus_t.pause_days:''"></span>
+                    <span ng-bind="get_pause_state(bus_t)"></span><span class="badge"
+                                                                        ng-bind="bus_t.pause_days>0?bus_t.pause_days:''"></span>
                 </div>
-                <label >执行时间：</label>
-{#                <table class="time ">#}
-{#                    <tr>#}
-{#                        <td><label>执行时间：</label></td>#}
-{#                        <td>#}
-{#                            <div class="btn-group ">#}
-{##}
-{#                                <label class="btn btn-default" ng-model="bus_t.workday"#}
-{#                                       ng-click="bus_t.workday=!bus_t.workday"#}
-{#                                       ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
-{#                                <label class="btn btn-default" ng-model="bus_t.holiday"#}
-{#                                       ng-click="bus_t.holiday=!bus_t.holiday"#}
-{#                                       ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
-{##}
-{#                            </div>#}
-{#                        </td>#}
-{#                        <td class="form-group"><input type="number" max="23" min="0" class="form-control" maxlength="2"#}
-{#                                                      ng-model="bus_t.hour"></td>#}
-{#                        <td>:</td>#}
-{#                        <td class="form-group"><input type="number" max="59" min="0" class="form-control"#}
-{#                                                      ng-model="bus_t.min" maxlength="2"></td>#}
-{#                    </tr>#}
-{#                </table>#}
+                <label>执行时间：</label>
+                {#                <table class="time ">#}
+                {#                    <tr>#}
+                {#                        <td><label>执行时间：</label></td>#}
+                {#                        <td>#}
+                {#                            <div class="btn-group ">#}
+                {##}
+                {#                                <label class="btn btn-default" ng-model="bus_t.workday"#}
+                {#                                       ng-click="bus_t.workday=!bus_t.workday"#}
+                {#                                       ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
+                {#                                <label class="btn btn-default" ng-model="bus_t.holiday"#}
+                {#                                       ng-click="bus_t.holiday=!bus_t.holiday"#}
+                {#                                       ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
+                {##}
+                {#                            </div>#}
+                {#                        </td>#}
+                {#                        <td class="form-group"><input type="number" max="23" min="0" class="form-control" maxlength="2"#}
+                {#                                                      ng-model="bus_t.hour"></td>#}
+                {#                        <td>:</td>#}
+                {#                        <td class="form-group"><input type="number" max="59" min="0" class="form-control"#}
+                {#                                                      ng-model="bus_t.min" maxlength="2"></td>#}
+                {#                    </tr>#}
+                {#                </table>#}
                 <div class="row ">
-                    <div class=" col-md-6" >
+                    <div class=" col-md-6">
                         <div class="btn-group btn-group-justified" style="margin-top: 0">
 
                             <label class="btn btn-default" ng-model="bus_t.workday"
@@ -166,34 +171,34 @@
 
                         </div>
                     </div>
-                    <div  class=" col-md-6">
-                    <table class="time " >
-                        <tr>
-                            {#                        <td><label>执行时间：</label></td>#}
-{#                            <td>#}
-{#                                <div class="btn-group">#}
-{##}
-{#                                    <label class="btn btn-default" ng-model="bus_t.workday"#}
-{#                                           ng-click="bus_t.workday=!bus_t.workday"#}
-{#                                           ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
-{#                                    <label class="btn btn-default" ng-model="bus_t.holiday"#}
-{#                                           ng-click="bus_t.holiday=!bus_t.holiday"#}
-{#                                           ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
-{##}
-{#                                </div>#}
-{#                            </td>#}
-                            <td class="form-group"><input type="number" max="23" min="0" class="form-control"
-                                                          maxlength="2"
-                                                          ng-model="bus_t.hour"></td>
-                            <td>:</td>
-                            <td class="form-group"><input type="number" max="59" min="0" class="form-control"
-                                                          ng-model="bus_t.min" maxlength="2"></td>
-                        </tr>
-                    </table>
-</div>
+                    <div class=" col-md-6">
+                        <table class="time ">
+                            <tr>
+                                {#                        <td><label>执行时间：</label></td>#}
+                                {#                            <td>#}
+                                {#                                <div class="btn-group">#}
+                                {##}
+                                {#                                    <label class="btn btn-default" ng-model="bus_t.workday"#}
+                                {#                                           ng-click="bus_t.workday=!bus_t.workday"#}
+                                {#                                           ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
+                                {#                                    <label class="btn btn-default" ng-model="bus_t.holiday"#}
+                                {#                                           ng-click="bus_t.holiday=!bus_t.holiday"#}
+                                {#                                           ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
+                                {##}
+                                {#                                </div>#}
+                                {#                            </td>#}
+                                <td class="form-group"><input type="number" max="23" min="0" class="form-control"
+                                                              maxlength="2"
+                                                              ng-model="bus_t.hour"></td>
+                                <td>:</td>
+                                <td class="form-group"><input type="number" max="59" min="0" class="form-control"
+                                                              ng-model="bus_t.min" maxlength="2"></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="row"  style="margin-top: 5px">
+                <div class="row" style="margin-top: 5px">
                     <label class="col-md-3 col-xs-12">
                         车次：<input ng-model="bus_t.args[0]" class="form-control">
                     </label>
@@ -205,37 +210,25 @@
                     </label>
                 </div>
                 <div class="input-group col-md-6" ng-hide="bus_t.pause_days<0">
-                        <span class="input-group-addon">暂停</span>
-                        <input class=" form-control" type="number" id="cnt" min="0" ng-model="bus_t.pause_days"/>
+                    <span class="input-group-addon">暂停</span>
+                    <input class=" form-control" type="number" id="cnt" min="0" ng-model="bus_t.pause_days"/>
 
 
-                        <span class="input-group-addon">天</span>
+                    <span class="input-group-addon">天</span>
                 </div>
-{#                <label >#}
-{#                        执行日段：#}
-{#                    </label>#}
-{#                <div class="row">#}
-{#                    <label class="col-md-6">#}
-{#                        执行日段：#}
-{#                        <a class="col-md-3 btn" ng-class="{'btn-primary':bus_t.workday}" >工作日</a>#}
-{#                        <a class="col-md-3 btn" ng-class="{'btn-primary':bus_t.holiday}" >节假日</a>#}
-{#                    </label>#}
-{##}
-{#                    <div class="btn-group col-md-3">#}
-{##}
-{#                        <label class="btn btn-default" ng-model="bus_t.workday" ng-click="bus_t.workday=!bus_t.workday"#}
-{#                               ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
-{#                        <label class="btn btn-default" ng-model="bus_t.holiday" ng-click="bus_t.holiday=!bus_t.holiday"#}
-{#                               ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
-{##}
-{#                    </div>#}
-{#                    <label class="col-md-5">#}
-{#                        站台：<input ng-model="bus_t.args[1]" class="form-control">#}
-{#                    </label>#}
-{#                    <label class="col-md-4">#}
-{#                        搜索码：<input ng-model="bus_t.args[2]" class="form-control">#}
-{#                    </label>#}
-{#                </div>#}
+
+                <div class="form-group" >
+                <button type="button" class="btn btn-info" id="play" ng-click="delete(bus_t)"
+                       >
+
+                    {#                    <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> #}
+                    提交修改
+                </button>
+                <button type="button" class="btn btn-danger" id="play" disabled>
+                    {#            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> #}
+                    删除
+                </button>
+                    </div>
             </div>
 
 
