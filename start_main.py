@@ -121,10 +121,11 @@ def start_main():
 
 
 from www import app
+from main.task2 import start_tasks
 if __name__ == '__main__':
     log.info('-'*50)
 
-    td = threading.Thread(target=start_main)
+    td = threading.Thread(target=start_tasks)
     if not app.debug: td.start()
 
     app.run(host='0.0.0.0',port=3080,threaded=True)

@@ -265,23 +265,28 @@ def cfg_tasks(type = None):
         task2.save_all_tasks()
         return '',200
 
-@app.route('/bus',methods=['get'])
-@app.route('/bus/<search_id>',methods=['get','post'])
+@app.route('/bus',methods=['get','post'])
+@app.route('/bus/<int:search_id>',methods=['get'])
 def bus_tell_status(search_id=None):
     if request.method == 'GET':
         if search_id:
             if search_id in gz_bus.status:
-                return jsonify(search_id=gz_bus.status[search_id])
+                return jsonify(result=gz_bus.status[search_id])
             else:
-                return jsonify(search_id=False)
+                return jsonify(result=False)
         else:
             return jsonify(result=gz_bus.status)
     if request.method == 'POST':
-        if search_id in gz_bus.status:
-            gz_bus.status[search_id] = False
-            return '',200
+        rq_data = json.loads(request.data)
+        #if rq_data['id'] in gz_bus.status:
+        if rq_data['status']:
+            threading.Thread(target=gz_bus.tell_bus, args=(rq_data['bus_name'],rq_data['station'],rq_data['id'])).start()
         else:
-            return '该报站任务未执行。',200
+            if rq_data['id'] in gz_bus.status:
+                gz_bus.status[rq_data['id']] = False
+        return '',200
+        # else:
+        #     return '该报站任务未执行。',200
 # @app.route('/tts',methods='post')
 # def tts():
 #     baidu_tts.read_aloud("123")

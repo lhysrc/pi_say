@@ -30,7 +30,7 @@ LOCAL_AUDIOS = {
 }
 
 import json
-def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
+def download_tts_file(text, file_name=None, spd=5, pit=5, vol=5, per=0):
     """
     tex
     必填
@@ -86,7 +86,7 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
             c = response.read()
         elif 'json' in response.headers['Content-type']:
             j = json.load(response)
-            log.error('语音转换出错：text:‘%s’;result:‘%s’' % (urllib2.unquote(text),j))
+            log.error('语音转换出错：text:‘%s’;result:‘%s’' % (str(text),j))
             if j['err_no'] == 502:
                 refresh_token()
             return 2,''
@@ -100,7 +100,7 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=9, per=0):
     return 0,file_name
 
 
-def get_mp3_file(text, spd=5, pit=5, vol=9, per=0):
+def get_mp3_file(text, spd=5, pit=5, vol=5, per=0):
     text = text.strip()
     file_name = "./tmp/%s.mp3" % hash(text)
     if os.path.isfile(file_name):
@@ -113,19 +113,20 @@ def get_mp3_file(text, spd=5, pit=5, vol=9, per=0):
 
 import uuid,threading
 
-def read_aloud_async(text, cache=False, spd=5, pit=5, vol=9, per=3, read_times = 1,delay_sec=0):
+def read_aloud_async(text, cache=False, spd=5, pit=5, vol=5, per=0, read_times = 1,delay_sec=0):
     delay_sec = int(delay_sec) if delay_sec else 0
     read_times = int(read_times) if read_times else 1
     threading.Timer(delay_sec,read_aloud,(text, cache, spd, pit, vol, per, read_times)).start()
     if delay_sec>0:
         log.info("将于%d秒后播报%d次：%s"%(delay_sec,read_times,urllib2.unquote(text)))
 
-def read_aloud(text, cache=False, spd=5, pit=5, vol=9, per=3, read_times = 1):
+def read_aloud(text, cache=False, spd=5, pit=5, vol=5, per=0, read_times = 1):
     """
         cache: 缓存语音文件，当然，缓存后，后续参数都失去意义
     """
     # log.INFO("开始播报：%s" % text)
     # status, mp3_file = get_mp3_file(text, spd, pit, vol, per)
+    if isinstance(text, unicode): text = text.encode('utf-8')
     if cache:
         status,mp3_file = get_mp3_file(text, spd, pit, vol, per)
     else:

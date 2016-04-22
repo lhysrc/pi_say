@@ -105,7 +105,7 @@
                         <a class="btn nav-link" ng-class="{'btn-primary':t===bus_t}" ng-click="set_bus_t(t)">{{t.hour}}:{{t.min}}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="btn btn-default"  ng-click="add_task()">添加任务</a>
+                        <a class="btn btn-default"  ng-click="add_task()" disabled>添加任务</a>
                     </li>
 
                 </ul>
@@ -120,12 +120,13 @@
 
                     <div class="pull-right ">
                         <h4>
-                            <label class="label label-lg label-success" ng-show="bus_t.holiday">正在报站</label>
-                            <button class=" btn btn-xs btn-danger" ng-click="" ng-show="bus_t.holiday">
+                            <label class="label label-lg label-success" ng-show="bus_status">正在报站</label>
+                            <button class=" btn btn-xs btn-danger" ng-click="set_bus_status(false)" ng-show="bus_status"
+                                >
                                 <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
                             </button>
-                            <button class="pull-right btn btn-xs btn-info" ng-show="!bus_t.holiday"
-                                    ng-click="set_player('p')"><!--暂停-->
+                            <button class="pull-right btn btn-xs btn-info" ng-show="!bus_status"
+                                    ng-click="set_bus_status(true)">
                                 <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                             </button>
                         </h4>
@@ -159,7 +160,7 @@
                 {#                    </tr>#}
                 {#                </table>#}
                 <div class="row ">
-                    <div class=" col-md-6">
+                    <div class=" col-md-4">
                         <div class="btn-group btn-group-justified" style="margin-top: 0">
 
                             <label class="btn btn-default" ng-model="bus_t.workday"
@@ -218,13 +219,13 @@
                 </div>
 
                 <div class="form-group" >
-                <button type="button" class="btn btn-info" id="play" ng-click="delete(bus_t)"
+                <button type="button" class="btn btn-info" id="play" ng-click="update(bus_t)"
                        >
 
                     {#                    <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> #}
                     提交修改
                 </button>
-                <button type="button" class="btn btn-danger" id="play" disabled>
+                <button type="button" class="btn btn-danger" id="play" ng-click="delete(bus_t)" disabled>
                     {#            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> #}
                     删除
                 </button>
@@ -301,6 +302,10 @@
 
 {#    <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>#}
     <script>
+        function showMsgBox(text) {
+                $('#msg_body').text(text);
+                $('#modal_msg').modal('show');
+            }
         var app = angular.module('configApp', ['ui.bootstrap'])
 {#                .filter('tk2Date', function () {#}
 {#                    return function (tk) {#}
@@ -314,15 +319,7 @@
                     $scope.group_tasks = {
                         music: [], bus: [], weather: [], read: []
                     };
-                    $scope.send = function (tk) {
-                        var d = tk.date;
-                        tk.date = undefined;
-                        $http.post('../tasks', data = tk)
-                                .success(function (data, status) {
-                                    console.log(data, status);
-                                });
-                        tk.date = d;
-                    };
+
                     $scope.get_pause_state = function (tk) {
                         var status = "正常";
                         if(!tk) return "";
@@ -333,6 +330,16 @@
                     };
                     $scope.set_bus_t = function (tk) {
                         $scope.bus_t = tk;
+                        if($scope.bus_t.type=='bus'){
+                            $scope.get_bus_status($scope.bus_t.args[2])
+                        }
+                    };
+                    $scope.update = function(tk){
+                        $http.post('../tasks',tk).success(function(date,status){
+                            if (status == 200) {
+                                showMsgBox("修改成功。")
+                            }
+                        });
                     };
 {#                    $scope.getDate = function (tk) {#}
 {#                        var d = new Date();#}
@@ -359,45 +366,75 @@
                                     {#                                    $scope.bus_tasks.push(t);break;#}
                                     {#                            }#}
                                 }
+                                $scope.set_bus_t($scope.group_tasks.bus[0])
                             });
+                    $scope.get_bus_status=function(id){
+                        $scope.bus_status = false;
+                        $http.get('../bus/'+id).success(function (data, status) {
+                                if (status != 200) return;
+                                $scope.bus_status = data['result'];
+                            });
+                    };
+                    $scope.set_bus_status=function(status){
+                        $http.post('../bus',{'id':$scope.bus_t.args[2],'bus_name':$scope.bus_t.args[0],'station':$scope.bus_t.args[1],'status':status}).success(function (data, status) {
+                                if (status != 200) return;
+                                $scope.bus_status = $scope.get_bus_status($scope.bus_t.args[2]);
+                            });
+                    };
+{#                    $http.get('../bus').success(function (data, status) {#}
+{#                                if (status != 200) return;#}
+{#                                $scope.bus_status = data['result'];#}
+{#                                for (var i in $scope.tasks) {#}
+{#                                    var t = $scope.tasks[i];#}
+{#                                    $scope.group_tasks[t.type].push(t);#}
+                                    {#                            switch (t.type) {#}
+                                    {#                                case 'music':#}
+                                    {#                                    $scope.music_tasks.push(t);#}
+                                    {#                                    break;#}
+                                    {#                                case 'tell_bus':#}
+                                    {#                                    $scope.bus_tasks.push(t);break;#}
+                                    {#                            }#}
+{#                                }#}
+{#                                $scope.set_bus_t($scope.group_tasks.bus[0])#}
+{#                            });#}
                 });
 
-        app.controller('busCtrl', function ($scope, $http) {
-            $http.post('../bus_status')
-                    .success(function (data, status) {
-                        if (status != 200) return;
-                        $scope.b_ss = data;
-                    });
-            $scope.setPauseBus = function (bus, day) {
-                if ($scope.b_ss[bus] == day) return;
-                $http({
-                    url: '../pause-bus',
-                    method: "POST",
-                    data: $.param({bus: bus, days: day}),
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                }).success(function (data, status) {
-                    //alert(status);
-                    if (status == 200) {//btn.addClass('disabled');
-                        $scope.b_ss[bus] = day;
-                    }
-                });
-            }
-
-        });
-        $(document).ready(function () {
-            $('.bus-tell').click(function () {
-                var btn = $(this);
-                if (btn.attr('disabled')) return false;
-                var d = {
-                    bus: $(this).attr('content'),
-                    days: 1
-                };
-                $.post('../pause-bus', d, function (x, y) {
-                    if (!x) btn.addClass('disabled');
-                });
-
-            });
-
-        });
+{#        app.controller('busCtrl', function ($scope, $http) {#}
+{#            $http.post('../bus_status')#}
+{#                    .success(function (data, status) {#}
+{#                        if (status != 200) return;#}
+{#                        $scope.b_ss = data;#}
+{#                    });#}
+{#            $scope.setPauseBus = function (bus, day) {#}
+{#                if ($scope.b_ss[bus] == day) return;#}
+{#                $http({#}
+{#                    url: '../pause-bus',#}
+{#                    method: "POST",#}
+{#                    data: $.param({bus: bus, days: day}),#}
+{#                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}#}
+{#                }).success(function (data, status) {#}
+{#                    //alert(status);#}
+{#                    if (status == 200) {//btn.addClass('disabled');#}
+{#                        $scope.b_ss[bus] = day;#}
+{#                    }#}
+{#                });#}
+{#            }#}
+{##}
+{#        });#}
+{#        $(document).ready(function () {#}
+{#            $('.bus-tell').click(function () {#}
+{#                var btn = $(this);#}
+{#                if (btn.attr('disabled')) return false;#}
+{#                var d = {#}
+{#                    bus: $(this).attr('content'),#}
+{#                    days: 1#}
+{#                };#}
+{#                $.post('../pause-bus', d, function (x, y) {#}
+{#                    if (!x) btn.addClass('disabled');#}
+{#                });#}
+{##}
+{#            });#}
+{##}
+{#        });#}
     </script>
 {% endblock %}

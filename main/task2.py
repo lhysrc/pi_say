@@ -3,17 +3,27 @@ import uuid
 
 import config
 import itertools,json
-tasks = []
-def music():pass
-def tell_bus():pass
-def tell_weather():pass
-def read_text():pass
+import music
+from threading import Timer
+import time
+from logging import getLogger
+
+from common import util
+
+log = getLogger(__name__)
+from main import tell_time
+from main.gz_bus import tell_bus
+from main.weather import tell_day_of_week,today
+from main.baidu_tts import read_aloud_async
+
+
+
 MUSIC,TELL_BUS,TELL_WEATHER,READ_TEXT = 'music','bus','weather','read'
 task_types = {
-    MUSIC       : music,
+    MUSIC       : music.play_songs,
     TELL_BUS    : tell_bus,
-    TELL_WEATHER: tell_weather,
-    READ_TEXT   : read_text
+    TELL_WEATHER: tell_day_of_week,
+    READ_TEXT   : read_aloud_async
 }
 
 class Task(object):
@@ -28,7 +38,7 @@ class Task(object):
         self.id = str(uuid.uuid4()) if not id else id
 
     def __repr__(self):
-         return str(self.__dict__) if self.type in task_types else '<PreTask>'
+         return str(self.__dict__) if self.type in task_types else '<PreTask_%s>' % self.type
 
     def to_dict(self,include_id = False):
         if self.type not in task_types:return None
@@ -42,7 +52,7 @@ def load_all_tasks():
     for tp in task_types:
         d = config.get('Task',tp)
         if d:
-            j = json.loads(d)
+            j = json.loads(d,encoding='utf-8')
             for t in j:
                 tasks.append(Task(**t))
     #todo: log
@@ -51,7 +61,7 @@ def save_all_tasks():
     for k,g in itertools.groupby(tasks,key=lambda t:t.type):
         if k in task_types:
             g = map(lambda t:t.to_dict(),g)
-            config.set('Task', k, json.dumps(g))
+            config.set('Task', k, json.dumps(g,encoding='utf-8'))
     config.save()
 
 # def save_task(task):
@@ -60,52 +70,113 @@ def save_all_tasks():
 #     task_to_save
 #     config.set("Task",name,task)
 #     config.save()
+@tell_time.tell_time_first
+def alarm_song():
+    try:
+        music.player.playing_volume = 30
+        music.play_songs('http://music.163.com/#/discover/toplist?id=3778678',vol=30)
+    except:
+        log.exception("播放闹钟音乐出错。")
+        music.player.stop()
+        music.play_songs(vol=30)
 
-tasks += [Task(7, 47, TELL_BUS, (581, "长兴路东", 162545), workday=True),
-          Task(8, 5, TELL_BUS, (498, "长兴路东", 261508), workday=True),
-          Task(7, 47, TELL_BUS, ('b11', "长兴路东", 87792), workday=True),
-          Task(7, 35, MUSIC, (), workday=True),
-          Task( 10, 0, MUSIC, (), holiday=False),
-          Task( 22, 49, MUSIC, (), workday=True, holiday=False,pause_days=3),
-          Task(9,0,max,())
-]
+@tell_time.tell_time_first
+def tell_weather(d=True,t=False):
+    """
+        d:穿衣建议
+        t:出行建议
+    """
+    read_aloud_async(today(d, t), per=3)
 
-save_all_tasks()
+from music.xm_music import xiami
+from random import randint
+def auto_check_in():
+    sleep_secs = randint(0,1800)
+    log.info(u'将在%d秒后进行虾米签到。'%sleep_secs)
+    time.sleep(sleep_secs)
+    x = xiami()
+    ret = x.check_in()
+    if ret:
+        util.sendEmail('hyiit@qq.com','虾米签到失败',ret)
+
+
+def tell_time_every_10min(times=6):
+    while times:
+        t = time.localtime()
+        if t.tm_min != 0:
+            tell_time.tell_time(t)
+        times -= 1
+        time.sleep(60*10)
+
+tasks = [ # Task(7, 35, alarm_song, (),workday=True),
+          Task(7, 43, tell_weather, (),workday=True),
+          Task(7, 50, tell_time_every_10min, (),workday=True),
+
+          Task(8, 45, tell_weather, (),holiday=True),
+          Task(9, 45, tell_weather, (False,True),holiday=True),
+
+          Task(9,  0, auto_check_in, (), workday=True, holiday=True),
+          ]
 
 if __name__ == '__main__':
+    tasks += [Task(7, 47, TELL_BUS, (581, "长兴路东", 162545), workday=True),
+              Task(7, 47, TELL_BUS, ('b11', "长兴路东", 87792), workday=True),
+              Task(8,  5, TELL_BUS, (498, "长兴路东", 261508), workday=True),
 
-    load_all_tasks()
+              Task(7, 35, MUSIC, ('http://music.163.com/#/discover/toplist?id=3778678',1,True,30), workday=True),
+              Task(10, 00, MUSIC, ('http://music.163.com/#/discover/toplist?id=3778678',10,True,50), holiday=True),
+              Task(22, 45, MUSIC, ('./music_files/4baby',5,True,80), workday=True, holiday=True),
 
+              # Task(21, 30, TELL_WEATHER, (0,), workday=True),
+              Task(8, 5, READ_TEXT, ('呆逼呆逼起床了！',False,5,5,9,3,5), workday=True, holiday=False),
+              ]
+
+    save_all_tasks()
+    # read_aloud_async('呆逼呆逼起床了！', per=0)
     # tasks += [Task(7, 47, TELL_BUS, (581, "长兴路东", 162545), workday=True),
     #           Task(8, 5, TELL_BUS, (498, "长兴路东", 261508), workday=True),
     #           Task(7, 47, TELL_BUS, ('b11', "长兴路东", 87792), workday=True),
     #           Task(7, 35, MUSIC, (), workday=True),
-    #           Task( 10, 0, MUSIC, (), holiday=False),
-    #           Task( 22, 49, MUSIC, (), workday=True, holiday=False,pause_days=3),
+    #           Task(21, 30, TELL_WEATHER, (0,), workday=True),
+    #           Task(21, 16, READ_TEXT, ('你是呆逼吗',), workday=True, holiday=False),
     #           Task(9,0,max,())
     # ]
 
     # save_all_tasks()
 
-    from threading import Timer
-    import time
 
+def start_tasks():
+    log.info("程序开始运行")
+    read_aloud_async("程序开始运行", True, per=0)
 
-    t = time.localtime()
-    task_changed = False
-    for task in tasks:
-        if t.tm_hour == task.hour and task.min >= t.tm_min:
-            func = task_types[task.task_type_or_func] \
-                if task.task_type_or_func in task_types else task.task_type_or_func
-            if task.pause_days == 0:
-                interval = (task.min - t.tm_min) * 60 - t.tm_sec
-                interval = max(0, interval)
-                print(u"将在%s秒后执行任务：%s。|%s。" % (interval, func.__name__,task))
-                Timer(interval, func, task.args).start()
-            elif task.pause_days > 0:
-                task.pause_days -= 1
-                task_changed = True
-                print(u"今日不执行任务‘%s’，将于%s日后执行。|%s。" % (func.__name__, task.pause_days,task))
-            else:
-                print(u"任务‘%s’已停止。|%s。" % (func.__name__,  task))
-    if task_changed: save_all_tasks()
+    load_all_tasks()
+
+    while True:
+        t = time.localtime()
+        wd = tell_time.is_workday(t)
+        time_range = [7, 8] + range(19, 24) if wd else [0] + range(8, 24)
+        if t.tm_hour in time_range:
+            tell_time.tell_time(t)
+
+        task_changed = False
+        for task in tasks:
+            if (wd==True and task.workday==False) or (wd==False and task.holiday==True):
+                continue
+            if t.tm_hour == task.hour and task.min >= t.tm_min:
+                func = task_types[task.type] \
+                    if task.type in task_types else task.type
+                if task.pause_days == 0:
+                    interval = (task.min - t.tm_min) * 60 - t.tm_sec
+                    interval = max(0, interval)
+                    log.info(u"将在%s秒后执行任务：%s。|%s。" % (interval, func.__name__,task))
+                    Timer(interval, func, task.args).start()
+                elif task.pause_days > 0:
+                    task.pause_days -= 1
+                    task_changed = True
+                    log.warn(u"今日不执行任务‘%s’，将于%s日后执行。|%s。" % (func.__name__, task.pause_days,task))
+                else:
+                    log.warn(u"任务‘%s’已停止。|%s。" % (func.__name__,  task))
+        if task_changed: save_all_tasks()
+
+        t = time.localtime()
+        time.sleep(3600 - t.tm_min * 60 - t.tm_sec)
