@@ -18,7 +18,7 @@
 
         table.time input {
             //width: 50px;
-            padding: 0 0;
+            //padding: 0 0;
             text-align: center;
             height:32.8px;
         }
@@ -37,17 +37,17 @@
 {% block main_content %}
 
     <div class="page-header">
-        <h1>设置页面</h1>
+        <h3>定时任务管理</h3>
     </div>
 
     <div ng-app="configApp"  ng-controller="cfgCtrl">
-        <h3><label>定时任务管理</label></h3>
+{#        <h3><label>定时任务管理</label></h3>#}
         <ul class="nav nav-tabs ">
-            <li role="presentation" class="page-btn">
+            <li role="presentation" class="page-btn " ng-class="{'active':current_type=='bus'}" ng-click="set_current_type('bus')">
                 <a>公　交 </a>
             </li>
-            <li role="presentation" class="page-btn  "><a>音　乐</a></li>
-            <li role="presentation" class="page-btn "><a>播　报</a></li>
+            <li role="presentation" class="page-btn  " ng-class="{'active':current_type=='music'}" ng-click="set_current_type('music')"><a>音　乐</a></li>
+            <li role="presentation" class="page-btn " ng-class="{'active':current_type=='tell'}" ng-click="set_current_type('tell')"><a>播　报</a></li>
         </ul>
 {#        <table class="table table-bordered table-hover text-center">#}
 {#            <thead class="">#}
@@ -101,8 +101,8 @@
         <div class="row form-group" id="bus-task">
             <div class="col-md-3 col-xs-4">
                 <ul class="nav nav-pills nav-stacked">
-                    <li ng-repeat="t in group_tasks.bus" class="nav-item" role="presentation">
-                        <a class="btn nav-link" ng-class="{'btn-primary':t===bus_t}" ng-click="set_bus_t(t)">{{t.hour}}:{{t.min}}</a>
+                    <li ng-repeat="t in cur_task_list" class="nav-item" role="presentation">
+                        <a class="btn nav-link" ng-class="{'btn-primary':t===current_task}" ng-click="set_current_task(t)">{{t.hour}}:{{t.min}}</a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="btn btn-default"  ng-click="add_task()" disabled>添加任务</a>
@@ -116,9 +116,17 @@
 
             <div class="col-md-9 col-xs-8">
                 <div class="alert alert-sm" style="margin-bottom: 0"
-                     ng-class="{'alert-success':bus_t.pause_days==0,'alert-warning':bus_t.pause_days>0,'alert-danger':bus_t.pause_days<0,}">
+                     ng-class="{'alert-success':current_task.pause_days==0,'alert-warning':current_task.pause_days>0,'alert-danger':current_task.pause_days<0,}">
 
-                    <div class="pull-right ">
+                    <button class="btn btn-xs"
+                            ng-class="{false: 'btn-danger', true: 'btn-success'}[current_task.pause_days<0]"
+                            ng-click="current_task.pause_days=current_task.pause_days>=0?-1:0"><!--暂停-->
+                            <span class="glyphicon"
+                                  ng-class="{false: 'glyphicon-stop', true: 'glyphicon-play'}[current_task.pause_days<0]"
+                                  aria-hidden="true">
+                            </span>
+                    </button>
+                    <div class="pull-right " ng-show="current_task.type=='bus'">
                         <h4>
                             <label class="label label-lg label-success" ng-show="bus_status">正在报站</label>
                             <button class=" btn btn-xs btn-danger" ng-click="set_bus_status(false)" ng-show="bus_status"
@@ -133,8 +141,8 @@
                     </div>
 
 
-                    <span ng-bind="get_pause_state(bus_t)"></span><span class="badge"
-                                                                        ng-bind="bus_t.pause_days>0?bus_t.pause_days:''"></span>
+                    <span ng-bind="get_pause_state(current_task)"></span>
+                    <span class="badge" ng-bind="current_task.pause_days>0?current_task.pause_days:''"></span>
                 </div>
                 <label>执行时间：</label>
                 {#                <table class="time ">#}
@@ -143,89 +151,120 @@
                 {#                        <td>#}
                 {#                            <div class="btn-group ">#}
                 {##}
-                {#                                <label class="btn btn-default" ng-model="bus_t.workday"#}
-                {#                                       ng-click="bus_t.workday=!bus_t.workday"#}
-                {#                                       ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
-                {#                                <label class="btn btn-default" ng-model="bus_t.holiday"#}
-                {#                                       ng-click="bus_t.holiday=!bus_t.holiday"#}
-                {#                                       ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
+                {#                                <label class="btn btn-default" ng-model="current_task.workday"#}
+                {#                                       ng-click="current_task.workday=!current_task.workday"#}
+                {#                                       ng-class="{'btn-primary active':current_task.workday}">工作日</label>#}
+                {#                                <label class="btn btn-default" ng-model="current_task.holiday"#}
+                {#                                       ng-click="current_task.holiday=!current_task.holiday"#}
+                {#                                       ng-class="{'btn-primary active':current_task.holiday}">节假日</label>#}
                 {##}
                 {#                            </div>#}
                 {#                        </td>#}
                 {#                        <td class="form-group"><input type="number" max="23" min="0" class="form-control" maxlength="2"#}
-                {#                                                      ng-model="bus_t.hour"></td>#}
+                {#                                                      ng-model="current_task.hour"></td>#}
                 {#                        <td>:</td>#}
                 {#                        <td class="form-group"><input type="number" max="59" min="0" class="form-control"#}
-                {#                                                      ng-model="bus_t.min" maxlength="2"></td>#}
+                {#                                                      ng-model="current_task.min" maxlength="2"></td>#}
                 {#                    </tr>#}
                 {#                </table>#}
                 <div class="row ">
                     <div class=" col-md-4">
                         <div class="btn-group btn-group-justified" style="margin-top: 0">
 
-                            <label class="btn btn-default" ng-model="bus_t.workday"
-                                   ng-click="bus_t.workday=!bus_t.workday"
-                                   ng-class="{'btn-primary active':bus_t.workday}">工作日</label>
-                            <label class="btn btn-default" ng-model="bus_t.holiday"
-                                   ng-click="bus_t.holiday=!bus_t.holiday"
-                                   ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>
+                            <label class="btn btn-default" ng-model="current_task.workday"
+                                   ng-click="current_task.workday=!current_task.workday"
+                                   ng-class="{'btn-primary active':current_task.workday}">工作日</label>
+                            <label class="btn btn-default" ng-model="current_task.holiday"
+                                   ng-click="current_task.holiday=!current_task.holiday"
+                                   ng-class="{'btn-primary active':current_task.holiday}">节假日</label>
 
                         </div>
                     </div>
-                    <div class=" col-md-6">
+                    <div class=" col-md-3" style="margin-bottom: 5px">
                         <table class="time ">
                             <tr>
                                 {#                        <td><label>执行时间：</label></td>#}
                                 {#                            <td>#}
                                 {#                                <div class="btn-group">#}
                                 {##}
-                                {#                                    <label class="btn btn-default" ng-model="bus_t.workday"#}
-                                {#                                           ng-click="bus_t.workday=!bus_t.workday"#}
-                                {#                                           ng-class="{'btn-primary active':bus_t.workday}">工作日</label>#}
-                                {#                                    <label class="btn btn-default" ng-model="bus_t.holiday"#}
-                                {#                                           ng-click="bus_t.holiday=!bus_t.holiday"#}
-                                {#                                           ng-class="{'btn-primary active':bus_t.holiday}">节假日</label>#}
+                                {#                                    <label class="btn btn-default" ng-model="current_task.workday"#}
+                                {#                                           ng-click="current_task.workday=!current_task.workday"#}
+                                {#                                           ng-class="{'btn-primary active':current_task.workday}">工作日</label>#}
+                                {#                                    <label class="btn btn-default" ng-model="current_task.holiday"#}
+                                {#                                           ng-click="current_task.holiday=!current_task.holiday"#}
+                                {#                                           ng-class="{'btn-primary active':current_task.holiday}">节假日</label>#}
                                 {##}
                                 {#                                </div>#}
                                 {#                            </td>#}
                                 <td class="form-group"><input type="number" max="23" min="0" class="form-control"
                                                               maxlength="2"
-                                                              ng-model="bus_t.hour"></td>
+                                                              ng-model="current_task.hour"></td>
                                 <td>:</td>
                                 <td class="form-group"><input type="number" max="59" min="0" class="form-control"
-                                                              ng-model="bus_t.min" maxlength="2"></td>
+                                                              ng-model="current_task.min" maxlength="2"></td>
                             </tr>
                         </table>
                     </div>
+                    <div class="input-group col-md-5" ng-hide="current_task.pause_days<0" style="margin-top: 0;padding: 0 15px">
+                        <span class="input-group-addon">暂停</span>
+                        <input class=" form-control" type="number" id="cnt" min="0" ng-model="current_task.pause_days"/>
+
+
+                        <span class="input-group-addon">天</span>
+                    </div>
                 </div>
 
-                <div class="row" style="margin-top: 5px">
+                <div class="row" style="margin-top: 5px" ng-show="current_type=='bus'" ng-disabled="current_type!='bus'">
                     <label class="col-md-3 col-xs-12">
-                        车次：<input ng-model="bus_t.args[0]" class="form-control">
+                        车次：<input ng-model="current_task.args[0]" class="form-control">
                     </label>
                     <label class="col-md-5  col-xs-12">
-                        站台：<input ng-model="bus_t.args[1]" class="form-control">
+                        站台：<input ng-model="current_task.args[1]" class="form-control">
                     </label>
                     <label class="col-md-4  col-xs-12">
-                        查询码：<input ng-model="bus_t.args[2]" class="form-control">
+                        查询码：<input ng-model="current_task.args[2]" class="form-control">
                     </label>
                 </div>
-                <div class="input-group col-md-6" ng-hide="bus_t.pause_days<0">
-                    <span class="input-group-addon">暂停</span>
-                    <input class=" form-control" type="number" id="cnt" min="0" ng-model="bus_t.pause_days"/>
+                <div class="row" style="margin-top: 5px" ng-show="current_type=='music'">
+                    <label class="col-md-10 col-xs-12">
+                        URL：<input ng-model="current_task.args[0]" class="form-control">
+                    </label>
+                    <label class="col-md-2  col-xs-12">
+                        音量：<input ng-model="current_task.args[3]" type="number" min="0" max="100" class="form-control">
+                    </label>
+                    <div class="input-group col-md-4 col-xs-12" ng-hide="current_task.pause_days<0" style="margin-top: 0;padding: 0 15px">
+                        <span class="input-group-addon">播放</span>
+                        <input class=" form-control" type="number" id="cnt" min="0" ng-model="current_task.args[1]"/>
 
 
-                    <span class="input-group-addon">天</span>
+                        <span class="input-group-addon">首</span>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 5px" ng-show="current_type=='tell'">
+                    <label class="col-md-12 col-xs-12">
+                        URL：<textarea ng-model="current_task.args[0]" maxlength="1000" class="form-control" ></textarea>
+                    </label>
+{#                    <label class="col-md-2  col-xs-12">#}
+{#                        音量：<input ng-model="current_task.args[3]" type="number" min="0" max="100" class="form-control">#}
+{#                    </label>#}
+                    <div class="input-group col-md-4 col-xs-12" ng-hide="current_task.pause_days<0" style="margin-top: 0;padding: 0 15px">
+                        <span class="input-group-addon">播报</span>
+                        <input class=" form-control" type="number" id="cnt" min="0" ng-model="current_task.args[6]"/>
+
+
+                        <span class="input-group-addon">次</span>
+                    </div>
                 </div>
 
                 <div class="form-group" >
-                <button type="button" class="btn btn-info" id="play" ng-click="update(bus_t)"
+                <button type="button" class="btn btn-info" id="play" ng-click="update(current_task)"
                        >
 
                     {#                    <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> #}
                     提交修改
                 </button>
-                <button type="button" class="btn btn-danger" id="play" ng-click="delete(bus_t)" disabled>
+                <button type="button" class="btn btn-danger" id="play" ng-click="delete(current_task)" disabled>
                     {#            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> #}
                     删除
                 </button>
@@ -306,7 +345,7 @@
                 $('#msg_body').text(text);
                 $('#modal_msg').modal('show');
             }
-        var app = angular.module('configApp', ['ui.bootstrap'])
+        var app = angular.module('configApp',[])//, ['ui.bootstrap'])
 {#                .filter('tk2Date', function () {#}
 {#                    return function (tk) {#}
 {#                        var d = new Date();#}
@@ -328,11 +367,20 @@
                         if(tk.pause_days>0) status = "暂停";
                         return "状态："+status;
                     };
-                    $scope.set_bus_t = function (tk) {
-                        $scope.bus_t = tk;
-                        if($scope.bus_t.type=='bus'){
-                            $scope.get_bus_status($scope.bus_t.args[2])
+                    $scope.set_current_task = function (tk) {
+                        $scope.current_task = tk;
+                        if($scope.current_task.type=='bus'){
+                            $scope.get_bus_status($scope.current_task.args[2])
                         }
+                    };
+                    $scope.set_current_type = function(type){
+                        $scope.current_type = type;
+                        if(type=='bus' || type=='music'){
+                            $scope.cur_task_list = $scope.group_tasks[type];
+                        }else{
+                            $scope.cur_task_list = $scope.group_tasks.weather.concat($scope.group_tasks.read);
+                        }
+                        $scope.set_current_task($scope.cur_task_list[0]);
                     };
                     $scope.update = function(tk){
                         $http.post('../tasks',tk).success(function(date,status){
@@ -366,7 +414,8 @@
                                     {#                                    $scope.bus_tasks.push(t);break;#}
                                     {#                            }#}
                                 }
-                                $scope.set_bus_t($scope.group_tasks.bus[0])
+
+                                $scope.set_current_type($scope.group_tasks.bus[0].type);
                             });
                     $scope.get_bus_status=function(id){
                         $scope.bus_status = false;
@@ -376,9 +425,9 @@
                             });
                     };
                     $scope.set_bus_status=function(status){
-                        $http.post('../bus',{'id':$scope.bus_t.args[2],'bus_name':$scope.bus_t.args[0],'station':$scope.bus_t.args[1],'status':status}).success(function (data, status) {
+                        $http.post('../bus',{'id':$scope.current_task.args[2],'bus_name':$scope.current_task.args[0],'station':$scope.current_task.args[1],'status':status}).success(function (data, status) {
                                 if (status != 200) return;
-                                $scope.bus_status = $scope.get_bus_status($scope.bus_t.args[2]);
+                                $scope.bus_status = $scope.get_bus_status($scope.current_task.args[2]);
                             });
                     };
 {#                    $http.get('../bus').success(function (data, status) {#}
