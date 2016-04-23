@@ -18,6 +18,7 @@ def play_songs(url='./music_files', n=1, rdm=True, vol=None):
         n:播放n首
         rdm:是否随机
     """
+    if isinstance(url,unicode):url = url.encode('utf-8')
     infos = []
     with net_lock:
         if 'music.163.com' in url:
