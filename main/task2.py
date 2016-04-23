@@ -158,10 +158,11 @@ def start_tasks():
         if t.tm_hour in time_range:
             tell_time.tell_time(t)
 
+        f_tks = filter(lambda tk:tk.workday if wd else tk.holiday,tasks)
+
+
         task_changed = False
-        for task in tasks:
-            if (wd==True and task.workday==False) or (wd==False and task.holiday==True):
-                continue
+        for task in f_tks:
             if t.tm_hour == task.hour and task.min >= t.tm_min:
                 func = task_types[task.type] \
                     if task.type in task_types else task.type

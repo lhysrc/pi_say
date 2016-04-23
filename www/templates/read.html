@@ -109,7 +109,7 @@
         <hr/>
         <div class="form-group">
             <label for="textToRead">要播报的内容：</label>
-            <textarea class="form-control" id="textToRead" ng-model="text"></textarea>
+            <textarea class="form-control" id="textToRead" ng-model="text" maxlength="1000"></textarea>
         </div>
         {##}
         {#            <div class="checkbox">#}
@@ -120,7 +120,7 @@
         <label class="form-group">
             <div class="input-group" ng-class="{true: '', false: 'has-error'}[read_times>0&&read_times<50]">
                 <span class="input-group-addon">播报</span>
-                <input class="form-control" ng-model="read_times" type="number" id="cnt"/>
+                <input class="form-control" ng-model="read_times" type="number" min="1" id="cnt"/>
                 <span class="input-group-addon">次</span>
             </div>
         </label>
