@@ -190,13 +190,13 @@ import music
 def play_url():
     p = check_is_playing()
     if p: return p
-    json_data = {key:dict(request.form)[key][0] for key in dict(request.form)}
+    json_data = json.loads(request.data)  # {key:dict(request.form)[key][0] for key in dict(request.form)}
     url = json_data['url']
     n = int(json_data['cnt'])
     rdm = json_data['rdm']
     app.logger.info(u"准备播放%d首'%s'里的音乐。" % (n, url))
     # threading.Thread(target=ne_music.play_a_list, args=(url, n, rdm == 'true')).start()
-    threading.Thread(target=music.play_songs, args=(url, n, rdm == 'true')).start()
+    threading.Thread(target=music.play_songs, args=(url, n, rdm)).start()
     return '',200
 
 

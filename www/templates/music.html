@@ -18,76 +18,87 @@
 {##}
 {##}
 {#    </div>#}
-    <div ng-app="music">
-        <div  class="page-header text-center" id="playing-ctrl" ng-controller="playingCtrl">
+    <div ng-app="music" ng-controller="musicCtrl">
+        <div class="page-header text-center" id="playing-ctrl" ng-controller="playingCtrl">
 
-            <div class="alert  alert-success text-center" ng-class="{false: 'alert-success', true: 'alert-warning'}[playing_info['pause']]"
-                 ng-show="playing_info['playing']" role="alert" >
+            <div class="alert  alert-success text-center"
+                 ng-class="{false: 'alert-success', true: 'alert-warning'}[playing_info['pause']]"
+                 ng-show="playing_info['playing']" role="alert">
 
-                <button  class="pull-left btn btn-xs btn-danger" ng-click="set_player('stop')"><!--停止-->
-                    <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
-                </button>
-                 <button  class="pull-right btn btn-xs btn-info" ng-click="set_player('next')"><!--下一首-->
-                    <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
-                </button>
-                <button  class="pull-right btn btn-xs" ng-class="{false: 'btn-warning', true: 'btn-success'}[playing_info['pause']]"
-                          ng-click="set_player('p')" ><!--暂停-->
-                    <span class="glyphicon" ng-class="{false: 'glyphicon-pause', true: 'glyphicon-play'}[playing_info['pause']]"
-                          aria-hidden="true"></span>
-                </button>
-{#                <button  class="pull-right btn btn-xs btn-default"  id="example"#}
-{#                         data-content='<input class="slider" id="vol" data-slider-min="0" data-slider-max="100" >'#}
-{#                       data-toggle="popover" title="调节音量"#}
-{#                       data-html = 'true' data-placement="bottom" ng-click="test()"><!--音量-->#}
-{#                    <span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span>#}
-{#                </button>#}
-                <div class="btn-group pull-right" role="group">
-                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-
-                        <span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span>
+                {#<hr>#}
+                <div>
+                    <button class="pull-left btn btn-xs btn-danger" ng-click="set_player('stop')"><!--停止-->
+                        <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><label for="vol">
-                            <input class="slider" id="vol" data-slider-min="0" data-slider-max="100"
-                                   >
-                        </label></li>
-{#                        <li><a href="#">Dropdown link</a></li>#}
-                    </ul>
+                    <button class="pull-right btn btn-xs btn-info" ng-click="set_player('next')"><!--下一首-->
+                        <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
+                    </button>
+                    <button class="pull-right btn btn-xs"
+                            ng-class="{false: 'btn-warning', true: 'btn-success'}[playing_info['pause']]"
+                            ng-click="set_player('p')"><!--暂停-->
+                    <span class="glyphicon"
+                          ng-class="{false: 'glyphicon-pause', true: 'glyphicon-play'}[playing_info['pause']]"
+                          aria-hidden="true"></span>
+                    </button>
+                    {#                <button  class="pull-right btn btn-xs btn-default"  id="example"#}
+                    {#                         data-content='<input class="slider" id="vol" data-slider-min="0" data-slider-max="100" >'#}
+                    {#                       data-toggle="popover" title="调节音量"#}
+                    {#                       data-html = 'true' data-placement="bottom" ng-click="test()"><!--音量-->#}
+                    {#                    <span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span>#}
+                    {#                </button>#}
+                    <div class="btn-group pull-right" role="group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+
+                            <span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><label for="vol">
+                                <input class="slider" id="vol" data-slider-min="0" data-slider-max="100"
+                                >
+                            </label></li>
+                            {#                        <li><a href="#">Dropdown link</a></li>#}
+                        </ul>
+                    </div>
                 </div>
+                {#                <br />#}
+                {#                <button  class="pull-right btn btn-xs btn-success" ng-hide="playing" ng-click="playing=true"><!--播放-->#}
+                {#                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>#}
+                {#                </button>#}
 
-{#                <button  class="pull-right btn btn-xs btn-success" ng-hide="playing" ng-click="playing=true"><!--播放-->#}
-{#                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>#}
-{#                </button>#}
 
+                {#                正在播放：#}
 
-{#                正在播放：#}
-                <strong ng-bind="playing_info['song_name']"></strong>
-{#                <label ng-bind="m"></label>#}
-
+                {#                <label ng-bind="m"></label>#}
+                <div><strong ng-bind="playing_info['song_name']"></strong></div>
             </div>
-{#            <div >#}
-{#                   　 <input type='text'   ng-model="vol">#}
-{#            </div>#}
+            {#            <div >#}
+            {#                   　 <input type='text'   ng-model="vol">#}
+            {#            </div>#}
         </div>
         <div class="input-append" ng-controller="settingCtrl">
 {#            <div class="alert text-center alert-success" role="alert">正在播放：{{y}}</div>#}
             <ul class="nav nav-tabs ">
-                <li role="presentation" class="page-btn" id="lc-page" content="../lcsong">
+                <li role="presentation" class="page-btn" ng-class="{'active':type=='lc'}" id="lc-page" content="../lcsong">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">本　地
+                       aria-expanded="false" ng-click="type='lc';musicurl=''">本　地
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" id="local-path">
-                        <li><a >./music_files</a></li>
-                        <li><a >./music_files/mine</a></li>
-                        <li><a >./music_files/4baby</a></li>
+                        <li><a ng-repeat="p in local_path" ng-bind="p" ng-click="set_url(p,'lc')"></a></li>
+{#                        <li><a >./music_files</a></li>#}
+{#                        <li><a >./music_files/mine</a></li>#}
+{#                        <li><a >./music_files/4baby</a></li>#}
     {#                    <li role="separator" class="divider"></li>#}
     {#                    <li><a href="#"></a></li>#}
                     </ul>
                 </li>
-                <li role="presentation" class="page-btn active " id="ne-page" content="../play_url"><a>网　易　云</a></li>
-                <li role="presentation" class="page-btn disabled" id="xm-page"><a>虾　米</a></li>
+                <li role="presentation" class="page-btn" ng-class="{'active':type=='ne'}" id="ne-page" content="../play_url">
+                    <a ng-click="type='ne';musicurl='http://music.163.com'">网　易　云</a>
+                </li>
+                <li role="presentation" class="page-btn" ng-class="{'active':type=='xm'}" id="xm-page">
+                    <a ng-click="type='xm';musicurl='http://www.xiami.com'">虾　米</a>
+                </li>
             </ul>
 {#        <form>#}
             {#                        <div>#}
@@ -120,7 +131,7 @@
 {#        <hr/>#}
 
             <form>
-                <div class="btn-group btn-group-justified" role="group" id="set-url-div">
+                <div class="btn-group btn-group-justified" role="group" id="set-url-div" ng-show="type=='ne'">
                     {#                style="display:none">#}
 
                     <div class="btn-group dropdown" role="group">
@@ -130,33 +141,17 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu multi-level" role="menu" id="ul-toplist">
-                            <li><a class="btn-default" content='3779629'>云音乐新歌榜</a></li>
-                            <li><a class="btn-default" content='3778678'>云音乐热歌榜</a></li>
-                            <li><a class="btn-default" content='2884035'>网易原创歌曲榜</a></li>
-                            <li><a class="btn-default" content='19723756'>云音乐飙升榜</a></li>
+                            <li><a class="btn-default" ng-repeat="u in toplist" ng-bind="u[0]" ng-click="set_url(u[1],'ne')"></a></li>
+{#                            <li><a class="btn-default" content='3779629'>云音乐新歌榜</a></li>#}
+{#                            <li><a class="btn-default" content='3778678'>云音乐热歌榜</a></li>#}
+{#                            <li><a class="btn-default" content='2884035'>网易原创歌曲榜</a></li>#}
+{#                            <li><a class="btn-default" content='19723756'>云音乐飙升榜</a></li>#}
                             <li role="separator" class="divider"></li>
                             <li class="dropdown-submenu">
-                                <a tabindex="-1" id="dropdown-more" content="">更多...</a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="btn-default" content=''>...收起</a></li>
-                                    <li><a class="btn-default" content='10520166'>云音乐电音榜</a></li>
-                                    <li><a class="btn-default" content='180106'>UK排行榜周榜</a></li>
-                                    <li><a class="btn-default" content='60198'>美国Billboard周榜</a></li>
-                                    <li><a class="btn-default" content='21845217'>KTV嗨榜</a></li>
-                                    <li><a class="btn-default" content='11641012'>iTunes榜</a></li>
-                                    <li><a class="btn-default" content='120001'>Hit FM Top榜</a></li>
-                                    <li><a class="btn-default" content='60131'>日本Oricon周榜</a></li>
-                                    <li><a class="btn-default" content='3733003'>韩国Melon排行榜周榜</a></li>
-                                    <li><a class="btn-default" content='60255'>韩国Mnet排行榜周榜</a></li>
-                                    <li><a class="btn-default" content='46772709'>韩国Melon原声周榜</a></li>
-                                    <li><a class="btn-default" content='112504'>中国TOP排行榜(港台榜)</a></li>
-                                    <li><a class="btn-default" content='64016'>中国TOP排行榜(内地榜)</a></li>
-                                    <li><a class="btn-default" content='10169002'>香港电台中文歌曲龙虎榜</a></li>
-                                    <li><a class="btn-default" content='4395559'>华语金曲榜</a></li>
-                                    <li><a class="btn-default" content='1899724'>中国嘻哈榜</a></li>
-                                    <li><a class="btn-default" content='27135204'>法国 NRJ EuroHot 30周榜</a></li>
-                                    <li><a class="btn-default" content='112463'>台湾Hito排行榜</a></li>
-                                    <li><a class="btn-default" content='3812895'>Beatport全球电子舞曲榜</a></li>
+                                <a tabindex="-1" id="dropdown-more">更多...</a>
+                                <ul class="dropdown-menu" >
+                                    <li><a class="btn-default" >...收起</a></li>
+                                    <li><a class="btn-default" ng-repeat="u in toplist2" ng-bind="u[0]" ng-click="set_url(u[1],'ne')"></a></li>
                                 </ul>
                             </li>
 {#                            <li><a class="btn-default" content=''>自定义</a></li>#}
@@ -171,11 +166,11 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" id="ul-playlist">
-                            <li><a class="btn-default" content='559441'>我喜欢的</a></li>
-                            <li><a class="btn-default" content='30259752'>呆逼歌单</a></li>
-                            <li><a class="btn-default" content='306638605'>宝宝的歌单</a></li>
+                            <li><a class="btn-default" ng-repeat="p in playlist" ng-bind="p[0]" ng-click="set_url(p[1],'ne')">我喜欢的</a></li>
+{#                            <li><a class="btn-default" content='30259752'>呆逼歌单</a></li>#}
+{#                            <li><a class="btn-default" content='306638605'>宝宝的歌单</a></li>#}
                             <li role="separator" class="divider"></li>
-                            <li><a class="btn-default" content="">自定义</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/playlist?id=','ne')">自定义</a></li>
                         </ul>
                     </div>
                     {#                <a type="button" class="set-url btn btn-default" content="http://music.163.com/#/playlist?id=">#}
@@ -191,31 +186,31 @@
                         <ul class="dropdown-menu" id="ul-artist">
                             <li><a class="btn-default" content="">自定义</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a class="btn-default" content='6452'>周杰伦</a></li>
-                            <li><a class="btn-default" content='2116'>陈奕迅</a></li>
-                            <li><a class="btn-default" content='5781'>薛之谦</a></li>
-                            <li><a class="btn-default" content='9940'>徐佳莹</a></li>
-                            <li><a class="btn-default" content='3684'>林俊杰</a></li>
-                            <li><a class="btn-default" content='9621'>王菲</a></li>
-                            <li><a class="btn-default" content='6460'>张学友</a></li>
-                            <li><a class="btn-default" content='6066'>杨宗纬</a></li>
-                            <li><a class="btn-default" content='5770'>许巍</a></li>
-                            <li><a class="btn-default" content='6731'>赵雷</a></li>
-                            <li><a class="btn-default" content='5073'>宋冬野</a></li>
-                            <li><a class="btn-default" content='4721'>朴树</a></li>
-                            <li><a class="btn-default" content='3695'>李健</a></li>
-                            <li><a class="btn-default" content='9548'>田馥甄</a></li>
-                            <li><a class="btn-default" content='5771'>许嵩</a></li>
-                            <li><a class="btn-default" content='7217'>陈绮贞</a></li>
-                            <li><a class="btn-default" content='3691'>刘德华</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=6452','ne')">周杰伦</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=2116','ne')">陈奕迅</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=5781','ne')">薛之谦</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=9940','ne')">徐佳莹</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=3684','ne')">林俊杰</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=9621','ne')">王菲</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=6460','ne')">张学友</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=6066','ne')">杨宗纬</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=5770','ne')">许巍</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=6731','ne')">赵雷</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=5073','ne')">宋冬野</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=4721','ne')">朴树</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=3695','ne')">李健</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=9548','ne')">田馥甄</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=5771','ne')">许嵩</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=7217','ne')">陈绮贞</a></li>
+                            <li><a class="btn-default" ng-click="set_url('/artist?id=3691','ne')">刘德华</a></li>
 
                         </ul>
                     </div>
-                    <a type="button" class="set-url btn btn-default" content="http://music.163.com/#/song?id=">歌曲</a>
-                    <a type="button" class="set-url btn btn-default" content="http://music.163.com/#/djradio?id=">DJ</a>
+                    <a type="button" class="set-url btn btn-default" ng-click="set_url('/song?id=','ne')">歌曲</a>
+                    <a type="button" class="set-url btn btn-default" ng-click="set_url('/djradio?id=','ne')">DJ</a>
 
                 </div>
-                <div class="form-group">
+                <div class="form-group" >
                     {#                <div class="center-block">#}
                     {#                    <label>#}
                     {#                        <input type="button" class="set-url btn btn-default btn-info "#}
@@ -242,11 +237,11 @@
                     <label for="url">要播放的歌曲/歌单的链接或本地路径：</label>
                     <div class = ' input-group  '>
     {#                <label for="url">要播放的网易云音乐页面链接：</label>#}
-                        <input class="form-control" type="text" id="url" ng-bind="musicurl"
-                               placeholder="歌曲/歌单/排行榜/电台 链接 or 本地歌曲路径"
+                        <input class="form-control" type="text" id="url" ng-model="musicurl"
+                               placeholder="歌曲/歌单/排行榜/电台 链接 or 本地歌曲路径" ng-disabled="type=='lc'"
                         />
-                        <span class="input-group-btn">
-                            <a class="btn btn-default" type="button" ng-href="{{musicurl}}" target="_blank">前往</a>
+                        <span class="input-group-btn" >
+                            <a class="btn btn-default" ng-disabled="type=='lc'" type="button" ng-href="{{type=='lc'?'':musicurl}}" target="_blank">前往</a>
                         </span>
                     </div>
                     {#                <textarea class="form-control" id="textToRead" ></textarea>#}
@@ -254,7 +249,7 @@
                 <label class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">播放</span>
-                        <input class=" form-control" type="number" id="cnt" min="0" value="3"/>
+                        <input class=" form-control" type="number" ng-model="cnt" id="cnt" min="0"/>
 
 
                         <span class="input-group-addon">首</span>
@@ -265,11 +260,11 @@
 
                 <div class="checkbox">
                     <label>
-                        <input id="chk-rdm" type="checkbox" checked>随机播放
+                        <input id="chk-rdm" type="checkbox" ng-checked="rdm">随机播放
                     </label>
                 </div>
                 <input type="submit" formmethod="post" class="btn btn-default btn-primary"
-                       id="play" value="播放">
+                       id="play" value="播放" ng-click="play()" ng-disabled="loading">
             </form>
             {#        <input type="text" placeholder="输入 网易云音乐 页面链接" id="url"/>#}
             {#        <input type="text" placeholder="" id="cnt" value="3"/>#}
@@ -330,6 +325,11 @@
                 $('#modal_msg').modal('show');
             }
         var app = angular.module('music', []);
+        app.controller('musicCtrl',function($scope){
+            $scope.$on('play',function(){
+                $scope.$broadcast('get_info','');
+            });
+        });
         app.controller('playingCtrl', function ($scope,$http) {
             $scope.get_player_info = function (){
                 $http({url: '../playing-info',
@@ -344,7 +344,9 @@
                             }
                         });
             };
-
+            $scope.$on('get_info',function(e,msg){
+                $scope.get_player_info();
+            });
 
 {#            $('#example').popover('html')=true;#}
 {#            $scope.test = function () {#}
@@ -383,10 +385,41 @@
             });
 
         });
-        app.controller('settingCtrl', function ($scope) {
-            //$scope.musicurl = 'xyz'
+        app.controller('settingCtrl', function ($scope,$http) {
+            $scope.type = 'ne';
+{#            $scope.musicurl = 'xyz';#}
+            $scope.cnt = 3;
+            $scope.rdm = true;
+            //$scope.loading = true;
+            $scope.local_path = ['./music_files','./music_files/mine','./music_files/4baby'];
+            $scope.toplist = [['云音乐新歌榜', '/discover/toplist?id=3779629'],
+             ['云音乐热歌榜', '/discover/toplist?id=3778678'],
+             ['网易原创歌曲榜', '/discover/toplist?id=2884035'],
+             ['云音乐飙升榜', '/discover/toplist?id=19723756']];
+            $scope.toplist2 = [['云音乐电音榜', '/discover/toplist?id=10520166'],
+             ['UK排行榜周榜', '/discover/toplist?id=180106'],
+             ['美国Billboard周榜', '/discover/toplist?id=60198'],
+             ['KTV嗨榜', '/discover/toplist?id=21845217'],
+             ['iTunes榜', '/discover/toplist?id=11641012'],
+             ['Hit FM Top榜', '/discover/toplist?id=120001'],
+             ['日本Oricon周榜', '/discover/toplist?id=60131'],
+             ['韩国Melon排行榜周榜', '/discover/toplist?id=3733003'],
+             ['韩国Mnet排行榜周榜', '/discover/toplist?id=60255'],
+             ['韩国Melon原声周榜', '/discover/toplist?id=46772709'],
+             ['中国TOP排行榜(港台榜)', '/discover/toplist?id=112504'],
+             ['中国TOP排行榜(内地榜)', '/discover/toplist?id=64016'],
+             ['香港电台中文歌曲龙虎榜', '/discover/toplist?id=10169002'],
+             ['华语金曲榜', '/discover/toplist?id=4395559'],
+             ['中国嘻哈榜', '/discover/toplist?id=1899724'],
+             ['法国 NRJ EuroHot 30周榜', '/discover/toplist?id=27135204'],
+             ['台湾Hito排行榜', '/discover/toplist?id=112463'],
+             ['Beatport全球电子舞曲榜', '/discover/toplist?id=3812895']
+            ];
+            $scope.playlist=[['我喜欢的','/playlist?id=559441'],
+                ['呆逼歌单','/playlist?id=30259752'],['宝宝歌单','/playlist?id=306638605']
+            ];
 
-        $(document).ready(function () {
+
             $('#dropdown-more').click(function(){
                 var ul = $(this).parent();
                 ul.addClass('open');
@@ -396,81 +429,111 @@
                 });
                 return false;
             });
-            $('#local-path a').click(function () {
-                $('#url').val($(this).text());
-                $('#url').attr('disabled','disabled');
-            });
+{#            $('#local-path a').click(function () {#}
+{#                $('#url').val($(this).text());#}
+{#                $('#url').attr('disabled','disabled');#}
+{#            });#}
 
-            $('.page-btn').not('.disabled').click(function () {
-                $('.page-btn').removeClass('active');
-                $(this).addClass('active');
-                switch ($(this).attr('id')) {
-                    case "lc-page":
-                        $("#set-url-div").fadeOut(100);
-                        break;
-                    case "ne-page":
-                        $("#set-url-div").fadeIn(100);
-                        $('#url').removeAttr('disabled').val("");
-                        break;
+{#            $('.page-btn').not('.disabled').click(function () {#}
+{#                $('.page-btn').removeClass('active');#}
+{#                $(this).addClass('active');#}
+{#                switch ($(this).attr('id')) {#}
+{#                    case "lc-page":#}
+{#                        $("#set-url-div").fadeOut(100);#}
+{#                        break;#}
+{#                    case "ne-page":#}
+{#                        $("#set-url-div").fadeIn(100);#}
+{#                        $('#url').removeAttr('disabled').val("");#}
+{#                        break;#}
+{#                }#}
+{#            });#}
+
+            $scope.set_url = function(url,type){
+                switch(type){
+                    case 'lc':
+                        $scope.musicurl = url;break;
+                    case 'ne':
+                        $scope.musicurl = 'http://music.163.com' + url;break;
                 }
-            });
 
-            $('#ul-toplist a').click(function () {
-                var tp_url = 'http://music.163.com/discover/toplist?id=' + $(this).attr('content');
-                //$('#url').val(tp_url);
-                $scope.musicurl = tp_url;
-            });
-            $('#ul-playlist a').click(function () {
-                var pl_url = 'http://music.163.com/#/playlist?id=' + $(this).attr('content');
-                $('#url').val(pl_url);
-            });
-            $('#ul-artist a').click(function () {
-                var at_url = 'http://music.163.com/#/artist?id=' + $(this).attr('content');
-                $('#url').val(at_url);
-            });
+            };
+{#            $('#ul-toplist a').click(function () {#}
+{#                var tp_url = 'http://music.163.com/discover/toplist?id=' + $(this).attr('content');#}
+{#                //$('#url').val(tp_url);#}
+{#                $scope.musicurl = tp_url;#}
+{#            });#}
+{#            angular.element('#ul-playlist a').click(function () {#}
+{#                var pl_url = 'http://music.163.com/#/playlist?id=' + $(this).attr('content');#}
+{#                $scope.musicurl = pl_url;#}
+{#                //$('#url').val(pl_url);#}
+{#            });#}
+{#            $('#ul-artist a').click(function () {#}
+{#                var at_url = 'http://music.163.com/#/artist?id=' + $(this).attr('content');#}
+{#                $('#url').val(at_url);#}
+{#            });#}
             $("#set-url-div .btn").addClass('btn-sm');
-            $('.set-url').click(function () {
-                $('#url').val($(this).attr('content'))
-            });
-            $('#localMusic').click(function () {
-                var lc_path = $('#local-path').val();
-                var lc_cnt = $('#local-cnt').val();
-                var d = {path: lc_path, cnt: lc_cnt};
-                $.post('../lcsong', d, function (data, status) {
-                    if (data) {
-                        $('#msg_body').text(data);
-                        $('#modal_msg').modal('show');
-                    }
-                });
-            });
-            $('#play').click(function () {
-                var postTo = $(".page-btn.active").attr("content");
-                //alert(postTo);
-                if ($(this).hasClass('disabled')) return false;
-                $(this).addClass('disabled');
-                var url = $('#url').val();
-                var cnt = $('#cnt').val();
-                var rdm = $('#chk-rdm').prop('checked');
-                if (!url || !cnt) {
-                    {#                    alert("请输入要播放的页面链接和播放几首。");#}
-                    $('#msg_body').text('请输入要播放的页面链接和播放几首。');
+{#            $('.set-url').click(function () {#}
+{#                $('#url').val($(this).attr('content'))#}
+{#            });#}
+{#            $('#localMusic').click(function () {#}
+{#                var lc_path = $('#local-path').val();#}
+{#                var lc_cnt = $('#local-cnt').val();#}
+{#                var d = {path: lc_path, cnt: lc_cnt};#}
+{#                $.post('../lcsong', d, function (data, status) {#}
+{#                    if (data) {#}
+{#                        $('#msg_body').text(data);#}
+{#                        $('#modal_msg').modal('show');#}
+{#                    }#}
+{#                });#}
+{#            });#}
+{#            $('#play').click(function () {#}
+{#                var postTo = $(".page-btn.active").attr("content");#}
+{#                //alert(postTo);#}
+{#                if ($(this).hasClass('disabled')) return false;#}
+{#                $(this).addClass('disabled');#}
+{#                var url = $('#url').val();#}
+{#                var cnt = $('#cnt').val();#}
+{#                var rdm = $('#chk-rdm').prop('checked');#}
+{#                if (!url || !cnt) {#}
+{#                                        alert("请输入要播放的页面链接和播放几首。");#}
+{#                    $('#msg_body').text('请输入要播放的页面链接和播放几首。');#}
+{#                    $('#modal_msg').modal('show');#}
+{#                    $('#play').removeClass('disabled');#}
+{#                    return false;#}
+{#                }#}
+{#                var d = {url: url, cnt: cnt, rdm: rdm};#}
+{#                $.post(postTo, d, function (data, status) {#}
+{#                    if (data) {#}
+{#                        $('#msg_body').text(data);#}
+{#                        $('#modal_msg').modal('show');#}
+{#                        //alert(data);#}
+{#                    }#}
+{#                    $('#play').removeClass('disabled');#}
+{#                });#}
+{#                return false;#}
+{#            });#}
+            $scope.play = function(){
+                if ($scope.loading) return false;
+                $scope.loading = true;
+                if (!$scope.musicurl) {
+{#                                        alert("请输入要播放的页面链接和播放几首。");#}
+                    $('#msg_body').text('请输入要播放的页面链接。');
                     $('#modal_msg').modal('show');
-                    $('#play').removeClass('disabled');
+                    $scope.loading = false;
                     return false;
                 }
-                var d = {url: url, cnt: cnt, rdm: rdm};
-                $.post(postTo, d, function (data, status) {
+                var d = {url:$scope.musicurl,cnt:$scope.cnt,rdm:$scope.rdm};
+                $http.post('../play_url',d).success(function(data,status){
                     if (data) {
                         $('#msg_body').text(data);
                         $('#modal_msg').modal('show');
-                        //alert(data);
                     }
-                    $('#play').removeClass('disabled');
+                    $scope.loading = false;
+                    $scope.$emit('play');
                 });
-                return false;
-            });
+            };
 
-        });
+
         });
     </script>
 {% endblock %}
