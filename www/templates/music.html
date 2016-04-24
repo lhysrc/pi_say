@@ -18,7 +18,7 @@
 {##}
 {##}
 {#    </div>#}
-    <div ng-app="music" ng-controller="musicCtrl">
+    <div ng-app="music" >
         <div class="page-header text-center" id="playing-ctrl" ng-controller="playingCtrl">
 
             <div class="alert  alert-success text-center"
@@ -325,12 +325,12 @@
                 $('#modal_msg').modal('show');
             }
         var app = angular.module('music', []);
-        app.controller('musicCtrl',function($scope){
-            $scope.$on('play',function(){
-                $scope.$broadcast('get_info','');
-            });
-        });
-        app.controller('playingCtrl', function ($scope,$http) {
+{#        app.controller('musicCtrl',function($scope){#}
+{#            $scope.$on('play',function(){#}
+{#                $scope.$broadcast('get_info','');#}
+{#            });#}
+{#        });#}
+        app.controller('playingCtrl', function ($scope,$http,$interval) {
             $scope.get_player_info = function (){
                 $http({url: '../playing-info',
                         method: "POST"})
@@ -344,9 +344,9 @@
                             }
                         });
             };
-            $scope.$on('get_info',function(e,msg){
-                $scope.get_player_info();
-            });
+{#            $scope.$on('get_info',function(e,msg){#}
+{#                $scope.get_player_info();#}
+{#            });#}
 
 {#            $('#example').popover('html')=true;#}
 {#            $scope.test = function () {#}
@@ -357,7 +357,9 @@
 {#                $('#vol').slider('setValue',$scope.vol);#}
 {#            };#}
             $scope.get_player_info();
-
+            $interval(function(){
+                $scope.get_player_info();
+            },10000);
 
 
             $scope.set_player = function(s){
@@ -529,7 +531,7 @@
                         $('#modal_msg').modal('show');
                     }
                     $scope.loading = false;
-                    $scope.$emit('play');
+{#                    $scope.$emit('play');#}
                 });
             };
 
