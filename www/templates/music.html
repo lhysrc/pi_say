@@ -264,7 +264,7 @@
                     </label>
                 </div>
                 <input type="submit" formmethod="post" class="btn btn-default btn-primary"
-                       id="play" value="播放" ng-click="play()" ng-disabled="loading">
+                       id="play" value="播放" ng-click="play()" ng-disabled="loading || !musicurl">
             </form>
             {#        <input type="text" placeholder="输入 网易云音乐 页面链接" id="url"/>#}
             {#        <input type="text" placeholder="" id="cnt" value="3"/>#}

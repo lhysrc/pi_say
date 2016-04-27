@@ -215,14 +215,30 @@
                 </div>
 
                 <div class="row" style="margin-top: 5px" ng-show="current_type=='bus'" ng-disabled="current_type!='bus'">
-                    <label class="col-md-3 col-xs-12">
+
+                    <label class="col-md-2 col-xs-12">
                         车次：<input ng-model="current_task.args[0]" class="form-control">
                     </label>
-                    <label class="col-md-5  col-xs-12">
+                    <label class="col-md-3  col-xs-12">
                         站台：<input ng-model="current_task.args[1]" class="form-control">
                     </label>
-                    <label class="col-md-4  col-xs-12">
+                    <label class="col-md-3  col-xs-12">
                         查询码：<input ng-model="current_task.args[2]" class="form-control">
+                    </label>
+
+                    <label class="col-md-2  col-xs-6">
+                        播报次数：<input ng-model="current_task.args[3]" class="form-control">
+                    </label>
+                    <label class="col-md-2  col-xs-6">
+                        播报间隔：
+{#                        <input ng-model="current_task.args[2]" class="form-control">#}
+                        <div class="input-group" style="margin-top: 0;padding: 0 0">
+{#                        <span class="input-group-addon">播报</span>#}
+                        <input class="form-control" type="number" min="0" ng-model="current_task.args[4]"/>
+
+
+                        <span class="input-group-addon">秒</span>
+                        </div>
                     </label>
                 </div>
                 <div class="row" style="margin-top: 5px" ng-show="current_type=='music'">
