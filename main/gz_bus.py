@@ -20,24 +20,26 @@ headers = {
     "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.6",
     "Content-Type"   : "application/x-www-form-urlencoded; charset=UTF-8",
     "Referer"        : "http://wxbus.gzyyjt.net/wei-bus-app/station",
-    "User-Agent"     : "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36",
+    "User-Agent"     : "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat",
     "Origin"         : "http://wxbus.gzyyjt.net",
     "DNT":1,
+    "Host":"wxbus.gzyyjt.net",
+    "Cookie":"JSESSIONID=14864631985A400E03E653367A42E5C5; WBSRV=s3; realOpenId=ouz9Ms07e2R4cfj6arHjFyo2L-uA; gzhUser=gh_342e92a92760; openId=ouz9Ms07e2R4cfj6arHjFyo2L-uA; route=fe9b13b33d88398957ee445b97555283",
 
 }
 
-cookie = {
-    'JSESSIONID' : '3FDFA7A164B15F33436BD56E73BBD6F7',
-    'WBSRV' : 's3',
-    'route' : 'fe9b13b33d88398957ee445b97555283',
-}
+# cookie = {
+#     'JSESSIONID' : '3FDFA7A164B15F33436BD56E73BBD6F7',
+#     'WBSRV' : 's3',
+#     'route' : 'fe9b13b33d88398957ee445b97555283',
+# }
 
 import requests
 ss = requests.session()
 ss.headers.update(headers)
 
 
-ss.cookies.update(cookie)
+# ss.cookies.update(cookie)
 
 def search_station(name):
     """通过名称查找站点"""
@@ -94,10 +96,8 @@ def count_waittime(bus_no,st_name,search_num,num=2,read=True):
         time:预计等待时间
     """
     param = {"rsId":search_num,"num":num}
-    data = urllib.urlencode(param)
-    from common import util
-    result = util.getJson(urlWaitBusWaitTime, data)
-    cnt, tm = result[0]['count'],result[0]['time']
+    result = ss.post(urlWaitBusWaitTime,data=param).json()
+    cnt, tm = result[0]['count'], result[0]['time']
     if read:
         if cnt == -1:
             baidu_tts.read_aloud(u"%s尚未发车" % bus_no, True,per=0)
@@ -186,42 +186,5 @@ def tell_bus(bus_name,station,search_id,cnt = 15,interval = 60):
 
 
 if __name__ == '__main__':
-
-    s = raw_input(u"1.通过站点查找\n2.通过班次查找\n")
-    if s == '1':
-        s = raw_input(u"请输入站点：\n")
-        stations = search_station(s)
-        for i, b in enumerate(stations): print i, b['n'], b['i']
-        s = raw_input(u"第几个？")
-        stationid = stations[int(s)]['i']
-        print "stationid ",stationid
-        #
-        buses = get_all_route(stationid)
-        for i,b in enumerate(buses):print i,b['rn'],b['dn']
-        s = raw_input(u"第几条？")
-        bus = buses[int(s)] #filter(lambda b:b['rsi']=='162545',buses)[0]
-
-
-        #print bus['ri']
-
-        ri,d = bus['ri'],bus['d']
-        sid = get_searchId(stationid,ri,d)
-        print "该站点查询ID为：",sid
-    elif s == '2':
-        s = raw_input(u"请输入班次：\n")
-        routes = search_route(s)
-        for i, r in enumerate(routes): print i, r['n'], r['i']
-        s = raw_input(u"第几个？")
-        rid = routes[int(s)]['i']
-        s,d='-1',1
-        while s=='-1':
-            d=(d+1)%2
-            stations = get_all_station(rid,d )
-            for i, st in enumerate(stations): print i,st['n'],st['i']
-            s = raw_input(u"第几个？查看返程输入-1")
-        stationid = stations[int(s)]['i']
-        print "stationid ", stationid
-
-    else:
-        pass
+    count_waittime('b11', u"长兴路东", 87792,3)
 
