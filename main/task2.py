@@ -18,12 +18,13 @@ from main.baidu_tts import read_aloud_async
 
 
 
-MUSIC,TELL_BUS,TELL_WEATHER,READ_TEXT = 'music','bus','weather','read'
+MUSIC,TELL_BUS,TELL_WEATHER,READ_TEXT,TELL_TIME = 'music','bus','weather','read','time'
 task_types = {
     MUSIC       : music.play_songs,
     TELL_BUS    : tell_bus,
     TELL_WEATHER: tell_day_of_week,
-    READ_TEXT   : read_aloud_async
+    READ_TEXT   : read_aloud_async,
+    TELL_TIME   : tell_time.tell_time_repeat,
 }
 
 class Task(object):
@@ -57,11 +58,18 @@ def load_all_tasks():
                 tasks.append(Task(**t))
     #todo: log
 
+# def save_all_tasks():
+#     for k,g in itertools.groupby(tasks,key=lambda t:t.type):
+#         if k in task_types:
+#             g = map(lambda t:t.to_dict(),g)
+#             config.set('Task', k, json.dumps(g,encoding='utf-8'))
+#     config.save()
+
 def save_all_tasks():
-    for k,g in itertools.groupby(tasks,key=lambda t:t.type):
-        if k in task_types:
-            g = map(lambda t:t.to_dict(),g)
-            config.set('Task', k, json.dumps(g,encoding='utf-8'))
+    for tp in task_types:
+        tks = filter(lambda t:t.type == tp,tasks)
+        tks = map(lambda t: t.to_dict(), tks)
+        config.set('Task', tp, json.dumps(tks,encoding='utf-8'))
     config.save()
 
 # def save_task(task):

@@ -244,9 +244,9 @@ from main import task2
 @app.route('/tasks',methods=['get','post'])
 @app.route('/tasks/<type>',methods=['get'])
 def cfg_tasks(type = None):
-    tasks = task2.tasks
+    # tasks = task2.tasks
     if request.method == 'GET':
-        tks = map(lambda t:t.to_dict(True),tasks)
+        tks = map(lambda t:t.to_dict(True),task2.tasks)
         tks = filter(lambda t:t != None,tks)
         if type : tks = filter(lambda t:t['type']==type,tks)
         return jsonify(result=tks)
@@ -261,7 +261,7 @@ def cfg_tasks(type = None):
                 #     if tk.id == tk_dic['id']:
                 #         tasks[i] = task2.Task(**tk_dic)
             else:
-                tasks.append(task2.Task(**tk_dic))
+                task2.tasks.append(task2.Task(**tk_dic))
         task2.save_all_tasks()
         return '',200
 

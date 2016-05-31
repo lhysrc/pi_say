@@ -258,18 +258,45 @@
                 </div>
 
                 <div class="row" style="margin-top: 5px" ng-show="current_type=='tell'">
-                    <label class="col-md-12 col-xs-12">
+                    <div class="row col-md-12 col-xs-12" style="margin-left: 5px;">
+                        <label class="radio-inline col-md-2 col-xs-3">
+                            <input type="radio" name="inlineRadioOptions" value="read" ng-model="current_task.type"> 念字
+                        </label>
+                        <label class="radio-inline col-md-2 col-xs-3" >
+                            <input type="radio" name="inlineRadioOptions" value="weather" ng-model="current_task.type" disabled> 天气
+                        </label>
+                        <label class="radio-inline col-md-2 col-xs-3">
+                            <input type="radio" name="inlineRadioOptions" value="time" ng-model="current_task.type"> 报时
+                        </label>
+                    </div>
+                    <label class="col-md-12 col-xs-12" ng-show="current_task.type=='read'">
                         播报内容：<textarea ng-model="current_task.args[0]" maxlength="1000" class="form-control" ></textarea>
                     </label>
 {#                    <label class="col-md-2  col-xs-12">#}
 {#                        音量：<input ng-model="current_task.args[3]" type="number" min="0" max="100" class="form-control">#}
 {#                    </label>#}
-                    <div class="input-group col-md-4 col-xs-12" ng-hide="current_task.pause_days<0" style="margin-top: 0;padding: 0 15px">
-                        <span class="input-group-addon">播报</span>
-                        <input class=" form-control" type="number" id="cnt" min="0" ng-model="current_task.args[6]"/>
-
-
-                        <span class="input-group-addon">次</span>
+                    <div >
+                        <label class=" col-md-4 col-xs-12" ng-show="current_task.type=='read'"  >
+                            <label class="input-group">
+                                <span class="input-group-addon">播报</span>
+                                <input class=" form-control" type="number" id="cnt" min="0" ng-model="current_task.args[6]"/>
+                                <span class="input-group-addon">次</span>
+                            </label>
+                        </label>
+                        <label class=" col-md-4 col-xs-12" ng-show="current_task.type=='time'" >
+                            <label class="input-group">
+                            <span class="input-group-addon">每</span>
+                            <input class=" form-control"  type="number" id="cnt" min="0" ng-model="current_task.args[0]"/>
+                            <span class="input-group-addon">分钟报时</span>
+                                </label>
+                        </label>
+                        <label class=" col-md-4 col-xs-12" ng-show="current_task.type=='time'">
+                            <label class="input-group">
+                                <span class="input-group-addon">共播报</span>
+                                <input class=" form-control" type="number" id="cnt" min="0" ng-model="current_task.args[1]"/>
+                                <span class="input-group-addon">次</span>
+                            </label>
+                        </label>
                     </div>
                 </div>
 
@@ -372,7 +399,7 @@
 {#                })#}
                 .controller('cfgCtrl', function ($scope, $http) {
                     $scope.group_tasks = {
-                        music: [], bus: [], weather: [], read: []
+                        music: [], bus: [], weather: [], read: [], time: []
                     };
 
                     $scope.get_pause_state = function (tk) {
@@ -394,7 +421,9 @@
                         if(type=='bus' || type=='music'){
                             $scope.cur_task_list = $scope.group_tasks[type];
                         }else{
-                            $scope.cur_task_list = $scope.group_tasks.weather.concat($scope.group_tasks.read);
+                            $scope.cur_task_list = $scope.group_tasks.weather
+                                    .concat($scope.group_tasks.read)
+                                    .concat($scope.group_tasks.time);
                         }
                         $scope.set_current_task($scope.cur_task_list[0]);
                     };

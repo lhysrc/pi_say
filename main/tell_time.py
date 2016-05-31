@@ -72,7 +72,20 @@ def is_workday(time):
 
     return time.tm_wday < 5
 
-
+def tell_time_repeat(interval,tell_times):
+    """
+    报时
+    Args:
+        interval: 间隔，每interval分钟报时一次
+        tell_times: 次数
+    Returns:None
+    """
+    while tell_times:
+        t = time.localtime()
+        if t.tm_min != 0:
+            tell_time(t)
+        tell_times -= 1
+        time.sleep(interval*60)
 
 
 
