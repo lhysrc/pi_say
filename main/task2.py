@@ -13,7 +13,7 @@ from common import util
 log = getLogger(__name__)
 from main import tell_time
 from main.gz_bus import tell_bus
-from main.weather import tell_day_of_week,today
+from main.weather import tell_today,today
 from main.baidu_tts import read_aloud_async
 
 
@@ -22,7 +22,7 @@ MUSIC,TELL_BUS,TELL_WEATHER,READ_TEXT,TELL_TIME = 'music','bus','weather','read'
 task_types = {
     MUSIC       : music.play_songs,
     TELL_BUS    : tell_bus,
-    TELL_WEATHER: tell_day_of_week,
+    TELL_WEATHER: tell_today,
     READ_TEXT   : read_aloud_async,
     TELL_TIME   : tell_time.tell_time_repeat,
 }
@@ -107,21 +107,21 @@ def auto_check_in():
     if ret:
         util.sendEmail('hyiit@qq.com','虾米签到失败',ret)
 
-
-def tell_time_every_10min(times=6):
-    while times:
-        t = time.localtime()
-        if t.tm_min != 0:
-            tell_time.tell_time(t)
-        times -= 1
-        time.sleep(60*10)
+#
+# def tell_time_every_10min(times=6):
+#     while times:
+#         t = time.localtime()
+#         if t.tm_min != 0:
+#             tell_time.tell_time(t)
+#         times -= 1
+#         time.sleep(60*10)
 
 tasks = [ # Task(7, 35, alarm_song, (),workday=True),
-          Task(7, 43, tell_weather, (),workday=True),
-          Task(7, 50, tell_time_every_10min, (),workday=True),
-
-          Task(8, 45, tell_weather, (),holiday=True),
-          Task(9, 45, tell_weather, (False,True),holiday=True),
+          # Task(7, 43, tell_weather, (),workday=True),
+          # Task(7, 50, tell_time_every_10min, (),workday=True),
+          #
+          # Task(8, 45, tell_weather, (),holiday=True),
+          # Task(9, 45, tell_weather, (False,True),holiday=True),
 
           Task(9,  0, auto_check_in, (), workday=True, holiday=True),
           ]

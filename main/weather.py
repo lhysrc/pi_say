@@ -104,11 +104,11 @@ def day_of_week(days_after):
 
 
 
-def tell_today(drsg = True, trav = False):
+def tell_today(drsg = False, trav = False):
     w = today(drsg, trav)
     baidu_tts.read_aloud(w)
 
-def tell_day_of_week(days_after):
+def tell_day_of_week(days_after=0):
     w = day_of_week(days_after)
     baidu_tts.read_aloud(w)
 

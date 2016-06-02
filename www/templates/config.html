@@ -44,10 +44,12 @@
 {#        <h3><label>定时任务管理</label></h3>#}
         <ul class="nav nav-tabs ">
             <li role="presentation" class="page-btn " ng-class="{'active':current_type=='bus'}" ng-click="set_current_type('bus')">
-                <a>公　交 </a>
+                <a>公交</a>
             </li>
-            <li role="presentation" class="page-btn  " ng-class="{'active':current_type=='music'}" ng-click="set_current_type('music')"><a>音　乐</a></li>
-            <li role="presentation" class="page-btn " ng-class="{'active':current_type=='tell'}" ng-click="set_current_type('tell')"><a>播　报</a></li>
+            <li role="presentation" class="page-btn  " ng-class="{'active':current_type=='music'}" ng-click="set_current_type('music')"><a>音乐</a></li>
+            <li role="presentation" class="page-btn " ng-class="{'active':current_type=='read'}" ng-click="set_current_type('read')"><a>播报</a></li>
+            <li role="presentation" class="page-btn " ng-class="{'active':current_type=='weather'}" ng-click="set_current_type('weather')"><a>天气</a></li>
+            <li role="presentation" class="page-btn " ng-class="{'active':current_type=='time'}" ng-click="set_current_type('time')"><a>报时</a></li>
         </ul>
 {#        <table class="table table-bordered table-hover text-center">#}
 {#            <thead class="">#}
@@ -105,7 +107,7 @@
                         <a class="btn nav-link" ng-class="{'btn-primary':t===current_task}" ng-click="set_current_task(t)">{{t.hour}}:{{t.min}}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="btn btn-default"  ng-click="add_task()" disabled>添加任务</a>
+                        <a class="btn btn-default"  ng-click="add_task()" >添加任务</a>
                     </li>
 
                 </ul>
@@ -114,8 +116,8 @@
             </div>
 
 
-            <div class="col-md-9 col-xs-8">
-                <div class="alert alert-sm" style="margin-bottom: 0"
+            <div class="col-md-9 col-xs-8" >
+                <div class="alert alert-sm" style="margin-bottom: 0" ng-hide="current_task.pause_days==null"
                      ng-class="{'alert-success':current_task.pause_days==0,'alert-warning':current_task.pause_days>0,'alert-danger':current_task.pause_days<0,}">
 
                     <button class="btn btn-xs"
@@ -257,18 +259,18 @@
                     </div>
                 </div>
 
-                <div class="row" style="margin-top: 5px" ng-show="current_type=='tell'">
-                    <div class="row col-md-12 col-xs-12" style="margin-left: 5px;">
-                        <label class="radio-inline col-md-2 col-xs-3">
-                            <input type="radio" name="inlineRadioOptions" value="read" ng-model="current_task.type"> 念字
-                        </label>
-                        <label class="radio-inline col-md-2 col-xs-3" >
-                            <input type="radio" name="inlineRadioOptions" value="weather" ng-model="current_task.type" disabled> 天气
-                        </label>
-                        <label class="radio-inline col-md-2 col-xs-3">
-                            <input type="radio" name="inlineRadioOptions" value="time" ng-model="current_task.type"> 报时
-                        </label>
-                    </div>
+                <div class="row" style="margin-top: 5px" ng-show="current_type=='read'">
+{#                    <div class="row col-md-12 col-xs-12" style="margin-left: 5px;">#}
+{#                        <label class="radio-inline col-md-2 col-xs-3">#}
+{#                            <input type="radio" name="inlineRadioOptions" value="read" ng-model="current_task.type"> 念字#}
+{#                        </label>#}
+{#                        <label class="radio-inline col-md-2 col-xs-3" >#}
+{#                            <input type="radio" name="inlineRadioOptions" value="weather" ng-model="current_task.type" disabled> 天气#}
+{#                        </label>#}
+{#                        <label class="radio-inline col-md-2 col-xs-3">#}
+{#                            <input type="radio" name="inlineRadioOptions" value="time" ng-model="current_task.type"> 报时#}
+{#                        </label>#}
+{#                    </div>#}
                     <label class="col-md-12 col-xs-12" ng-show="current_task.type=='read'">
                         播报内容：<textarea ng-model="current_task.args[0]" maxlength="1000" class="form-control" ></textarea>
                     </label>
@@ -283,21 +285,49 @@
                                 <span class="input-group-addon">次</span>
                             </label>
                         </label>
-                        <label class=" col-md-4 col-xs-12" ng-show="current_task.type=='time'" >
+{#                        <label class=" col-md-4 col-xs-12" ng-show="current_task.type=='time'" >#}
+{#                            <label class="input-group">#}
+{#                            <span class="input-group-addon">每</span>#}
+{#                            <input class=" form-control"  type="number" id="cnt" min="0" ng-model="current_task.args[0]"/>#}
+{#                            <span class="input-group-addon">分钟报时</span>#}
+{#                                </label>#}
+{#                        </label>#}
+{#                        <label class=" col-md-4 col-xs-12" ng-show="current_task.type=='time'">#}
+{#                            <label class="input-group">#}
+{#                                <span class="input-group-addon">共播报</span>#}
+{#                                <input class=" form-control" type="number" id="cnt" min="0" ng-model="current_task.args[1]"/>#}
+{#                                <span class="input-group-addon">次</span>#}
+{#                            </label>#}
+{#                        </label>#}
+                    </div>
+                </div>
+                <div  style="margin-top: 5px" ng-show="current_type=='weather'">
+                    <div class="btn-group btn-group-justified" style="margin-top: 0">
+
+                            <label class="btn btn-default" ng-model="current_task.workday"
+                                   ng-click="current_task.args[0]=!current_task.args[0]"
+                                   ng-class="{'btn-primary active':current_task.args[0]}">穿衣建议</label>
+                            <label class="btn btn-default" ng-model="current_task.holiday"
+                                   ng-click="current_task.args[1]=!current_task.args[1]"
+                                   ng-class="{'btn-primary active':current_task.args[1]}">出行建议</label>
+
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 5px" ng-show="current_type=='time'">
+                        <label class=" col-md-4 col-xs-12" ng-show="current_type=='time'" >
                             <label class="input-group">
-                            <span class="input-group-addon">每</span>
+                            <span class="input-group-addon">间隔</span>
                             <input class=" form-control"  type="number" id="cnt" min="0" ng-model="current_task.args[0]"/>
-                            <span class="input-group-addon">分钟报时</span>
+                            <span class="input-group-addon">分钟</span>
                                 </label>
                         </label>
-                        <label class=" col-md-4 col-xs-12" ng-show="current_task.type=='time'">
+                        <label class=" col-md-4 col-xs-12" ng-show="current_type=='time'">
                             <label class="input-group">
                                 <span class="input-group-addon">共播报</span>
                                 <input class=" form-control" type="number" id="cnt" min="0" ng-model="current_task.args[1]"/>
                                 <span class="input-group-addon">次</span>
                             </label>
                         </label>
-                    </div>
                 </div>
 
                 <div class="form-group" >
@@ -398,6 +428,9 @@
 {#                    }#}
 {#                })#}
                 .controller('cfgCtrl', function ($scope, $http) {
+                    $scope.arg_nums ={
+                        music: 4, bus: 5, weather: 0, read: 7, time: 2
+                    };
                     $scope.group_tasks = {
                         music: [], bus: [], weather: [], read: [], time: []
                     };
@@ -418,19 +451,32 @@
                     };
                     $scope.set_current_type = function(type){
                         $scope.current_type = type;
-                        if(type=='bus' || type=='music'){
-                            $scope.cur_task_list = $scope.group_tasks[type];
-                        }else{
-                            $scope.cur_task_list = $scope.group_tasks.weather
-                                    .concat($scope.group_tasks.read)
-                                    .concat($scope.group_tasks.time);
-                        }
+                        $scope.cur_task_list = $scope.group_tasks[type];
+{#                        if(type=='bus' || type=='music'){#}
+{#                            $scope.cur_task_list = $scope.group_tasks[type];#}
+{#                        }else{#}
+{#                            $scope.cur_task_list = $scope.group_tasks.weather#}
+{#                                    .concat($scope.group_tasks.read)#}
+{#                                    .concat($scope.group_tasks.time);#}
+{#                        }#}
                         $scope.set_current_task($scope.cur_task_list[0]);
                     };
                     $scope.update = function(tk){
                         $http.post('../tasks',tk).success(function(date,status){
                             if (status == 200) {
                                 showMsgBox("修改成功。")
+                            }
+                        });
+                    };
+                    $scope.delete = function(tk){
+                        $http.delete('../tasks',tk).success(function(date,status){
+                            if (status == 200) {
+                                for(var idx in $scope.group_tasks[tk.type]) {
+                                    if($scope.group_tasks[tk.type][idx] == tk)
+                                        $scope.group_tasks[tk.type].pop(idx);
+                                }
+
+                                showMsgBox("删除成功。")
                             }
                         });
                     };
@@ -474,6 +520,14 @@
                                 if (status != 200) return;
                                 $scope.bus_status = $scope.get_bus_status($scope.current_task.args[2]);
                             });
+                    };
+                    $scope.add_task = function(){
+                        $scope.current_task = {
+                            type:$scope.current_type,
+                            args:new Array($scope.arg_nums[$scope.current_type]),
+                            pause_days:0
+                        };
+                        $scope.group_tasks[$scope.current_type].push($scope.current_task);
                     };
 {#                    $http.get('../bus').success(function (data, status) {#}
 {#                                if (status != 200) return;#}
