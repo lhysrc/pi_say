@@ -18,13 +18,13 @@ def get_cpuram():
     RAM_stats = pi.getRAMinfo()
     RAM_total = round(int(RAM_stats[0]) / 1000, 1)
     RAM_used = round(int(RAM_stats[1]) / 1000, 1)
-    ran_usage = int(RAM_used / RAM_total * 100)
-    return {'cpu_temp': cpu_temp, 'cpu_usage': cpu_usage, 'ram_usage': ran_usage}
+    ram_usage = int(RAM_used / RAM_total * 100)
+    return {'cpu_temp': cpu_temp, 'cpu_usage': cpu_usage, 'ram_usage': ram_usage}
 
 def get_diskusage():
     if "Windows" in platform.uname():
         return None
-    return pi.getDiskSpace()
+    return pi.getDiskSpace()[3]
 
 def background_thread():
     if "Windows" in platform.uname():
