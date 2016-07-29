@@ -3,13 +3,49 @@
 
 {% block main_content %}
 
-    <div class="page-header">
-
-        <h1>主页</h1>
-    </div>
-    <div class="jumbotron text-center">
+{#    <div ng-app="index">#}
+        {#    <div class="page-header">#}
+        {##}
+        {#        <h1>主页</h1>#}
+        {#    </div>#}
+    <div class="jumbotron text-center" style="margin-top: 5px">
         <h1 class="">你好，我是树莓派</h1>
         <p>^_^</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">和我玩吧...</a></p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">和我聊天吧...</a></p>
     </div>
+
+    <div class="row" ng-controller="pisys" id="pisys-msg">
+        <p class="col-md-3">CPU温度：<span id="cpu-temp"></span>℃</p>
+        <p class="col-md-3">CPU占用：<span id="cpu-usage"></span>%</p>
+        <p class="col-md-3">内存占用：<span id="ram-usage"></span>%</p>
+        <p class="col-md-3">硬盘占用：<span id="disk-usage"></span>%</p>
+
+    </div>
+
+{#    </div>#}
+{% endblock %}
+{% block script %}
+    <script>
+{#        var app = angular.module('index', []);#}
+{##}
+{#        app.controller('pisys', function ($scope, $http, $interval) {#}
+            namespace = '/pisys';
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+            socket.emit('getmsg');
+            socket.on('picpuram', function(msg) {
+                if (!msg) $("#pisys-msg").hide();
+                $('#cpu-temp').text(msg.cpu_temp);
+                $('#cpu-usage').text(msg.cpu_usage);
+                $('#ram-usage').text(msg.ram_usage);
+            });
+            socket.on('pidisk', function(msg) {
+                if (!msg) $("#pisys-msg").hide();
+                $('#disk-usage').text(msg);
+            });
+{#        })#}
+
+
+    </script>
+
+
 {% endblock %}

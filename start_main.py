@@ -120,15 +120,16 @@ def start_main():
 
 
 
-from www import app
+import www
 from main.task2 import start_tasks
 if __name__ == '__main__':
     log.info('-'*50)
 
     td = threading.Thread(target=start_tasks)
-    if not app.debug: td.start()
+    if not www.app.debug: td.start()
 
-    app.run(host='0.0.0.0',port=3080,threaded=True)
+    www.run_app()
+    # app.run(host='0.0.0.0',port=3080,threaded=True)
 # if __name__ == '__main__':
 #     #threading.Timer(0, alarm_song, ()).start()
 #     start_main()
