@@ -136,6 +136,10 @@ class Player:
         # tlyric_download_thread.start()
 
         # returns immediately after the thread starts
+
+        from www.skt_io.musicio import emit_playing_info
+        emit_playing_info()
+
         return thread
 
     def get_playing_song(self):

@@ -1,5 +1,4 @@
-from flask_socketio import SocketIO, emit,send, join_room, leave_room, \
-    close_room, rooms, disconnect
+from flask_socketio import SocketIO, emit, disconnect
 from main import pi_sys as pi
 from www import socketio
 import platform
@@ -40,7 +39,7 @@ def background_thread():
 
 
 
-@socketio.on('getmsg', namespace='/pisys')
+@socketio.on('getmsg', namespace = namespace)
 def get_pi_sys():
     global thread
     if thread is None:

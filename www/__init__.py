@@ -1,7 +1,7 @@
 #coding:utf-8
 from flask import Flask
-from flask_socketio import SocketIO, emit,send, join_room, leave_room, \
-    close_room, rooms, disconnect
+from flask_socketio import SocketIO
+
 # from flask.ext.bootstrap import Bootstrap
 # try:
 #     import signal
@@ -9,7 +9,7 @@ from flask_socketio import SocketIO, emit,send, join_room, leave_room, \
 # except: pass
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode=None)
-import pi_sys
+from www.skt_io import pi_sys,musicio
 #app.debug = True
 #
 # app.logger_name = 'Flask'

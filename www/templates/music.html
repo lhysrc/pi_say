@@ -318,6 +318,10 @@
     {{ super() }}
     <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
     <script>
+        namespace = '/music';
+        var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+        //socket.emit('getmsg');
+
         $("input.slider").slider();
         var volCtrl = $('#vol');
         function showMsgBox(text) {
@@ -331,18 +335,35 @@
 {#            });#}
 {#        });#}
         app.controller('playingCtrl', function ($scope,$http,$interval) {
+            $scope.playing_info = {
+                pause:false,
+                playing:true,
+                song_name:"123123",
+                vol:50
+            };
+
+
+            socket.on('playing_info', function(msg) {
+                $scope.$apply(function() {
+                    $scope.playing_info = msg;
+                    volCtrl.slider('setValue',$scope.playing_info.vol);
+                });
+            });
             $scope.get_player_info = function (){
-                $http({url: '../playing-info',
-                        method: "POST"})
-                        .success(function (x,y) {
-                            if(x && y==200){
-                                $scope.playing_info = x;
-                                volCtrl.slider('setValue',$scope.playing_info.vol);
-                            }
-                            if(y!=200){
-                                showMsgBox('错误：'+y);
-                            }
-                        });
+                socket.emit('playing_info');
+
+
+{#                $http({url: '../playing-info',#}
+{#                        method: "POST"})#}
+{#                        .success(function (x,y) {#}
+{#                            if(x && y==200){#}
+{#                                $scope.playing_info = x;#}
+{#                                volCtrl.slider('setValue',$scope.playing_info.vol);#}
+{#                            }#}
+{#                            if(y!=200){#}
+{#                                showMsgBox('错误：'+y);#}
+{#                            }#}
+{#                        });#}
             };
 {#            $scope.$on('get_info',function(e,msg){#}
 {#                $scope.get_player_info();#}
@@ -357,9 +378,9 @@
 {#                $('#vol').slider('setValue',$scope.vol);#}
 {#            };#}
             $scope.get_player_info();
-            $interval(function(){
-                $scope.get_player_info();
-            },10000);
+{#            $interval(function(){#}
+{#                $scope.get_player_info();#}
+{#            },10000);#}
 
 
             $scope.set_player = function(s){
