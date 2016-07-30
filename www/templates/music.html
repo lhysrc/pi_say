@@ -335,13 +335,6 @@
 {#            });#}
 {#        });#}
         app.controller('playingCtrl', function ($scope,$http,$interval) {
-            $scope.playing_info = {
-                pause:false,
-                playing:true,
-                song_name:"123123",
-                vol:50
-            };
-
 
             socket.on('playing_info', function(msg) {
                 $scope.$apply(function() {

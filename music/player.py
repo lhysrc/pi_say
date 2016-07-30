@@ -137,8 +137,8 @@ class Player:
 
         # returns immediately after the thread starts
 
-        from www.skt_io.musicio import emit
-        emit('playing_info', self.playing_info)
+        from www.skt_io.musicio import emit_playing_info
+        emit_playing_info()
 
         return thread
 
