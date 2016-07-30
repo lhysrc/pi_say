@@ -384,9 +384,9 @@
                         method: "POST",
                         data:d})
                         .success(function (x,y) {
-                            if(y==200){
-                                $scope.get_player_info();
-                            }
+{#                            if(y==200){#}
+{#                                $scope.get_player_info();#}
+{#                            }#}
                             if(y!=200){
                                 showMsgBox('错误：' + y);
                             }

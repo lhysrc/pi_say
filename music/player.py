@@ -137,9 +137,6 @@ class Player:
 
         # returns immediately after the thread starts
 
-        from www.skt_io.musicio import emit_playing_info
-        emit_playing_info()
-
         return thread
 
     @property
@@ -165,15 +162,17 @@ class Player:
         if self.playing_idx < 0 or self.playing_idx >= len(self.songs):
             self.playing_idx = 0
             self.stop()
-            return
-        self.playing_flag = True
-        self.pause_flag = False
-        item = self.songs[self.playing_idx]
-        # self.ui.build_playinfo(item['song_name'], item['artist'], item['album_name'], item['quality'], time.time())
-        # if self.notifier == True:
-        #     self.ui.notify("Now playing", item['song_name'], item['album_name'], item['artist'])
-        # self.playing_id = item['song_id']
-        self.popen_recall(item)
+        else:
+            self.playing_flag = True
+            self.pause_flag = False
+            item = self.songs[self.playing_idx]
+            # self.ui.build_playinfo(item['song_name'], item['artist'], item['album_name'], item['quality'], time.time())
+            # if self.notifier == True:
+            #     self.ui.notify("Now playing", item['song_name'], item['album_name'], item['artist'])
+            # self.playing_id = item['song_id']
+            self.popen_recall(item)
+        from www.skt_io.musicio import emit_playing_info
+        emit_playing_info()
 
     # def generate_shuffle_playing_list(self):
     #     del self.info["playing_list"][:]
@@ -248,8 +247,9 @@ class Player:
         self.recall()
 
     def stop(self):
-        if self.playing_flag and self.popen_handler:
+        if self.playing_flag:
             self.playing_flag = False
+        if self.popen_handler:
             try:
                 self.popen_handler.stdin.write("Q\n")
             except:
