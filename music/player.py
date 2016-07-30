@@ -137,10 +137,20 @@ class Player:
 
         # returns immediately after the thread starts
 
-        from www.skt_io.musicio import emit_playing_info
-        emit_playing_info()
+        from www.skt_io.musicio import emit
+        emit('playing_info', self.playing_info)
 
         return thread
+
+    @property
+    def playing_info(self):
+        ret = {
+            'song_name': self.get_playing_song().file_name if self.playing_flag else None,
+            'vol'      : self.playing_volume,
+            'pause'    : self.pause_flag,
+            'playing'  : self.playing_flag
+        }
+        return ret
 
     def get_playing_song(self):
         return self.songs[self.playing_idx]
