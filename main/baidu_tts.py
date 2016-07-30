@@ -118,7 +118,7 @@ def read_aloud_async(text, cache=False, spd=5, pit=5, vol=5, per=0, read_times =
     read_times = int(read_times) if read_times else 1
     threading.Timer(delay_sec,read_aloud,(text, cache, spd, pit, vol, per, read_times)).start()
     if delay_sec>0:
-        log.warn("将于%d秒后播报%d次：%s"%(delay_sec,read_times,urllib2.unquote(text)))
+        log.info("将于%d秒后播报%d次：%s"%(delay_sec,read_times,urllib2.unquote(text)))
 
 def read_aloud(text, cache=False, spd=5, pit=5, vol=5, per=0, read_times = 1):
     """
@@ -138,13 +138,13 @@ def read_aloud(text, cache=False, spd=5, pit=5, vol=5, per=0, read_times = 1):
             while read_times>0:
                 play_sound.play(mp3_file)
                 read_times-=1
-            log.warn("播报‘%s’%d次完成。" % (urllib2.unquote(text), tmp))
+            log.info("播报‘%s’%d次完成。" % (urllib2.unquote(text), tmp))
             break
         elif status==1:
             play_sound.play(mp3_file)
             break
         elif status==2:
-            log.error("语音转换重试。")
+            log.warn("语音转换重试。")
             status, mp3_file = get_mp3_file(text)
             retry -= 1
     else:

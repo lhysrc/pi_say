@@ -123,7 +123,7 @@ def start_main():
 import www
 from main.task2 import start_tasks
 if __name__ == '__main__':
-    log.warn('-'*50)
+    log.info('-'*50)
 
     td = threading.Thread(target=start_tasks)
     if not www.app.debug: td.start()

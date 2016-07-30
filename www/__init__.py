@@ -15,6 +15,14 @@ import pi_sys
 # app.logger_name = 'Flask'
 # app.debug_log_format = ('%(name)-6s:%(asctime)s | %(levelname)-4s: %(message)s', '%a,%y-%m-%d %H:%M:%S')
 # # app.static_folder='www/static'
+# app.logger.setLevel(50)
+
+# 访问记录和socketio的记录只显示warn以上
+import logging
+logging.getLogger('werkzeug').setLevel(30)
+logging.getLogger('engineio').setLevel(30)
+logging.getLogger('socketio').setLevel(30)
+
 import views
 # bs = Bootstrap(app)
 

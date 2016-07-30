@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
 
 def start_tasks():
-    log.warn("程序开始运行")
+    log.info("程序开始运行")
     read_aloud_async("程序开始运行", True, per=0)
 
     load_all_tasks()
@@ -177,7 +177,7 @@ def start_tasks():
                 if task.pause_days == 0:
                     interval = (task.min - t.tm_min) * 60 - t.tm_sec
                     interval = max(0, interval)
-                    log.warn(u"将在%s秒后执行任务：%s。|%s。" % (interval, func.__name__,task))
+                    log.info(u"将在%s秒后执行任务：%s。|%s。" % (interval, func.__name__,task))
                     Timer(interval, func, task.args).start()
                 elif task.pause_days > 0:
                     task.pause_days -= 1
