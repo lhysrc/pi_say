@@ -54,7 +54,7 @@ def handle_logger(logger,filepath = filename):
         # fhdlr.setLevel(logging.WARN)
 
     stderr_handler = logging.StreamHandler(sys.__stderr__)
-    stderr_handler.level = logging.WARNING
+    stderr_handler.level = logging.ERROR
     stderr_handler.formatter = formatter
     logger.addHandler(stderr_handler)
 
