@@ -214,6 +214,7 @@ def set_player():
         player_func[json_data['func']]()
     if 'vol' in json_data:
         player.set_volume(json_data['vol'])
+    player.emit_playing_info()
     return '',200
 
 import random

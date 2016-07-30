@@ -149,6 +149,11 @@ class Player:
         }
         return ret
 
+    def emit_playing_info(self):
+        data = self.playing_info
+        from www import socketio
+        socketio.emit('playing_info', data, namespace='/music')
+
     def get_playing_song(self):
         return self.songs[self.playing_idx]
 
@@ -171,8 +176,7 @@ class Player:
             #     self.ui.notify("Now playing", item['song_name'], item['album_name'], item['artist'])
             # self.playing_id = item['song_id']
             self.popen_recall(item)
-        from www.skt_io.musicio import emit_playing_info
-        emit_playing_info()
+        self.emit_playing_info()
 
     # def generate_shuffle_playing_list(self):
     #     del self.info["playing_list"][:]
