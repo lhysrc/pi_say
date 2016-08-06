@@ -41,9 +41,9 @@ def background_thread():
 
 @socketio.on('getmsg', namespace = namespace)
 def get_pi_sys():
-    global thread
-    if thread is None:
-        thread = socketio.start_background_task(target=background_thread)
+    # global thread
+    # if thread is None:
+    #     thread = socketio.start_background_task(target=background_thread)
     emit('picpuram', get_cpuram())
     emit('pidisk', get_diskusage())
 
