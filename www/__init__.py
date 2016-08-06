@@ -24,6 +24,8 @@ logging.getLogger('engineio').setLevel(30)
 logging.getLogger('socketio').setLevel(30)
 
 import views
+import views.others
+import views.music_view
 # bs = Bootstrap(app)
 
 # 模板变量中添加空格，防止与angular js 冲突

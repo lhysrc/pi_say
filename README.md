@@ -8,3 +8,5 @@
 sudo apt-get install python-dev
 sudo apt-get install libevent-dev
 ```
+安装上eventlet后歌曲播放结束后socket.io却断开，需要刷新页面才能接收到信息。  
+不安装则正常。

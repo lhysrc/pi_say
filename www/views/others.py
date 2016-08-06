@@ -2,23 +2,23 @@
 import threading
 
 from flask import render_template,make_response,request,jsonify
-
+from . import page_not_found
 from common import util
 from main import baidu_tts, play_sound
 # from music import ne_music
 from www import app
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
-@app.errorhandler(500)
-def internal_server_error(e):
-    return render_template('500.html'), 500
-
-@app.route('/')
-def index():
-    return render_template('index.html',index='index')
+#
+# @app.errorhandler(404)
+# def page_not_found(e):
+#     return render_template('404.html'), 404
+#
+# @app.errorhandler(500)
+# def internal_server_error(e):
+#     return render_template('500.html'), 500
+#
+# @app.route('/')
+# def index():
+#     return render_template('index.html',index='index')
 
 @app.route('/log',methods=['get'])
 @app.route('/log/<int:page_idx>', methods=['get'])
@@ -42,7 +42,7 @@ def page_log(page_idx=None):
 
 @app.route('/read',methods=['get'])
 def page_read():
-    return render_template('read.html',read='read')
+    return render_template('read.html', read='read')
 
 @app.route('/config',methods=['get'])
 def page_config():
@@ -51,7 +51,7 @@ def page_config():
         '_581': gz_bus.get_pause_day('581') == 0,
         '_498': gz_bus.get_pause_day('498') == 0,
     }
-    return render_template('config.html',**ret)
+    return render_template('config.html', **ret)
 
 
 @app.route('/bus_status',methods=['post'])
@@ -91,9 +91,9 @@ def tts():
     #threading.Thread(target=baidu_tts.read_aloud, args=(json_data)).start()
     return u'将在%s后播报。'%json_data['delay_sec'] if 'delay_sec' in json_data else ''
 
-@app.route('/music')
-def page_music():
-    return render_template('music.html',music='music')
+# @app.route('/music')
+# def page_music():
+#     return render_template('music.html',music='music')
 
 @app.route('/test')
 def test():
@@ -184,62 +184,6 @@ def tts_page_2():
 #     url = 'http://music.163.com/#/discover/toplist?id=%s'%id
 #     threading.Thread(target=ne_music.play_a_list, args=(url, n)).start()
 #     return '',200
-
-import music
-@app.route('/play_url',methods=['post'])
-def play_url():
-    p = check_is_playing()
-    if p: return p
-    json_data = json.loads(request.data)  # {key:dict(request.form)[key][0] for key in dict(request.form)}
-    url = json_data['url']
-    n = int(json_data['cnt'])
-    rdm = json_data['rdm']
-    app.logger.info(u"准备播放%d首'%s'里的音乐。" % (n, url))
-    # threading.Thread(target=ne_music.play_a_list, args=(url, n, rdm == 'true')).start()
-    threading.Thread(target=music.play_songs, args=(url, n, rdm)).start()
-    return '',200
-
-
-from music import player
-player_func = {
-    'stop':player.stop,
-    'p':player.play_and_pause,
-    'next':player.next,
-    'prev': player.prev,
-}
-@app.route('/set-player',methods=['post'])
-def set_player():
-    json_data = json.loads(request.data)
-    if 'func' in json_data and json_data['func'] in player_func:
-        player_func[json_data['func']]()
-    if 'vol' in json_data:
-        player.set_volume(json_data['vol'])
-    player.emit_playing_info()
-    return '',200
-
-import random
-@app.route('/playing-info',methods=['post'])
-def get_playing_info():
-    ret = {
-        'song_name':player.get_playing_song().file_name if player.playing_flag else None,
-        'vol':player.playing_volume,
-        'pause':player.pause_flag,
-        'playing':player.playing_flag
-    }
-    # ret = {
-    #     'song_name': music.SongInfo('url','name','artist').file_name,
-    #     'vol'      : random.randint(0,100),
-    #     'pause'    : True,
-    #     'playing'  : True
-    # }
-    return jsonify(ret)
-
-def check_is_playing():
-    if music.is_loading_song_infos():
-        return '当前正在加载音乐信息，已准备播放！'
-    if player.playing_flag:
-        return '当前正在播放音乐。'
-    return ""
 
 from main import task2
 @app.route('/tasks',methods=['get','post'])
