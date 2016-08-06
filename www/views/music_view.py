@@ -3,8 +3,8 @@ import threading
 
 from flask import render_template,make_response,request,jsonify
 import json
-from common import util
-from main import baidu_tts, play_sound
+# from common import util
+# from main import baidu_tts, play_sound
 # from music import ne_music
 from www import app
 
@@ -48,7 +48,7 @@ def set_player():
     return '',200
 
 import random
-@app.route('/playing-info',methods=['post'])
+@app.route('/playing-info')
 def get_playing_info():
     ret = {
         'song_name':player.get_playing_song().file_name if player.playing_flag else None,
@@ -70,3 +70,18 @@ def check_is_playing():
     if player.playing_flag:
         return '当前正在播放音乐。'
     return ""
+
+from music.ne_api import NetEase
+ne = NetEase()
+@app.route('/ne-api/<string:type>')
+def ne_api_route(type):
+    if type == 'playlists':
+        pls = ne.top_playlists()
+        if pls:
+            pls = map(lambda pl:{'id':pl['id'],'name':pl['name'],},pls)
+            pls = random.sample(pls,10)
+            return jsonify(pls)
+        else:
+            return "",200
+    else:
+        return "",200

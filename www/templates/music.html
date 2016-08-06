@@ -166,11 +166,12 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" id="ul-playlist">
-                            <li><a class="btn-default" ng-repeat="p in playlist" ng-bind="p[0]" ng-click="set_url(p[1],'ne')">我喜欢的</a></li>
+                            <li><a class="btn-default" ng-repeat="p in playlist" ng-bind="p[0]" ng-click="set_url(p[1],'ne')"></a></li>
 {#                            <li><a class="btn-default" content='30259752'>呆逼歌单</a></li>#}
 {#                            <li><a class="btn-default" content='306638605'>宝宝的歌单</a></li>#}
                             <li role="separator" class="divider"></li>
                             <li><a class="btn-default" ng-click="set_url('/playlist?id=','ne')">自定义</a></li>
+                            <li><a class="btn-default" ng-repeat="p in topplaylist" ng-bind="p['name']" ng-click="set_url('/playlist?id='+p['id'],'ne')"></a></li>
                         </ul>
                     </div>
                     {#                <a type="button" class="set-url btn btn-default" content="http://music.163.com/#/playlist?id=">#}
@@ -400,6 +401,8 @@
                 $scope.set_player('vol');
             });
 
+
+
         });
         app.controller('settingCtrl', function ($scope,$http) {
             $scope.type = 'ne';
@@ -435,6 +438,16 @@
                 ['呆逼歌单','/playlist?id=30259752'],['宝宝歌单','/playlist?id=306638605']
             ];
 
+            $http({url: '../ne-api/playlists',
+                        method: "GET"})
+                        .success(function (x,y) {
+                            if(y==200){
+                                 $scope.topplaylist = x;
+                            }
+                            else{
+                                $scope.topplaylist = {};
+                            }
+                        });
 
             $('#dropdown-more').click(function(){
                 var ul = $(this).parent();
