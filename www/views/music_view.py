@@ -47,7 +47,7 @@ def set_player():
     player.emit_playing_info()
     return '',200
 
-import random
+
 @app.route('/playing-info')
 def get_playing_info():
     ret = {
@@ -72,16 +72,36 @@ def check_is_playing():
     return ""
 
 from music.ne_api import NetEase
+from random import sample
+from datetime import datetime
 ne = NetEase()
+pls_t = {
+    "time":datetime.now(),
+    "pls":ne.top_playlists(limit=100)
+}
+
 @app.route('/ne-api/<string:type>')
 def ne_api_route(type):
     if type == 'playlists':
-        pls = ne.top_playlists()
-        if pls:
-            pls = map(lambda pl:{'id':pl['id'],'name':pl['name'],},pls)
-            pls = random.sample(pls,10)
-            return jsonify(pls)
-        else:
+        if (datetime.now() - pls_t["time"]).seconds > (60*60*6):    # 六小时刷新歌单
+            pls_t["pls"] = ne.top_playlists(100)
+            pls_t["t"] = datetime.now()
+        pls = pls_t["pls"][:]
+        if not pls:
             return "",200
+
+        cnpls = filter(lambda pl: u"华语" in pl["tags"], pls)
+        yypls = filter(lambda pl: pl not in cnpls and u"粤语" in pl["tags"] , pls)
+        qtpls = filter(lambda pl: pl not in cnpls and pl not in yypls, pls)
+
+        retpls = sample(cnpls,5) + sample(yypls,2) + sample(qtpls,3)    #筛选歌曲，华语5个，粤语2个，其他3个
+
+        retpls = map(lambda pl: {'id': pl['id'], 'name': pl['name'],}, retpls)
+        return jsonify(retpls)
+
+
+
+
+
     else:
         return "",200

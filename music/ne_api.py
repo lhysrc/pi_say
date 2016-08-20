@@ -611,7 +611,13 @@ if __name__ == '__main__':
     # arts = ne.top_artists()
     # for art in arts:
     #      print(u"name:%s,id:%s"%(art['name'],art['id']))
-    pls = ne.top_playlists()
+    pls = ne.top_playlists(limit=100)
+    # pls = random.sample(pls,10)
+    # pls = map(lambda pl: {'id': pl['id'], 'name': pl['name']}, pls)
+
+    cnpls = filter(lambda pl: u"华语" in pl["tags"], pls)
+    yypls = filter(lambda pl: u"粤语" in pl["tags"], pls)
+    qtpls = filter(lambda pl: pl not in cnpls and pl not in yypls, pls)
     for pl in pls:
         print (u"name:%s, id:%s"%(pl['name'],pl['id']))
     # pls = ne.recommend_playlist()
