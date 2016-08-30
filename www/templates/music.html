@@ -343,6 +343,9 @@
                     volCtrl.slider('setValue',$scope.playing_info.vol);
                 });
             });
+            $interval(function () { //每5秒获取一次信息
+                $scope.get_player_info();
+            },5e3);
             $scope.get_player_info = function (){
                 socket.emit('playing_info');
 
@@ -442,7 +445,10 @@
                         method: "GET"})
                         .success(function (x,y) {
                             if(y==200){
-                                 $scope.topplaylist = x;
+{#                                获取到信息后自动填入一条#}
+                                $scope.topplaylist = x.pls;
+                                var idx = Math.floor(Math.random() * 10);
+                                $scope.set_url('/playlist?id='+x.pls[idx].id,'ne');
                             }
                             else{
                                 $scope.topplaylist = {};

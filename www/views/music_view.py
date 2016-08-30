@@ -97,7 +97,7 @@ def ne_api_route(type):
         retpls = sample(cnpls,5) + sample(yypls,2) + sample(qtpls,3)    #筛选歌曲，华语5个，粤语2个，其他3个
 
         retpls = map(lambda pl: {'id': pl['id'], 'name': pl['name'],}, retpls)
-        return jsonify(retpls)
+        return jsonify({'pls': retpls})
 
 
 
