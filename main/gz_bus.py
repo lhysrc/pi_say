@@ -103,6 +103,9 @@ def count_waittime(bus_no,st_name,search_num,num=2,read=True):
             baidu_tts.read_aloud(u"%s尚未发车" % bus_no, True,per=0)
         elif cnt == tm == 0:
             baidu_tts.read_aloud(u"%s已到达%s站" % (bus_no, st_name), True,per=0)
+        elif tm<0:
+            baidu_tts.read_aloud(u"%s距%s还有%s站" %
+                                 (bus_no, st_name, cnt), True)
         else:
             baidu_tts.read_aloud(u"%s距%s还有%s站，预计在%s分钟后到达" %
                                  (bus_no, st_name, cnt, tm), True,per=0)
