@@ -75,6 +75,7 @@
             {#            <div >#}
             {#                   　 <input type='text'   ng-model="vol">#}
             {#            </div>#}
+{#            <p ng-bind="offBy"></p>#}
         </div>
         <div class="input-append" ng-controller="settingCtrl">
 {#            <div class="alert text-center alert-success" role="alert">正在播放：{{y}}</div>#}
@@ -339,7 +340,7 @@
 {#                $scope.$broadcast('get_info','');#}
 {#            });#}
 {#        });#}
-        app.controller('playingCtrl', function ($scope,$http,$interval) {
+        app.controller('playingCtrl', function ($scope,$http,$interval,$timeout) {
 
             socket.on('playing_info', function(msg) {
                 $scope.$apply(function() {
@@ -347,33 +348,33 @@
                     volCtrl.slider('setValue',$scope.playing_info.vol);
                 });
             });
-{#            $interval(function () { //每5秒获取一次信息#}
-{#                $scope.get_player_info();#}
-{#            },5e3);#}
+            $interval(function () { //每5秒获取一次信息
+                $scope.get_player_info();
+            },5e3);
 
 {#            window.addEventListener("pageshow", function(){#}
 {#                alert("page shown");#}
 {#            }, false);#}
 
-            //获取焦点时重新获取信息
-            var time1 = getTime();
-            window.onfocus = function ()
-            {   //ios浏览器会触发两次，只能设置不在一秒内触发
-                var time2 = getTime();
-                if(time2 - time1 > 1e3){
-                    //alert("浏览器取得了焦点!");
-                    $scope.get_player_info();
-                    time1 = getTime();
-                }
-            };
+{#            //获取焦点时重新获取信息#}
+{#            var time1 = getTime();#}
+{#            window.onfocus = function ()#}
+{#            {   //ios浏览器会触发两次，只能设置不在一秒内触发#}
+{#                var time2 = getTime();#}
+{#                if(time2 - time1 > 1e3){#}
+{#                    //alert("浏览器取得了焦点!");#}
+{#                    $scope.get_player_info();#}
+{#                    time1 = getTime();#}
+{#                }#}
+{#            };#}
             var lastInterval = getTime();
-            $interval(function(){
+            $interval(function(){   {# 使用这个不需要用获取焦点的事件了 #}
                 var now = getTime();
                 var offBy = now - lastInterval - 1000;
                 lastInterval = now;
-                //alert(diff);
+                //$scope.offBy = offBy;
                 if(offBy > 100)
-                    $scope.get_player_info();
+                    $timeout($scope.get_player_info);
             },1000);
 
             $scope.get_player_info = function (){
