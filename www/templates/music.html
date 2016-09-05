@@ -318,6 +318,7 @@
 {% block scripts %}
     {{ super() }}
     <script src="{{ url_for('static',filename = 'js/bootstrap-slider.min.js') }}"></script>
+    <script src="{{ url_for('static',filename = 'js/js.cookie.js') }}"></script>
     <script>
         namespace = '/music';
         var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
@@ -595,8 +596,13 @@
                     $scope.loading = false;
 {#                    $scope.$emit('play');#}
                 });
+                Cookies.set("cnt",$scope.cnt);
             };
 
+            var cnt = parseInt(Cookies.get("cnt"));
+            if(cnt){
+                $scope.cnt = cnt;
+            }
 
         });
     </script>
