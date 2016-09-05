@@ -326,9 +326,12 @@
         $("input.slider").slider();
         var volCtrl = $('#vol');
         function showMsgBox(text) {
-                $('#msg_body').text(text);
-                $('#modal_msg').modal('show');
-            }
+            $('#msg_body').text(text);
+            $('#modal_msg').modal('show');
+        }
+        function getTime() {
+            return (new Date()).getTime();
+        }
         var app = angular.module('music', []);
 {#        app.controller('musicCtrl',function($scope){#}
 {#            $scope.$on('play',function(){#}
@@ -352,16 +355,25 @@
 {#            }, false);#}
 
             //获取焦点时重新获取信息
-            var time1 = new Date().getTime();
+            var time1 = getTime();
             window.onfocus = function ()
             {   //ios浏览器会触发两次，只能设置不在一秒内触发
-                var time2 = new Date().getTime();
+                var time2 = getTime();
                 if(time2 - time1 > 1e3){
                     //alert("浏览器取得了焦点!");
                     $scope.get_player_info();
-                    time1 = new Date().getTime();
+                    time1 = getTime();
                 }
             };
+            var lastInterval = getTime();
+            $interval(function(){
+                var now = getTime();
+                var offBy = now - lastInterval - 1000;
+                lastInterval = now;
+                //alert(diff);
+                if(offBy > 100)
+                    $scope.get_player_info();
+            },1000);
 
             $scope.get_player_info = function (){
                 socket.emit('playing_info');
