@@ -343,9 +343,26 @@
                     volCtrl.slider('setValue',$scope.playing_info.vol);
                 });
             });
-            $interval(function () { //每5秒获取一次信息
-                $scope.get_player_info();
-            },5e3);
+{#            $interval(function () { //每5秒获取一次信息#}
+{#                $scope.get_player_info();#}
+{#            },5e3);#}
+
+{#            window.addEventListener("pageshow", function(){#}
+{#                alert("page shown");#}
+{#            }, false);#}
+
+            //获取焦点时重新获取信息
+            var time1 = new Date().getTime();
+            window.onfocus = function ()
+            {   //ios浏览器会触发两次，只能设置不在一秒内触发
+                var time2 = new Date().getTime();
+                if(time2 - time1 > 1e3){
+                    //alert("浏览器取得了焦点!");
+                    $scope.get_player_info();
+                    time1 = new Date().getTime();
+                }
+            };
+
             $scope.get_player_info = function (){
                 socket.emit('playing_info');
 
