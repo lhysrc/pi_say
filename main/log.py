@@ -40,14 +40,14 @@ def handle_logger(logger,filepath = filename):
     if 'Windows' in platform.uname():
 
         stdout_handler = logging.StreamHandler(sys.__stdout__)
-        stdout_handler.setLevel(logging.INFO)
+        stdout_handler.setLevel(logging.NOTSET)
         stdout_handler.formatter = formatter
         logger.addHandler(stdout_handler)
 
     else:
         trfhdlr = logging.handlers.RotatingFileHandler(filepath, maxBytes=10 * 1024, backupCount=9)
         trfhdlr.setFormatter(formatter)
-        trfhdlr.setLevel(logging.NOTSET)
+        trfhdlr.setLevel(logging.INFO)
         logger.addHandler(trfhdlr)
         # fhdlr = logging.FileHandler("./tmp/log.log")
         # fhdlr.setFormatter(formatter)
