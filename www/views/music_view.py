@@ -44,24 +44,19 @@ def set_player():
         player_func[json_data['func']]()
     if 'vol' in json_data:
         player.set_volume(json_data['vol'])
-    player.emit_playing_info()
+        player.emit_playing_info() # player.recall里已有emit，所以为func不需要emit
     return '',200
 
 
 @app.route('/playing-info')
 def get_playing_info():
-    ret = {
-        'song_name':player.get_playing_song().file_name if player.playing_flag else None,
-        'vol':player.playing_volume,
-        'pause':player.pause_flag,
-        'playing':player.playing_flag
-    }
     # ret = {
-    #     'song_name': music.SongInfo('url','name','artist').file_name,
-    #     'vol'      : random.randint(0,100),
-    #     'pause'    : True,
-    #     'playing'  : True
+    #     'song_name':player.get_playing_song().file_name if player.playing_flag else None,
+    #     'vol':player.playing_volume,
+    #     'pause':player.pause_flag,
+    #     'playing':player.playing_flag
     # }
+    ret = player.playing_info
     return jsonify(ret)
 
 def check_is_playing():

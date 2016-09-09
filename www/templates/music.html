@@ -323,7 +323,6 @@
     <script>
         namespace = '/music';
         var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
-        //socket.emit('getmsg');
         $("input.slider").slider();
         var volCtrl = $('#vol');
         function showMsgBox(text) {
@@ -349,7 +348,7 @@
         })();
         var app = angular.module('music', []);
 {#        app.controller('musicCtrl',function($scope){#}
-{#            $scope.$on('play',function(){#}
+{#            $scope.$on('play',function(){ //控制器间通信    #}
 {#                $scope.$broadcast('get_info','');#}
 {#            });#}
 {#        });#}
@@ -357,10 +356,12 @@
 
             socket.on('playing_info', function(msg) {
                 $scope.$apply(function() {
+                    // alert(JSON.stringify(msg));
                     $scope.playing_info = msg;
                     volCtrl.slider('setValue',$scope.playing_info.vol);
                 });
             });
+            socket.emit('playing_info');
 {#            $interval(function () { //每2秒获取一次信息#}
 {#                $scope.get_player_info();#}
 {#            },2e3);#}
@@ -391,25 +392,22 @@
 {#                }#}
 {#            },1000);#}
             addEventListener("resume", function () {
-                //$scope.get_player_info();
-                //alert("resume");
-                location.reload();{# 无法实时获取，只好使用刷新 #}
+                $scope.get_player_info();
+                //socket.emit('playing_info');
             });
             $scope.get_player_info = function (){
-                socket.emit('playing_info');
-
-
-{#                $http({url: '../playing-info',#}
-{#                        method: "POST"})#}
-{#                        .success(function (x,y) {#}
-{#                            if(x && y==200){#}
-{#                                $scope.playing_info = x;#}
-{#                                volCtrl.slider('setValue',$scope.playing_info.vol);#}
-{#                            }#}
-{#                            if(y!=200){#}
-{#                                showMsgBox('错误：'+y);#}
-{#                            }#}
-{#                        });#}
+                $http({url: '../playing-info',
+                        method: "GET"})
+                        .success(function (x,y) {
+                            if(x && y==200){
+                                $scope.playing_info = x;
+                                volCtrl.slider('setValue',$scope.playing_info.vol);
+                            }
+                            if(y!=200){
+                                showMsgBox('获取歌曲信息出错。错误：'+y);
+                                location.reload();
+                            }
+                        });
             };
 {#            $scope.$on('get_info',function(e,msg){#}
 {#                $scope.get_player_info();#}
@@ -423,11 +421,7 @@
 {#                $("input.slider").slider();#}
 {#                $('#vol').slider('setValue',$scope.vol);#}
 {#            };#}
-            $scope.get_player_info();
-{#            $interval(function(){#}
-{#                $scope.get_player_info();#}
-{#            },10000);#}
-
+{#            $scope.get_player_info();#}
 
             $scope.set_player = function(s){
                 var d = {};
@@ -445,9 +439,6 @@
                             }
                         });
             };
-
-{#            $scope.vol = $scope.playing_info.vol;#}
-
             volCtrl.on('slideStop',function(){
                 $scope.vol = volCtrl.slider('getValue');
                 $scope.set_player('vol');
