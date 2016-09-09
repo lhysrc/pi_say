@@ -42,10 +42,9 @@ def set_player():
     json_data = json.loads(request.data)
     if 'func' in json_data and json_data['func'] in player_func:
         player_func[json_data['func']]()
-        # 在 player.play_and_pause 方法中emit
-        # if json_data['func'] == 'p':    # 暂停需要emit，未调用recall
-        #     player.emit_playing_info()
-    if 'vol' in json_data:
+        if json_data['func'] in ['p','stop']:    # 暂停和停止需要emit，未调用recall
+            player.emit_playing_info()
+    elif 'vol' in json_data:
         player.set_volume(json_data['vol'])
         player.emit_playing_info() # player.recall里已有emit，所以为func不需要emit
     return '',200

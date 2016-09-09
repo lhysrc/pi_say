@@ -224,7 +224,7 @@ class Player:
             self.resume()
         else:
             self.pause()
-        self.emit_playing_info()
+        # self.emit_playing_info()
 
 
         # # if same playlists && idx --> same song :: pause/resume it
