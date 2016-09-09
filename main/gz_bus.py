@@ -189,5 +189,40 @@ def tell_bus(bus_name,station,search_id,cnt = 15,interval = 60):
 
 
 if __name__ == '__main__':
-    count_waittime('b11', u"长兴路东", 87792,3)
+    s = raw_input(u"1.通过站点查找\n2.通过班次查找\n")
+    if s == '1':
+        s = raw_input(u"请输入站点：\n")
+        stations = search_station(s)
+        for i, b in enumerate(stations): print i, b['n'], b['i']
+        s = raw_input(u"第几个？")
+        stationid = stations[int(s)]['i']
+        print "stationid ", stationid
+        #
+        buses = get_all_route(stationid)
+        for i, b in enumerate(buses): print i, b['rn'], b['dn']
+        s = raw_input(u"第几条？")
+        bus = buses[int(s)]  # filter(lambda b:b['rsi']=='162545',buses)[0]
+
+        # print bus['ri']
+
+        ri, d = bus['ri'], bus['d']
+        sid = get_searchId(stationid, ri, d)
+        print "该站点查询ID为：", sid
+    elif s == '2':
+        s = raw_input(u"请输入班次：\n")
+        routes = search_route(s)
+        for i, r in enumerate(routes): print i, r['n'], r['i']
+        s = raw_input(u"第几个？")
+        rid = routes[int(s)]['i']
+        s, d = '-1', 1
+        while s == '-1':
+            d = (d + 1) % 2
+            stations = get_all_station(rid, d)
+            for i, st in enumerate(stations): print i, st['n'], st['i']
+            s = raw_input(u"第几个？查看返程输入-1")
+        stationid = stations[int(s)]['i']
+        print "stationid ", stationid
+
+    else:
+        pass
 
