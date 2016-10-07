@@ -77,6 +77,7 @@ pls_t = {
     "pls":ne.top_playlists(limit=100)
 }
 
+pls_num = 10 #要显示的歌单数目
 @app.route('/ne-api/<string:type>')
 def ne_api_route(type):
     if type == 'playlists':
@@ -91,7 +92,12 @@ def ne_api_route(type):
         yypls = filter(lambda pl: pl not in cnpls and u"粤语" in pl["tags"] , pls)
         qtpls = filter(lambda pl: pl not in cnpls and pl not in yypls, pls)
 
-        retpls = sample(cnpls,5) + sample(yypls,2) + sample(qtpls,3)    #筛选歌曲，华语5个，粤语2个，其他3个
+        # 筛选歌曲，华语5个，粤语2个，其他3个
+        cn_num = min(5,len(cnpls))
+        yy_num = min(2,len(yypls))
+        qt_num = pls_num - cn_num - yy_num
+
+        retpls = sample(cnpls,cn_num) + sample(yypls,yy_num) + sample(qtpls,qt_num)
 
         retpls = map(lambda pl: {'id': pl['id'], 'name': pl['name'],}, retpls)
         return jsonify({'pls': retpls})
