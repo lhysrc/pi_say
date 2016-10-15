@@ -162,7 +162,9 @@ def start_tasks():
     while True:
         t = time.localtime()
         wd = tell_time.is_workday(t)
-        time_range = [7, 8] + range(19, 24) if wd else [0] + range(8, 24)
+        # 报时
+        # time_range = [7, 8] + range(19, 24) if wd else [0] + range(8, 24)
+        time_range = range(7, 23) # 7点到22点报时
         if t.tm_hour in time_range:
             tell_time.tell_time(t)
 
