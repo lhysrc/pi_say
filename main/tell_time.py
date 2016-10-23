@@ -1,4 +1,12 @@
 # coding=utf-8
+
+# 整点报时的起始小时和结束时间
+FirstHour = 8
+LastHour = 23
+
+tell_range = range(FirstHour,LastHour + 1)
+
+
 def hour_str(hour):
     if hour == 0:
         return "半夜12"
@@ -72,19 +80,19 @@ def is_workday(time):
 
     return time.tm_wday < 5
 
-def tell_time_repeat(interval,tell_times):
+def tell_time_repeat(interval, cnt):
     """
     报时
     Args:
         interval: 间隔，每interval分钟报时一次
-        tell_times: 次数
+        cnt: 次数
     Returns:None
     """
-    while tell_times:
+    while cnt:
         t = time.localtime()
-        if t.tm_min != 0:
+        if t.tm_min != 0 or (t.tm_hour not in tell_range): # 整点已报时，帮若在整点报时的时间段里，0分不需要再报时。
             tell_time(t)
-        tell_times -= 1
+        cnt -= 1
         time.sleep(interval*60)
 
 

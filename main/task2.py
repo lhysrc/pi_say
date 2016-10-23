@@ -170,8 +170,8 @@ def start_tasks():
 
     while True:
         t = time.localtime()
-        wd = tell_time.is_workday(t)
-        time_range = [7, 8] + range(19, 24) if wd else [0] + range(8, 24)
+        wd = tell_time.is_workday(t)        
+        time_range = tell_time.tell_range # [7, 8] + list(range(19, 24)) if wd else [0] + list(range(8, 24))
         if t.tm_hour in time_range:
             tell_time.tell_time(t)
 
