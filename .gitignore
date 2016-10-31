@@ -5,3 +5,11 @@
 /music_files
 /log
 /.idea
+*.pyc
+*.py.bak
+Thumbs.db
+
+# vscode 相关配置
+/.vscode/
+/.editorconfig
+
