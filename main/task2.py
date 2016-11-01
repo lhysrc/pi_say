@@ -1,7 +1,8 @@
 # coding=utf-8
 import uuid
 
-import config
+# import config
+import setting
 import itertools,json
 import music
 from threading import Timer
@@ -16,7 +17,7 @@ from main.gz_bus import tell_bus
 from main.weather import tell_today,today
 from main.baidu_tts import read_aloud_async
 
-
+TASK_SAVE_PATH = './local/task.json'
 
 MUSIC,TELL_BUS,TELL_WEATHER,READ_TEXT,TELL_TIME = 'music','bus','weather','read','time'
 task_types = {
@@ -50,13 +51,17 @@ class Task(object):
 
 
 def load_all_tasks():
-    for tp in task_types:
-        d = config.get('Task',tp)
-        if d:
-            j = json.loads(d,encoding='utf-8')
-            for t in j:
-                tasks.append(Task(**t))
-    #todo: log
+    tks = setting.load(TASK_SAVE_PATH)
+    log.info("已加载%d条任务。"%len(tks))
+    for t in tks:
+        tasks.append(Task(**t))
+    # for tp in task_types:
+    #     d = config.get('Task',tp)
+    #     if d:
+    #         j = json.loads(d,encoding='utf-8')
+    #         for t in j:
+    #             tasks.append(Task(**t))
+
 
 # def save_all_tasks():
 #     for k,g in itertools.groupby(tasks,key=lambda t:t.type):
@@ -66,11 +71,15 @@ def load_all_tasks():
 #     config.save()
 
 def save_all_tasks():
-    for tp in task_types:
-        tks = filter(lambda t:t.type == tp,tasks)
-        tks = map(lambda t: t.to_dict(), tks)
-        config.set('Task', tp, json.dumps(tks,encoding='utf-8'))
-    config.save()
+    # for tp in task_types:
+    #     tks = filter(lambda t:t.type == tp,tasks)
+    #     tks = map(lambda t: t.to_dict(), tks)
+    #     config.set('Task', tp, json.dumps(tks,encoding='utf-8'))
+    # config.save()
+    tks = map(lambda t: t.to_dict(), tasks)
+    tks = filter(lambda t:t is not None,tks)
+    setting.save(TASK_SAVE_PATH,tks)
+    log.info("已保存所有任务。")
 
 # def save_task(task):
 #     if task.task_type_or_func not in task_types: return # todo 分任务类型存？任务不多没必要
@@ -154,17 +163,15 @@ if __name__ == '__main__':
 
 
 def start_tasks():
-    log.info("程序开始运行")
+    log.info(u"程序开始运行")
     read_aloud_async("程序开始运行", True, per=0)
 
-    load_all_tasks()
+    load_all_tasks()    
 
     while True:
         t = time.localtime()
-        wd = tell_time.is_workday(t)
-        # 报时
-        # time_range = [7, 8] + range(19, 24) if wd else [0] + range(8, 24)
-        time_range = range(7, 23) # 7点到22点报时
+        wd = tell_time.is_workday(t)        
+        time_range = tell_time.tell_range # [7, 8] + list(range(19, 24)) if wd else [0] + list(range(8, 24))
         if t.tm_hour in time_range:
             tell_time.tell_time(t)
 

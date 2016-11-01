@@ -1,7 +1,14 @@
 # coding=utf-8
-city = 'guangzhou'
+
+from common.config2 import get_weather_info
+api_key,city = get_weather_info()
+
+import setting
+# 如果setting有city就用setting里的，否则使用config里的。
+city_set = setting.get_setting('city')
+if city_set : city = city_set
+
 url = 'http://apis.baidu.com/heweather/weather/free?city=%s' % city
-from common.secret_const import baidu_apistore_api_key as api_key
 # 返回结果说明：http://apistore.baidu.com/apiworks/servicedetail/478.html
 import logging
 log = logging.getLogger(__name__)

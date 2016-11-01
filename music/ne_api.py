@@ -25,6 +25,7 @@ import base64
 # from config import Config
 # from storage import Storage
 
+cookie_path = './tmp/ne_cookie'
 # 歌曲榜单地址
 top_list_all = {
     0: ['云音乐新歌榜', '/discover/toplist?id=3779629'],
@@ -154,7 +155,6 @@ class NetEase:
         self.playlist_class_dict = {}
         self.session = requests.Session()
         # self.storage = Storage()
-        cookie_path = './local/ne_cookie'
         self.session.cookies = LWPCookieJar(cookie_path)
         try:
             self.session.cookies.load()

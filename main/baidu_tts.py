@@ -1,28 +1,27 @@
 # coding=utf-8
-import logging
-import socket
+import logging,os, urllib2, random,socket
 
-from config import get_baidu_tts_token,set_baidu_tts_token
+from common.config2 import get_baidu_tts_key
+import setting
 
+apiKey,secretKey = get_baidu_tts_key()
 log = logging.getLogger(__name__)
-from common.secret_const import baidu_tts_apiKey as apiKey
-from common.secret_const import baidu_tts_secretKey as secretKey
 
 auth_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=" \
            + apiKey + "&client_secret=" + secretKey
-CUID = "py"
-TOKEN = get_baidu_tts_token()
+CUID = "pi"
+SETTING_KEY = "baidu_tts_token"
 
-import os, urllib2, random
 from common import util
 import play_sound
 
+TOKEN = setting.get_setting(SETTING_KEY)
 def refresh_token():
     global TOKEN
     TOKEN = str(util.getJson(auth_url)['access_token'])
-    set_baidu_tts_token(TOKEN)
+    setting.set_setting(SETTING_KEY,TOKEN)
     log.warn("已刷新百度tts的TOKEN：%s" % TOKEN)
-
+if not TOKEN: refresh_token()
 
 LOCAL_AUDIOS = {
     'NET_ERROR': 'local/net_error.mp3',
