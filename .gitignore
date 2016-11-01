@@ -1,4 +1,4 @@
-/common/secret_const.py
+
 /venv
 # Created by .ignore support plugin (hsz.mobi)
 /tmp
@@ -8,6 +8,10 @@
 *.pyc
 *.py.bak
 Thumbs.db
+
+# 保存的设置和配置
+/local/*.ini
+/local/*.json
 
 # vscode 相关配置
 /.vscode/

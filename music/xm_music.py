@@ -1,10 +1,9 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-from common.secret_const import xiami_password,xiami_username
+from common.config2 import get_xiami_info
 from song_info import SongInfo
 
-EMAIL = xiami_username
-PASSWORD = xiami_password
+EMAIL,PASSWORD = get_xiami_info()
 cookie_file = './tmp/.Xiami.cookies'
 
 import logging
