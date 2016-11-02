@@ -68,7 +68,7 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=5, per=0):
     file_name = "./tmp/%s.mp3" % uuid.uuid1() if not file_name else file_name
 
     url = "http://tsn.baidu.com/text2audio?lan=zh&cuid=%s&ctp=1&tok=%s&tex=%s" % \
-          (CUID, TOKEN, text)
+          (CUID, TOKEN, urllib2.quote(text))
     if vol != 5: url += '&vol=%s' % vol
     if spd != 5: url += '&spd=%s' % spd
     if pit != 5: url += '&pit=%s' % pit
@@ -85,7 +85,7 @@ def download_tts_file(text, file_name=None, spd=5, pit=5, vol=5, per=0):
             c = response.read()
         elif 'json' in response.headers['Content-type']:
             j = json.load(response)
-            log.error('语音转换出错：text:‘%s’;result:‘%s’' % (str(text),j))
+            log.error('语音转换出错：text:‘%s’;result:‘%s’' % (urllib2.unquote(text),j))
             if j['err_no'] == 502:
                 refresh_token()
             return 2,''

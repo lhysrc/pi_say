@@ -38,6 +38,6 @@ if os.path.exists(SETTING_PATH):
 
 
 if __name__ == '__main__':
-    # set("u","mi")
+    set_setting(10,range(1,8))
     print setting
     # save_setting()
