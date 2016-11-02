@@ -22,9 +22,9 @@ headers = {
     "Referer"        : "http://wxbus.gzyyjt.net/wei-bus-app/station",
     "User-Agent"     : "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat",
     "Origin"         : "http://wxbus.gzyyjt.net",
-    "DNT":1,
-    "Host":"wxbus.gzyyjt.net",
-    "Cookie":"JSESSIONID=14864631985A400E03E653367A42E5C5; WBSRV=s3; realOpenId=ouz9Ms07e2R4cfj6arHjFyo2L-uA; gzhUser=gh_342e92a92760; openId=ouz9Ms07e2R4cfj6arHjFyo2L-uA; route=fe9b13b33d88398957ee445b97555283",
+    "DNT"            : "1",
+    "Host"           : "wxbus.gzyyjt.net",
+    "Cookie"         : "JSESSIONID=14864631985A400E03E653367A42E5C5; WBSRV=s3; realOpenId=ouz9Ms07e2R4cfj6arHjFyo2L-uA; gzhUser=gh_342e92a92760; openId=ouz9Ms07e2R4cfj6arHjFyo2L-uA; route=fe9b13b33d88398957ee445b97555283",
 
 }
 
@@ -158,15 +158,15 @@ def baozhan(bus,func):
             time.sleep(interval)
     # return v
 
-def pause_tell_bus(bus,days=1):
-    v = config.get('bus', bus).split(';')
-    v[0] = str(days)
-    config.set('bus',bus,';'.join(v))
-    config.save()
+# def pause_tell_bus(bus,days=1):
+#     v = config.get('bus', bus).split(';')
+#     v[0] = str(days)
+#     config.set('bus',bus,';'.join(v))
+#     config.save()
 
-def get_pause_day(bus):
-    v = config.get('bus', bus).split(';')
-    return int(v[0])
+# def get_pause_day(bus):
+#     v = config.get('bus', bus).split(';')
+#     return int(v[0])
 
 
 
