@@ -84,6 +84,7 @@ def ne_api_route(type):
         if (datetime.now() - pls_t["time"]).seconds > (60*60*6):    # 六小时刷新歌单
             pls_t["pls"] = ne.top_playlists(limit=100)
             pls_t["time"] = datetime.now()
+            app.logger.info(u"已重新获取100首歌单列表。")
         pls = pls_t["pls"][:]
         if not pls:
             return "",200
