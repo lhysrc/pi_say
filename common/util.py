@@ -41,7 +41,7 @@ def byteify(input):
 from email.mime.text import MIMEText
 from email.header import Header
 import smtplib
-from main import config2
+import config2
 email_addr,email_pwd,smtp_server = config2.get_email_info()
 def sendEmail(toMail,title,content):
     msg = MIMEText(str(content))

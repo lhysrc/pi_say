@@ -69,9 +69,19 @@ def tell_time_first(func):
 def print_time():
     print time.strftime('%Y-%m-%d %H:%M:%S')
 
-import config
-Holiday = config.get_days('holiday')
-WorkdayInWeekend = config.get_days('workday_in_weekend')
+
+def to_tuples(days):
+    ret = []
+    if not days:return ret
+    for k,vs in days.items():
+        for v in vs:
+            ret.append((int(k),int(v)))
+    return ret
+
+
+import setting
+Holiday = to_tuples(setting.get_setting('holiday'))
+WorkdayInWeekend = to_tuples(setting.get_setting('workday_in_weekend'))
 
 def is_workday(time):
     m,d = time.tm_mon,time.tm_mday
